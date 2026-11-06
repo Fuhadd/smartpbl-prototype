@@ -65,3 +65,25 @@ Controlled data diagnoses *which* skill fails. Real data measures *how much* it 
 
 **How is the dataset reproducible and tamper-evident?**
 A seeded local RNG; a test that two runs are identical; committed JSONL compared with a fresh generation in CI.
+
+### 1.3 PII redaction
+**The LLM is local. Why redact at all?**
+Data minimisation (Art. 5(1)(c)) applies regardless of where processing happens: identifying a fall doesn't need a name. Redaction also protects against logs, traces, a future hosted model, and identifiers copied into summaries. Defence in depth; central to the DPIA.
+
+**Why recall over precision, and where does it stop?**
+The costs are asymmetric (breach vs a lost word). So: no NHS checksum, low threshold, layered recognisers. It stops where clinical meaning breaks: case-insensitive kinship matching gives 100% recall but test evidence preservation falls to 83.9%. Track both metrics.
+
+**How do you know it works?**
+Per-recogniser unit tests, clinical sentences preserved, dataset floors (test recall 98.3%, evidence 96.4%). Tuned on dev only. Residual gap documented: lowercase word-like family names. Synthetic data overstates real recall.
+
+**What changes with real PBL data?**
+A gazetteer from the care record (the `known_names` hook), a double-annotated de-identification test set with recall per entity type, possibly trf or fine-tuned NER, carer names. All inside PBL under the DPIA.
+
+**Typed placeholders vs consistent pseudonyms?**
+Typed tags leak nothing but lose who did what, which matters for safeguarding. Numbered pseudonyms within a note keep relationships, at the cost of a sensitive mapping. Start simple; switch if evaluation shows lost relationships hurt.
+
+**Can the LLM do the redaction?**
+Not as the gate: that sends raw PII into the model, and it's non-deterministic and hard to audit. At most a second-pass detector on already-redacted text.
+
+**Is redacted text anonymous?**
+No. It's pseudonymised at best (linked to client_ref, original stored, context can re-identify), so it's still personal data.

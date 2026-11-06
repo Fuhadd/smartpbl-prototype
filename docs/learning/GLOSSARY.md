@@ -23,3 +23,13 @@
 - **Negation detection**: Recognising when a mention is negated ("no signs of falls"). NegEx is a classic rule-based algorithm for it in clinical text.
 - **Data card / datasheet**: Structured documentation of a dataset's origin, composition, intended use and limitations.
 - **Prevalence**: The proportion of cases that are positive. It strongly affects precision: the same classifier has lower precision when positives are rarer.
+- **PII (personally identifiable information)**: Information that identifies a person directly (name, phone, NHS number) or indirectly. UK GDPR uses the broader term "personal data".
+- **Special category data**: UK GDPR Art. 9 data needing extra protection, including health data. Care notes are health data.
+- **Data minimisation**: UK GDPR Art. 5(1)(c): personal data must be "adequate, relevant and limited to what is necessary" for the purpose.
+- **Redaction / de-identification**: Removing or masking identifiers from text. Not the same as anonymisation.
+- **Anonymisation vs pseudonymisation**: Anonymous data can't be linked back to a person, so it falls outside GDPR. Pseudonymised data can be re-linked with extra information and is still personal data.
+- **NER (named entity recognition)**: Labelling spans of text as entity types (PERSON, LOCATION…), here with a statistical spaCy model.
+- **Recogniser (Presidio)**: A component that detects one or more entity types, using regex, deny-lists, checksums or NER, and returns spans with confidence scores.
+- **Context enhancement**: Raising a detection's score when supporting words ("nhs", "rang") appear nearby.
+- **Deny-list / gazetteer**: An explicit list of strings (e.g. known client and family names) to always detect.
+- **Over-redaction**: Masking text that isn't PII, which can destroy clinically relevant meaning.
