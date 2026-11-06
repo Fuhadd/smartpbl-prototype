@@ -16,3 +16,9 @@
 - **Context:** Hook and CLI ruff versions can drift when pre-commit installs its own copy.
 - **Decision:** Local hooks that run `uv run ruff …` (`language: unsupported`, the pre-commit ≥4.4 name for `system`).
 - **Consequences:** One ruff version, locked in `uv.lock`. The hooks need `uv` on PATH.
+
+## ADR-004: Extraction schema design (2026-11-06)
+- **Context:** The LLM output must be machine-checkable, auditable and safe to show coordinators.
+- **Decision:** A single Pydantic `Extraction` model is used as both the Ollama `format` constraint and the validator. 7-category closed taxonomy. 3-level severity, each level tied to an action. Evidence is a verbatim quote (not offsets) placed before severity and confidence. `extra="forbid"`, all fields required. Negated risks are omitted.
+- **Alternatives:** JSON mode only; free text then parse; character offsets; 5-level severity.
+- **Consequences:** Output always parses, but correctness is not guaranteed (a sanity check missed a fall), so grounding, review and evaluation are needed. Self-reported confidence is used only for ranking and routing. The taxonomy and severity definitions need validation with PBL managers before use with real data.

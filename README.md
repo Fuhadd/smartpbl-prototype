@@ -11,7 +11,7 @@ A portfolio prototype of an AI platform for domiciliary care. It has three parts
 ## Status
 
 - [x] Step 0: setup
-- [ ] Tier 1: care-notes NLP
+- [ ] Tier 1: care-notes NLP (1.1 schemas ✅)
 - [ ] Tier 2: carer matching
 - [ ] Tiers 3–6: attrition, production layer, Flutter app, packaging
 
