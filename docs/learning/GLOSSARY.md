@@ -33,3 +33,10 @@
 - **Context enhancement**: Raising a detection's score when supporting words ("nhs", "rang") appear nearby.
 - **Deny-list / gazetteer**: An explicit list of strings (e.g. known client and family names) to always detect.
 - **Over-redaction**: Masking text that isn't PII, which can destroy clinically relevant meaning.
+- **Baseline**: A simple reference method that a more complex one must beat to justify its cost.
+- **Lexicon / trigger**: The words or patterns that signal a category (e.g. "fell", "slipped" → falls).
+- **NegEx**: A rule-based clinical negation algorithm (Chapman et al., 2001): negation cues within a word window of a finding, with scope terminators and pseudo-negation exceptions.
+- **Scope terminator**: A word (e.g. "but") that ends a negation's reach.
+- **Pseudo-negation**: A phrase containing a negation word that doesn't negate the finding ("no longer eating" asserts a problem; "NHS no" is a number).
+- **Micro vs macro average**: Micro pools counts across classes (frequent classes dominate). Macro averages per-class scores (each class counts equally).
+- **Tuning-set optimism**: Performance measured on the data used for design decisions overstates performance on new data.

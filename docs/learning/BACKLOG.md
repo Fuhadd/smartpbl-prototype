@@ -6,3 +6,5 @@
 - **Gazetteer integration:** pass client and next-of-kin names from a client registry into `redact(known_names=...)` once persistence exists (Step 1.7+).
 - **Consistent pseudonyms within a note** (`<PERSON_1>`, `<PERSON_2>`) if evaluation shows lost relationships hurt safeguarding recall.
 - **Project-plan Presidio link** points to `microsoft.github.io/presidio`; the project moved to `presidio.dataprivacystack.org` (verified 2026-11-06).
+- **Baseline post-negation** ("Falls: none"): a known gap, left as the 04 exercise.
+- **Redaction over-masking in run-on notes:** spaCy tags sentence-initial capitalised words ("Put", "Daughter") as PERSON when notes have no full stops. Consider a minimum PERSON score or a stop-word allowlist.

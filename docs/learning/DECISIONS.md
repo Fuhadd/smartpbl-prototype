@@ -34,3 +34,9 @@
 - **Decision:** Presidio with spaCy `en_core_web_lg` 3.8.0, plus custom recognisers: UK postcode, NHS-like (no checksum), UK phone, street address, titled name, kinship name (case-sensitive name group). Allowlist of 7 entity types (no DATE_TIME). Score threshold 0.35. Typed placeholders. Output is the `RedactedText` type, which the LLM layer must require. Optional `known_names` deny-list for gazetteer names from the care record.
 - **Alternatives:** regex only; spaCy trf; LLM-based redaction (rejected: raw PII would go into the model); case-insensitive kinship matching (rejected: 100% recall but test evidence preservation drops to 83.9%).
 - **Consequences:** Test PII recall 98.3%, evidence preserved 96.4%. Lowercase word-like family names remain a gap unless `known_names` is supplied. Grounding (1.6) must check against the redacted text. Adds a ~400 MB model download (CI must cache it).
+
+## ADR-007: Rules baseline with the same output schema, tuned on dev only (2026-11-06)
+- **Context:** LLM metrics need something to compare against. The author of the rules also wrote the template phrases (including test-only ones).
+- **Decision:** Regex lexicon per category with per-pattern severity, context requirements, NegEx-style pre-trigger negation (5 tokens, scope ends at but/however, number "no" excluded), and a time-comparison rule. Returns `Extraction`. Run on redacted text. v0 from generic vocabulary; v1 changes only from logged dev errors; test closed until 1.9. Typos deliberately not handled.
+- **Alternatives:** spaCy Matcher + negspaCy; fuzzy matching; TF-IDF + logistic regression (needs labelled data).
+- **Consequences:** Dev micro F1 0.986 (optimistic: tuned). Authorship bias is acknowledged; the real fix is separate roles or real notes. Constant confidence (0.7) carries no information for routing.

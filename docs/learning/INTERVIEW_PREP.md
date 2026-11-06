@@ -87,3 +87,25 @@ Not as the gate: that sends raw PII into the model, and it's non-deterministic a
 
 **Is redacted text anonymous?**
 No. It's pseudonymised at best (linked to client_ref, original stored, context can re-identify), so it's still personal data.
+
+### 1.4 Rules baseline
+**Why a rules baseline when you have an LLM?**
+LLM metrics are meaningless without a comparison. If rules match, they win on cost, determinism, auditability and zero hallucination. The baseline also shows where the LLM should add value (typos, indirect phrasing). Rules of ML #1.
+
+**Dev F1 went from 0.79 to 0.99. Is it that good?**
+No: tuning-set optimism. Honest numbers come from test, especially the unseen-phrase subset, in 1.9. No drop there would suggest test phrases are too close to dev.
+
+**How does negation work and where does it fail?**
+Simplified NegEx: a cue ≤5 tokens before the trigger, scope ends at "but", negation-containing patterns exempt. Fails on post-negation ("falls: none"), long scope, double negation, hedging. A real bug: "NHS no" read as negation, fixed as a general case.
+
+**Why not fuzzy matching for typos?**
+False positives on short words (fall/tall/fail), threshold tuning, and it blurs what the baseline is. Typo robustness is something to measure in the LLM.
+
+**Keep rules with real PBL data?**
+Yes, as a high-precision safety net for unambiguous high-severity triggers, independent of the LLM, and to flag LLM omissions. spaCy matchers, versioned rules. TF-IDF + LR once labels exist.
+
+**Why macro as well as micro F1?**
+Micro hides failure on rare categories (safeguarding). Macro weights each category equally. Also look at per-category recall.
+
+**You wrote the test phrases and the rules. Compromised?**
+Partly; acknowledged. Mitigated with a generic v0, logged dev-only changes, and a closed test set. The real fix is separation of roles or real notes labelled by care staff.
