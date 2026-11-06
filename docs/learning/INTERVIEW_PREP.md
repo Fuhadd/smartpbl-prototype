@@ -109,3 +109,25 @@ Micro hides failure on rare categories (safeguarding). Macro weights each catego
 
 **You wrote the test phrases and the rules. Compromised?**
 Partly; acknowledged. Mitigated with a generic v0, logged dev-only changes, and a closed test set. The real fix is separation of roles or real notes labelled by care staff.
+
+### 1.5 LLM extraction
+**How do you get reliable structured output from a local LLM?**
+Schema-constrained decoding (Pydantic schema → Ollama `format`), Pydantic validation, one retry with the error fed back, then human review. 160/160 valid on dev, but validity ≠ correctness, so recall, grounding and severity are measured separately.
+
+**Why temperature 0, and what doesn't it guarantee?**
+Greedy decoding gives reproducible evaluation and replayable audits. It doesn't guarantee correctness (consistently wrong), nor identical output across engine versions, quantisations or hardware. So I record the model digest.
+
+**Why version prompts in files with a hash?**
+Prompts are code. The label is for people; the hash catches silent edits. Every output stores prompt version and hash plus model and digest. Prompt changes go through dev evaluation (v1 → v2).
+
+**Your outputs contradicted themselves 9/80 times. What did you do?**
+Derive `follow_up_required` from severities in code and log overrides: dev accuracy 0.825 → 0.938. The LLM does language understanding; code does deterministic functions.
+
+**Can you use model confidence for routing?**
+No. 97% of flags at 0.8–1.0 in v1; asking for lower values made it worse (86% at 1.0). Route on severity, grounding and agreement with the baseline. Better: log-probs or agreement across samples, calibrated.
+
+**Trade-off: why stop at prompt v2?**
+More iterations mean more dev overfitting. The remaining errors would need near-copies of dev phrases. Check in 1.9 whether the rules cover them (time comparison), which points to a hybrid. With real data, use a separate prompt-development set.
+
+**With real PBL data and at scale?**
+5–9 s/note is fine asynchronously. At scale: a queue with workers and a GPU inference server inside PBL's network; evaluate qwen2.5:3b against recall targets; monitor validity and retry rates; re-evaluate whenever the model digest changes.

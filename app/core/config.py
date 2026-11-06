@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://smartpbl:smartpbl@localhost:5432/smartpbl"
     ollama_base_url: str = "http://localhost:11434"
     llm_model: str = "llama3.1:8b"
+    llm_timeout_s: float = 60.0
+    llm_seed: int = 42
+    extraction_prompt_version: str = "v2"
 
 
 @lru_cache

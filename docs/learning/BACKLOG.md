@@ -8,3 +8,6 @@
 - **Project-plan Presidio link** points to `microsoft.github.io/presidio`; the project moved to `presidio.dataprivacystack.org` (verified 2026-11-06).
 - **Baseline post-negation** ("Falls: none"): a known gap, left as the 04 exercise.
 - **Redaction over-masking in run-on notes:** spaCy tags sentence-initial capitalised words ("Put", "Daughter") as PERSON when notes have no full stops. Consider a minimum PERSON score or a stop-word allowlist.
+- **Hybrid extraction:** union the LLM and high-precision rule flags (e.g. the time-comparison late-visit rule) if 1.9 shows they complement each other.
+- **Better uncertainty signal:** token log-probs or agreement across samples (n>1 at T>0) instead of self-reported confidence.
+- **Missed visit vs safeguarding:** v2 files "no carer attended" under safeguarding. Consider allowing both, or a taxonomy note, after review with PBL.

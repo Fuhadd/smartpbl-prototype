@@ -40,3 +40,9 @@
 - **Decision:** Regex lexicon per category with per-pattern severity, context requirements, NegEx-style pre-trigger negation (5 tokens, scope ends at but/however, number "no" excluded), and a time-comparison rule. Returns `Extraction`. Run on redacted text. v0 from generic vocabulary; v1 changes only from logged dev errors; test closed until 1.9. Typos deliberately not handled.
 - **Alternatives:** spaCy Matcher + negspaCy; fuzzy matching; TF-IDF + logistic regression (needs labelled data).
 - **Consequences:** Dev micro F1 0.986 (optimistic: tuned). Authorship bias is acknowledged; the real fix is separate roles or real notes. Constant confidence (0.7) carries no information for routing.
+
+## ADR-008: LLM extraction via Ollama structured outputs, versioned prompts, derived fields in code (2026-11-06)
+- **Context:** Extraction must be valid, reproducible, auditable and impossible to run on unredacted text.
+- **Decision:** `httpx` client to Ollama `/api/chat` with `format` = Pydantic JSON schema, temperature 0, seed 42, connect/read timeouts 5/60 s. `extract()` accepts only `RedactedText`; validates; one retry with error feedback; then `ExtractionFailedError` (goes to human review). Prompts are versioned files with a SHA-256 recorded; the model is recorded by digest. `follow_up_required` is recomputed from severities and overrides are logged. Prompt v2 is the default after a dev-only v1 → v2 iteration; iteration stopped to avoid overfitting dev.
+- **Alternatives:** Ollama SDK; Instructor/Outlines; JSON mode only; two-step reason-then-format; many dev few-shot examples.
+- **Consequences:** Dev: 160/160 valid first try; v2 micro F1 0.938, severity agreement 0.827. Self-reported confidence is uninformative (86% at 1.0), so routing can't use it. Median latency 5.7 s/note on an M1 Pro.
