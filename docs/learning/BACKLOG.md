@@ -11,3 +11,5 @@
 - **Hybrid extraction:** union the LLM and high-precision rule flags (e.g. the time-comparison late-visit rule) if 1.9 shows they complement each other.
 - **Better uncertainty signal:** token log-probs or agreement across samples (n>1 at T>0) instead of self-reported confidence.
 - **Missed visit vs safeguarding:** v2 files "no carer attended" under safeguarding. Consider allowing both, or a taxonomy note, after review with PBL.
+- **Entailment check** for high-impact categories (safeguarding, falls): does the note support the flag, not just contain the quote? Catches negation errors that grounding misses.
+- **Review-vs-escape curve** across routing configurations, for the registered manager to choose an operating point (Step 1.9 / Tier 6).

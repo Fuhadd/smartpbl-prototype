@@ -131,3 +131,25 @@ More iterations mean more dev overfitting. The remaining errors would need near-
 
 **With real PBL data and at scale?**
 5–9 s/note is fine asynchronously. At scale: a queue with workers and a GPU inference server inside PBL's network; evaluate qwen2.5:3b against recall targets; monitor validity and retry rates; re-evaluate whenever the model digest changes.
+
+### 1.6 Grounding and routing
+**How do you control hallucination?**
+Layers: constrained shape; every flag quotes evidence that is checked against the redacted note (exact → normalised → fuzzy ≥ 90, ≥ 3 words); ungrounded flags are never auto-accepted. Dev: 0 ungrounded, but adversarial tests prove rejection. Wrong conclusions from real text are left to routing and evaluation.
+
+**How did you choose the threshold?**
+Data: genuine ≥ 98.1, negatives p99.9 = 66.7. Maths: one swap costs 1/L, so 90 tolerates one typo fix at ≥ 10 chars. Costs: a false accept passes a hallucination; a false reject costs seconds. "heels look sore" vs "red" scores 86.7, so 85 would have been unsafe.
+
+**What is HITL here, and why does it matter legally?**
+High and safeguarding flags always go to a coordinator, plus fuzzy, ungrounded, low-confidence and baseline-only ones. The system never closes a risk alone. Art. 22A (DUAA 2025): solely automated = no meaningful human involvement; review should come after the output and concern the outcome, so no rubber-stamping, and workload must stay manageable.
+
+**Workload vs safety trade-off?**
+Dev: 59% reviewed / 10.1% escaped (LLM only) vs 64% / 0% (with the rules safety net, optimistic). Synthetic prevalence inflates workload. With PBL: present a review-vs-escape curve and let the registered manager choose the operating point.
+
+**What doesn't grounding protect against?**
+Real quotes supporting wrong conclusions (negation: "falls" in "No falls"; wrong category), and omissions. Next step: entailment checks for high-impact categories; recall measured in eval.
+
+**With real PBL data?**
+Recalibrate the threshold; set routing with the registered manager and safeguarding lead; measure reviewer time and agreement; monitor fuzzy/ungrounded rates as drift alarms; calibrated uncertainty instead of confidence.
+
+**Why keep a confidence rule that never fires?**
+Spec requirement, no cost, works automatically if confidence improves. But I report that it fired 0 times, so nobody counts it as an active safeguard.

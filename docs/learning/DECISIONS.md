@@ -46,3 +46,9 @@
 - **Decision:** `httpx` client to Ollama `/api/chat` with `format` = Pydantic JSON schema, temperature 0, seed 42, connect/read timeouts 5/60 s. `extract()` accepts only `RedactedText`; validates; one retry with error feedback; then `ExtractionFailedError` (goes to human review). Prompts are versioned files with a SHA-256 recorded; the model is recorded by digest. `follow_up_required` is recomputed from severities and overrides are logged. Prompt v2 is the default after a dev-only v1 → v2 iteration; iteration stopped to avoid overfitting dev.
 - **Alternatives:** Ollama SDK; Instructor/Outlines; JSON mode only; two-step reason-then-format; many dev few-shot examples.
 - **Consequences:** Dev: 160/160 valid first try; v2 micro F1 0.938, severity agreement 0.827. Self-reported confidence is uninformative (86% at 1.0), so routing can't use it. Median latency 5.7 s/note on an M1 Pro.
+
+## ADR-009: Tiered evidence grounding (threshold 90) and policy-based review routing with a baseline safety net (2026-11-06)
+- **Context:** LLM evidence must be verifiable; risky or uncertain flags need meaningful human review (UK GDPR Art. 22A as amended by the DUAA 2025). LLM confidence is uninformative.
+- **Decision:** Ground against the redacted text: exact → normalised → fuzzy (`partial_ratio` ≥ 90, ≥ 3 words, span snapped to words) → ungrounded. Route to review on high severity, safeguarding, fuzzy, ungrounded, confidence < 0.7, baseline-only category, or extraction failure. Nothing is dropped.
+- **Alternatives:** exact only; embedding similarity; NLI entailment; confidence-only routing.
+- **Consequences:** Dev: 0 ungrounded; 59% of notes reviewed / 10.1% escape without the safety net; 64% / 0% with it (optimistic: rules tuned on dev). Grounding checks presence, not meaning (negation and category errors pass). The threshold must be recalibrated on real data.
