@@ -43,3 +43,25 @@ Validate the taxonomy against PBL's incident categories and CQC reporting. Add `
 
 **Why is self-reported confidence not a probability?**
 It's generated text, not calibrated, and tends to cluster high. Use it only to rank and route, and send high-severity flags to review regardless. Better signals: token log-probs or agreement across samples, calibrated against labels.
+
+### 1.2 Synthetic data
+**Why templates instead of LLM-written notes?**
+Labels are correct by construction. LLM-written notes need labels, and LLM labels used to evaluate an LLM are circular. Templates are also deterministic and reviewable. The cost is narrow vocabulary, which is documented and partly offset with indirect, negated, held-out and noisy cases.
+
+**What is data leakage and where could it happen here?**
+Evaluation information influencing the system under test. Here: phrase leakage, where rules or prompts written on dev match identical test phrases. Fix: 14 test-only phrases plus an `unseen_phrase` tag to report seen vs unseen.
+
+**Why not just change the seed when coverage was thin?**
+Choosing a seed because it passes a check is mild p-hacking. Balanced assignment makes coverage structural, and it's tested across several seeds.
+
+**What biases does the dataset have?**
+Narrow vocabulary (favours keywords), artificial prevalence (83% risky, so precision is inflated), few low-severity cases, female clients only, simple negation, one risk per sentence. Present results as a comparison between methods, not accuracy on real data.
+
+**With real PBL data, how would you build the evaluation set?**
+DPIA and data-sharing agreement first. De-identify. Stratified sample. Two trained annotators with guidelines, Cohen's kappa measured. Split by client. Keep the synthetic set as a regression suite.
+
+**Trade-off: controlled difficulty vs realism?**
+Controlled data diagnoses *which* skill fails. Real data measures *how much* it matters. You need both, like unit tests vs integration tests.
+
+**How is the dataset reproducible and tamper-evident?**
+A seeded local RNG; a test that two runs are identical; committed JSONL compared with a fresh generation in CI.

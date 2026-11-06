@@ -16,3 +16,10 @@
 - **Evidence span**: The verbatim text in the note that supports a flag. It is checked against the source to detect hallucination.
 - **Risk taxonomy**: The closed set of risk categories the system may assign.
 - **Pseudonymisation**: Replacing direct identifiers with references (e.g. `CL-0001`). Still personal data under UK GDPR, because re-identification is possible with the lookup key.
+- **Gold label / ground truth**: The reference answer a prediction is scored against. Here it is correct by construction, from the phrase it came from.
+- **Data leakage**: Information from the evaluation set influencing the system being evaluated, which inflates scores. *Phrase leakage* means the same phrase appears in both tuning and test data.
+- **Held-out set**: Data kept back from any tuning, used only for final evaluation.
+- **Stratification**: Making sure each split has the same proportion of key subgroups (here: risk count and category).
+- **Negation detection**: Recognising when a mention is negated ("no signs of falls"). NegEx is a classic rule-based algorithm for it in clinical text.
+- **Data card / datasheet**: Structured documentation of a dataset's origin, composition, intended use and limitations.
+- **Prevalence**: The proportion of cases that are positive. It strongly affects precision: the same classifier has lower precision when positives are rarer.

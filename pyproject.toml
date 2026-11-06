@@ -32,6 +32,8 @@ ignore = ["ANN401"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["ANN"]
+# Phrase library: one labelled phrase per line reads better than wrapped strings.
+"scripts/note_templates.py" = ["E501", "N817"]  # compact C/S/M aliases
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

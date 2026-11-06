@@ -11,7 +11,7 @@ A portfolio prototype of an AI platform for domiciliary care. It has three parts
 ## Status
 
 - [x] Step 0: setup
-- [ ] Tier 1: care-notes NLP (1.1 schemas ✅)
+- [ ] Tier 1: care-notes NLP (1.1 schemas ✅, 1.2 synthetic data ✅)
 - [ ] Tier 2: carer matching
 - [ ] Tiers 3–6: attrition, production layer, Flutter app, packaging
 
@@ -35,4 +35,4 @@ Learning notes and the decision log are in [`docs/learning/`](docs/learning/).
 
 ## Limitations
 
-Synthetic data only. Developed and tested on one Apple M1 Pro (16 GB) machine. The other sections are filled in as each tier is completed.
+Synthetic data only: see [`data/care_notes/DATA_CARD.md`](data/care_notes/DATA_CARD.md) for how it was generated and its known biases (narrow vocabulary, artificial prevalence). Developed and tested on one Apple M1 Pro (16 GB) machine. The other sections are filled in as each tier is completed.

@@ -22,3 +22,9 @@
 - **Decision:** A single Pydantic `Extraction` model is used as both the Ollama `format` constraint and the validator. 7-category closed taxonomy. 3-level severity, each level tied to an action. Evidence is a verbatim quote (not offsets) placed before severity and confidence. `extra="forbid"`, all fields required. Negated risks are omitted.
 - **Alternatives:** JSON mode only; free text then parse; character offsets; 5-level severity.
 - **Consequences:** Output always parses, but correctness is not guaranteed (a sanity check missed a fall), so grounding, review and evaluation are needed. Self-reported confidence is used only for ranking and routing. The taxonomy and severity definitions need validation with PBL managers before use with real data.
+
+## ADR-005: Template-based synthetic care notes with held-out phrases (2026-11-06)
+- **Context:** Tier 1 needs labelled notes for tuning and evaluation. No real data can be used. Labels must be trustworthy, and evaluating an LLM on LLM-labelled data is circular.
+- **Decision:** A seeded template generator (seed 42). 80 dev / 40 test, generated as separate balanced streams (exactly 8 flags per category in test). 14 phrases are test-only to prevent phrase leakage. Messiness is applied before evidence is extracted. Synthetic PII uses ranges that can't be real (Ofcom drama numbers, NHS 999 range, ZZ postcodes). Committed files are checked against the generator by a test.
+- **Alternatives:** LLM-generated notes (circular, noisy labels); random category sampling plus searching for a passing seed (rejected as tuning data to pass its own check); a single shared phrase pool (leakage).
+- **Consequences:** Labels are exact and reproducible. Narrow vocabulary favours keyword rules, so results compare methods rather than estimate real accuracy. See DATA_CARD.md for biases.
