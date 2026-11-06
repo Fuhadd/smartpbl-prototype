@@ -13,3 +13,8 @@
 - **Missed visit vs safeguarding:** v2 files "no carer attended" under safeguarding. Consider allowing both, or a taxonomy note, after review with PBL.
 - **Entailment check** for high-impact categories (safeguarding, falls): does the note support the flag, not just contain the quote? Catches negation errors that grounding misses.
 - **Review-vs-escape curve** across routing configurations, for the registered manager to choose an operating point (Step 1.9 / Tier 6).
+- **DB roles:** `smartpbl_app` (INSERT/SELECT on audit_events, no ownership/DDL) and a separate migration role (Tier 4).
+- **Tamper evidence:** hash-chained audit rows (row_hash = H(prev_hash ‖ row)) plus a verification job, or export to WORM storage.
+- **Encryption at rest** for `care_notes.raw_text`, and a **retention job** (delete/anonymise notes after the policy period; audit rows remain).
+- **HMAC key management:** move `SMARTPBL_AUDIT_HASH_KEY` to a secrets manager; a key-rotation plan using `hash_alg`/key id.
+- **Queue-based processing** with retry/backoff for LLM failures, instead of processing inside the request (Step 1.8 / Tier 4).

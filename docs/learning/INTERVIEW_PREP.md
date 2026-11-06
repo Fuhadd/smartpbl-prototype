@@ -153,3 +153,25 @@ Recalibrate the threshold; set routing with the registered manager and safeguard
 
 **Why keep a confidence rule that never fires?**
 Spec requirement, no cost, works automatically if confidence improves. But I report that it fired 0 times, so nobody counts it as an active safeguard.
+
+### 1.7 Persistence and audit
+**Why append-only, and how is it enforced?**
+An audit log is only evidence if it can't be changed. A DB trigger rejects UPDATE/DELETE/TRUNCATE for every client; a mutation test proves the tests depend on it. Limitation: the owner or a superuser can disable/drop it. Production: app role with INSERT/SELECT only, separate migration role, hash chain or external immutable store.
+
+**Why store a hash, not the input?**
+Prove which input produced an output without making the log a second, longer-lived copy of health data. The log can outlive the note (storage limitation/erasure), hence no foreign key.
+
+**Why HMAC, not plain SHA-256?**
+Short, formulaic notes allow dictionary attacks on plain hashes. HMAC needs the key to test a guess, stays deterministic, `hash_alg` is stored for rotation, and the key belongs in a secrets manager.
+
+**LLM latency vs transactions?**
+Model work first, then one short transaction. Never hold a transaction across a slow external call (pool exhaustion, locks). A crash between the two just redoes deterministic work.
+
+**What if Ollama is down?**
+Catch, record `extraction_failed`, keep baseline flags, queue for review. Tested. Production: queue retries with backoff, alert on failure rate.
+
+**Mutable review_status alongside an audit log?**
+Current state for fast queue queries; full history in the append-only log, written in the same transaction. A pragmatic split vs full event sourcing.
+
+**With real PBL data?**
+Encryption at rest for raw_text, a retention job, separate DB roles, the HMAC key in a secrets manager with rotation, export to immutable storage, audit of reads too (Tier 4).

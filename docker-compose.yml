@@ -7,7 +7,9 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smartpbl}
       POSTGRES_DB: ${POSTGRES_DB:-smartpbl}
     ports:
-      - "5432:5432"
+      # Host port 5442: 5432/5433 are commonly taken by Homebrew Postgres or other projects.
+      # Bound to loopback only: never expose the database to the local network.
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5442}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:

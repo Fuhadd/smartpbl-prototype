@@ -11,7 +11,7 @@ A portfolio prototype of an AI platform for domiciliary care. It has three parts
 ## Status
 
 - [x] Step 0: setup
-- [ ] Tier 1: care-notes NLP (1.1 schemas ✅, 1.2 synthetic data ✅, 1.3 PII redaction ✅, 1.4 rules baseline ✅, 1.5 LLM extraction ✅, 1.6 grounding + routing ✅)
+- [ ] Tier 1: care-notes NLP (1.1 schemas ✅, 1.2 synthetic data ✅, 1.3 PII redaction ✅, 1.4 rules baseline ✅, 1.5 LLM extraction ✅, 1.6 grounding + routing ✅, 1.7 persistence + audit ✅)
 - [ ] Tier 2: carer matching
 - [ ] Tiers 3–6: attrition, production layer, Flutter app, packaging
 
@@ -23,7 +23,8 @@ Prerequisites: Python 3.12 (managed by `uv`), Docker, Ollama.
 uv sync                                   # create .venv and install deps
 uv run pre-commit install                 # git hooks: ruff + hygiene checks
 cp .env.example .env
-docker compose up -d db                   # PostgreSQL 16
+docker compose up -d db                   # PostgreSQL 16 on 127.0.0.1:5442
+uv run alembic upgrade head               # create tables + append-only audit trigger
 ollama pull llama3.1:8b                   # default LLM (qwen2.5:3b optional)
 uv run pytest                             # tests
 uv run uvicorn app.main:app --reload      # API at http://localhost:8000/docs

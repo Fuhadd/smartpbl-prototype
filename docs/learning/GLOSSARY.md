@@ -57,3 +57,13 @@
 - **Escape rate**: The share of true risks that are neither correctly auto-accepted nor sent to review, so nobody sees them.
 - **Review workload**: The share of notes (or flags) sent to people. It trades off against the escape rate.
 - **Data (Use and Access) Act 2025 (DUAA)**: UK law that amended UK GDPR, including replacing Article 22 with Articles 22A–22D on automated decision-making.
+- **Append-only log**: A table where rows are only ever inserted, never updated or deleted, so it can serve as evidence.
+- **Tamper-resistant vs tamper-evident**: Resistant makes changes hard (triggers, permissions). Evident makes changes detectable afterwards (hash chains, external copies).
+- **HMAC**: Keyed hash (`H((K⊕opad)‖H((K⊕ipad)‖m))`). Without the key you can't compute or check a tag.
+- **Dictionary attack (on hashes)**: Hashing likely inputs and comparing them with stored hashes to recover low-entropy originals.
+- **Migration (Alembic)**: A versioned, reversible script that changes the database schema.
+- **Autogenerate**: Alembic comparing models with the database to draft a migration. It misses triggers and some constraints, so review it.
+- **CHECK constraint**: A database rule that rejects rows violating a condition (e.g. severity ∈ {low, medium, high}).
+- **Savepoint**: A nested transaction marker that can be rolled back without ending the outer transaction.
+- **Storage limitation**: UK GDPR Art. 5(1)(e): keep identifiable data no longer than necessary.
+- **Event sourcing**: An architecture where state is derived by replaying an event log, rather than stored directly.

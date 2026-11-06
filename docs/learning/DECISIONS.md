@@ -52,3 +52,9 @@
 - **Decision:** Ground against the redacted text: exact → normalised → fuzzy (`partial_ratio` ≥ 90, ≥ 3 words, span snapped to words) → ungrounded. Route to review on high severity, safeguarding, fuzzy, ungrounded, confidence < 0.7, baseline-only category, or extraction failure. Nothing is dropped.
 - **Alternatives:** exact only; embedding similarity; NLI entailment; confidence-only routing.
 - **Consequences:** Dev: 0 ungrounded; 59% of notes reviewed / 10.1% escape without the safety net; 64% / 0% with it (optimistic: rules tuned on dev). Grounding checks presence, not meaning (negation and category errors pass). The threshold must be recalibrated on real data.
+
+## ADR-010: Postgres persistence, append-only audit log via trigger, HMAC input hashes (2026-11-06)
+- **Context:** Every AI decision must be traceable (input, model, prompt, output, actor, time) without the audit log becoming a second copy of health data. Audit rows must be unchangeable.
+- **Decision:** SQLAlchemy 2.x + Alembic. Tables: care_notes, extractions, risk_flags (mutable review_status), audit_events. A hand-written trigger rejects UPDATE/DELETE (row) and TRUNCATE (statement). Enums are VARCHAR + CHECK (`create_constraint=True`). Input hash = **HMAC-SHA256** with a secret key (deviation from the spec's plain SHA-256, to prevent dictionary attacks on short notes); `hash_alg` stored. `audit_events.note_id` is not a foreign key. Model work happens before the transaction; LLM failure degrades to baseline flags plus review. Postgres on 127.0.0.1:5442.
+- **Alternatives:** plain SHA-256; DB role permissions only; hash chain; external WORM/ledger; event sourcing.
+- **Consequences:** Tamper-resistant against the app, but not against the table owner or a superuser (DISABLE TRIGGER/DROP work). Production needs separate roles, plus a hash chain or external store. The HMAC key must be managed as a secret.
