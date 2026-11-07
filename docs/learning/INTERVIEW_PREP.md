@@ -527,3 +527,29 @@ One indexed insert per request; whole-response buffering. At scale: monthly part
 
 **With real data?**
 Insert-only DB role, a hash chain or WORM export, `pgaudit` for superusers, alerting (reuse, 403 bursts, unusual reads), and audit data in subject access responses.
+
+### 4.3 Security review
+
+**Walk me through the review.**
+All ten OWASP API 2023 risks, each with controls, tests and gaps in `docs/SECURITY.md`. Strongest: auth (API2/5), property exposure (API3), LLM consumption (API10). Partial: no per-patch BOLA scoping; per-process limits. Found and fixed three defects.
+
+**The crash?**
+Zero carers means zero vehicles, and OR-Tools aborts the process (SIGABRT): one request was a DoS. Fixed in the solver and the API, with regressions. Validate before native code.
+
+**Login brute force without lockouts?**
+20/min per IP, 5/min per username, both before Argon2; refused attempts not counted; no permanent lock. Trade-off: one-minute lockout griefing; production: SSO + MFA.
+
+**Why in-memory limits?**
+Exact, testable with a fake clock, no infrastructure. N workers give N× the limit, and a restart resets it. Production: Redis token bucket plus gateway limits.
+
+**No cookies: what follows?**
+Bearer header, so no CSRF; CORS with an explicit origin list and no credentials. XSS remains the risk: short tokens, rotation, strict CSP. Production: a BFF.
+
+**Secure by default?**
+Outside local: refuse public default secrets, short JWT keys and `*` CORS, all reported at once; docs off. Subprocess test proves both outcomes.
+
+**422s echoing data?**
+FastAPI's default includes `input` (note text = health data). A custom handler returns `loc`/`msg`/`type` only.
+
+**Next with real data?**
+Patch scoping, Redis limits, TLS and proxy headers, a vault for secrets with key ids, `raw_text` encryption, scheduled scans, a pen test, a DPIA.

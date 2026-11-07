@@ -70,9 +70,6 @@
 - **Model registry:** `skops` artefacts plus metadata (data snapshot, code commit, versions, CV score) instead of training at start-up, once training is no longer instant.
 - **Warm-up:** build the workforce model at application start-up (lifespan event) rather than on the first request.
 - **Snapshot date and drift monitoring** in workforce responses once features come from live rota data.
-- **Login throttling (4.3):** per-account and per-IP limits on `/auth/token`, stricter than general limits (OWASP API2); consider lockout with notification rather than a hard lock.
-- **Refuse default secrets (4.3):** fail start-up when `jwt_secret` or `audit_hash_key` is the dev default outside `environment=local`.
-- **Browser token storage (4.3):** an httpOnly refresh cookie variant for the React dashboard, with CSRF protection and CORS for two origins.
 - **Refresh-token housekeeping:** purge expired and revoked rows past a retention window; an admin "sign out everywhere" (revoke every family for a user).
 - **Password rehash on login:** pwdlib's `verify_and_update` to upgrade hashes when Argon2 parameters change.
 - **Object-level authorisation (Tier 5):** link carer accounts to `carer_ref`, so carers can read their own notes, visits and attrition explanation (BOLA checks), and per-patch scoping for coordinators.
@@ -82,3 +79,9 @@
 - **Large or streaming responses:** the audit middleware buffers whole responses; exports or streams would need a commit-before-first-byte design.
 - **Workforce list subjects:** `workforce_risk_viewed` lists carer refs in `output`; add them to the "who has seen carer X" query as the note trail does for queue views (a per-carer trail endpoint).
 - **Submitter on notes:** store the authenticated submitter on `care_notes` (operational data), not only in the correlated audit row, once carers read their own notes (Tier 5).
+- **Distributed rate limits:** move limiter state to Redis (atomic token bucket) when running more than one worker; add per-IP limits at the gateway.
+- **Backend-for-frontend for the dashboard:** keep tokens server-side and give the browser an httpOnly, SameSite session cookie (replaces in-memory tokens; needs CSRF protection).
+- **Audit HMAC key ids:** store a key id with each `input_hash` before the first key rotation, so older hashes stay checkable.
+- **Versioned API paths (`/v1`)** and a deprecation policy before any external client depends on the API (OWASP API9).
+- **Scheduled security scans:** `pip-audit` and ruff `S` in CI on push and weekly; consider OSV as a second advisory source.
+- **Read-amplification guard:** the 1 MB body limit is read before authentication; consider a lower limit for unauthenticated routes (`/auth/*`).

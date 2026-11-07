@@ -38,6 +38,9 @@ class MedicationStatus(StrEnum):
     NOT_MENTIONED = "not_mentioned"
 
 
+_REF = r"^[A-Za-z0-9_.-]{1,50}$"
+
+
 class _Strict(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
@@ -45,9 +48,10 @@ class _Strict(BaseModel):
 class CareNote(_Strict):
     """A free-text note written by a carer after a visit. Refs are pseudonymous IDs, not names."""
 
-    note_id: str = Field(min_length=1)
-    client_ref: str = Field(min_length=1, description="Pseudonymous client ID, e.g. 'CL-0001'.")
-    carer_ref: str = Field(min_length=1, description="Pseudonymous carer ID, e.g. 'CR-0001'.")
+    # Bounded to the DB columns (50) and a safe character set: identifiers, not free text.
+    note_id: str = Field(pattern=_REF)
+    client_ref: str = Field(pattern=_REF, description="Pseudonymous client ID, e.g. 'CL-0001'.")
+    carer_ref: str = Field(pattern=_REF, description="Pseudonymous carer ID, e.g. 'CR-0001'.")
     visit_time: datetime
     text: str = Field(min_length=1, max_length=5000)
 

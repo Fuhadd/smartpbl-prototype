@@ -309,3 +309,22 @@
   - Older rows have no subject or request id.
   - Tests and middleware share `dependency_overrides[get_session]`.
   - Retention, partitioning and alerting are backlog items.
+
+## ADR-027: Security hardening from the OWASP API Top 10 review (2026-11-07)
+- **Context:** Step 4.3 reviewed the API against the OWASP API Security Top 10 (2023). The review found three defects: a zero-carer scenario aborted the process inside OR-Tools; an overlong `note_id` caused a 500 after an LLM call; 422 responses echoed submitted note text. Rate limiting, secrets handling and CORS were not yet implemented.
+- **Decision:**
+  - **Secure defaults:** outside `environment=local`, refuse to start with the public JWT or audit-key defaults, a JWT key under 32 bytes, or `*` CORS (all problems reported together). Docs and the OpenAPI schema only in local.
+  - **Rate limits:** an in-memory sliding-window log per process. Login 20/min per IP and 5/min per username, before Argon2; notes 30/min and solves 3/min per user; 429 with `Retry-After`; refused requests not counted.
+  - **Resource bounds:** a 1 MB body limit (declared and chunked); note ids `^[A-Za-z0-9_.-]{1,50}$`; scenario caps (60 carers, 200 clients, 400 visits, 10 carer refs per client, at least one carer); the solver itself refuses zero carers.
+  - **Headers:** the OWASP REST set (`nosniff`, `no-store`, CSP `default-src 'none'; frame-ancestors 'none'`, `X-Frame-Options`, `Referrer-Policy`), plus HSTS outside local.
+  - **CORS:** an explicit origin list, `GET`/`POST`, `Authorization`/`Content-Type`, no credentials, exposing `X-Request-ID` and `Retry-After`.
+  - **Token storage (supersedes the cookie plan in note 20):** bearer tokens in the `Authorization` header only. The dashboard keeps them in memory; mobile uses secure storage. No cookies, so no CSRF surface.
+  - **Validation errors:** returned without `input` or `ctx`.
+  - **Tooling:** ruff flake8-bandit (`S`) with reasoned suppressions; `pip-audit` (clean on 2026-11-07).
+- **Alternatives:** `slowapi`; Redis token buckets; gateway-only limits; an `httpOnly` refresh cookie plus CSRF tokens; a backend-for-frontend.
+- **Consequences:**
+  - Limits are per process and reset on restart (documented; Redis in the backlog).
+  - A dashboard reload requires a new login.
+  - An attacker can lock a known username out of login for a minute at a time.
+  - Unauthenticated bodies up to 1 MB are read before auth.
+  - TLS, `--no-server-header` and proxy-header configuration are deferred to Step 4.4.

@@ -12,7 +12,9 @@ from app.api.deps import get_current_user, get_llm_client, get_prompt, require
 from app.api.schemas import NoteOut
 from app.auth.models import User
 from app.auth.permissions import Permission
+from app.core.config import get_settings
 from app.core.db import get_session
+from app.core.ratelimit import limiter
 from app.nlp.llm import ChatClient
 from app.nlp.models import CareNoteRecord
 from app.nlp.pipeline import process_note
@@ -21,6 +23,7 @@ from app.nlp.schemas import CareNote
 
 router = APIRouter(prefix="/notes", tags=["notes"], dependencies=[Depends(get_current_user)])
 SessionDep = Annotated[Session, Depends(get_session)]
+NOTES_BY_USER = limiter("notes_user", lambda: get_settings().note_limit_per_user)
 
 
 def _duplicate(external_id: str) -> HTTPException:
@@ -29,7 +32,7 @@ def _duplicate(external_id: str) -> HTTPException:
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 def create_note(
-    _: Annotated[User, Depends(require(Permission.NOTE_CREATE))],
+    user: Annotated[User, Depends(require(Permission.NOTE_CREATE))],
     note: CareNote,
     session: SessionDep,
     client: Annotated[ChatClient, Depends(get_llm_client)],
@@ -40,6 +43,7 @@ def create_note(
     Synchronous: the request waits for the LLM (~6 s on the dev laptop). A job queue is
     future work. If the LLM is down the note is still saved, with baseline flags.
     """
+    NOTES_BY_USER.check(str(user.id))  # each note costs an LLM call
     exists = session.scalar(
         select(CareNoteRecord.id).where(CareNoteRecord.external_id == note.note_id)
     )

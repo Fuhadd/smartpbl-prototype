@@ -19,6 +19,7 @@ from sqlalchemy.orm import Session
 from app.auth.models import Role
 from app.auth.service import create_user, issue_tokens
 from app.core.config import get_settings
+from app.core.ratelimit import reset_all
 
 
 def _test_url() -> str:
@@ -105,3 +106,11 @@ def auth_headers(db_session: Session) -> AuthHeaders:
         return cache[role]
 
     return make
+
+
+@pytest.fixture(autouse=True)
+def _fresh_rate_limits() -> Iterator[None]:
+    """Limiters are process-wide: start every test with empty windows."""
+    reset_all()
+    yield
+    reset_all()

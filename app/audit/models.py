@@ -32,7 +32,7 @@ class EventType(StrEnum):
     # Step 4.2: one row per routed API call (who, what, outcome), written by middleware.
     API_REQUEST = "api_request"
     REVIEW_QUEUE_VIEWED = "review_queue_viewed"  # which notes' text a reviewer was shown
-    REFRESH_TOKEN_REUSE_DETECTED = "refresh_token_reuse_detected"  # likely token theft
+    REFRESH_TOKEN_REUSE_DETECTED = "refresh_token_reuse_detected"  # noqa: S105  (event name)  # likely token theft
 
 
 class SubjectType(StrEnum):

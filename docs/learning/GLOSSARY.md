@@ -208,3 +208,17 @@
 - **Route template**: The declared path (`/notes/{note_id}`) rather than the concrete URL; stable for grouping and free of ids or query text.
 - **SIEM**: Security Information and Event Management: central collection, search and alerting over security logs.
 - **pgaudit**: A PostgreSQL extension that logs SQL statements by database role; sees DBA activity the application can't.
+- **OWASP API Security Top 10**: OWASP's list of the most critical API security risks (2023 edition: API1 BOLA through API10 unsafe consumption of APIs).
+- **Rate limiting**: Capping how many requests a client (per IP, user or key) may make in a time window; answered with HTTP 429 and `Retry-After`.
+- **Sliding-window log vs fixed window vs token bucket**: Count timestamps in the last N seconds (exact); count per clock-aligned interval (bursts at boundaries); refill tokens at a steady rate and spend one per request (allows controlled bursts).
+- **Credential stuffing**: Trying username/password pairs leaked from other sites, usually from many IPs; slowed by per-username limits and stopped by MFA.
+- **CORS (Cross-Origin Resource Sharing)**: Browser rules, set by response headers, for which other origins may read an API's responses; a preflight `OPTIONS` asks first for non-simple requests.
+- **CSRF (Cross-Site Request Forgery)**: A malicious site making the victim's browser send an authenticated request; only possible when credentials (cookies) are attached automatically.
+- **Backend-for-frontend (BFF)**: A small server beside a web app that holds OAuth tokens and gives the browser only a session cookie.
+- **HSTS**: `Strict-Transport-Security`, which tells browsers to use only HTTPS for a host for a set time.
+- **Content-Security-Policy (CSP)**: A header restricting what a page may load or run; `default-src 'none'; frame-ancestors 'none'` blocks everything, which suits JSON.
+- **Secure by default / fail loudly**: Unsafe configuration stops the service from starting instead of running silently with weak settings.
+- **Mass assignment**: A client setting fields it shouldn't (e.g. `review_status`) because the server binds every submitted property; prevented by `extra="forbid"` models.
+- **SIGABRT (native abort)**: A C/C++ library terminating the whole process; Python can't catch it, so inputs must be validated before the native call.
+- **pip-audit**: A PyPA tool that checks installed or locked Python packages against known-vulnerability databases.
+- **flake8-bandit (ruff `S` rules)**: Static checks for common security mistakes in Python (hard-coded secrets, unsafe subprocess, weak randomness).

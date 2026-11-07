@@ -2,7 +2,7 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -12,16 +12,22 @@ from app.audit import context
 from app.auth import service
 from app.auth.models import Role
 from app.auth.permissions import ROLE_PERMISSIONS, Permission
+from app.core.config import get_settings
 from app.core.db import get_session
+from app.core.ratelimit import limiter
 from app.core.security import InvalidTokenError
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 SessionDep = Annotated[Session, Depends(get_session)]
+# Per IP: slows credential stuffing across many accounts. Per username: slows guessing
+# one account from many IPs. Both checked before the (deliberately slow) Argon2 work.
+LOGIN_BY_IP = limiter("login_ip", lambda: get_settings().login_limit_per_ip)
+LOGIN_BY_USERNAME = limiter("login_username", lambda: get_settings().login_limit_per_username)
 
 
 class TokenOut(BaseModel):
     access_token: str
-    token_type: str = "bearer"
+    token_type: str = "bearer"  # noqa: S105  (the OAuth2 token type name, not a secret)
     expires_in: int
     refresh_token: str
     refresh_expires_in: int
@@ -47,11 +53,19 @@ def _out(pair: service.TokenPair) -> TokenOut:
 
 
 @router.post("/token")
-def login(form: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep) -> TokenOut:
+def login(
+    request: Request,
+    form: Annotated[OAuth2PasswordRequestForm, Depends()],
+    session: SessionDep,
+) -> TokenOut:
     """OAuth2 password flow (form-encoded `username`, `password`), so Swagger UI's
     Authorize button works. Same 401 for unknown user, wrong password, disabled account."""
     if (ctx := context.current()) is not None:
         ctx.attempted_username = form.username  # audited as an HMAC, success or failure
+    # The socket peer. Behind a proxy, uvicorn's --proxy-headers with --forwarded-allow-ips
+    # rewrites it from X-Forwarded-For; never trust that header from arbitrary clients.
+    LOGIN_BY_IP.check(request.client.host if request.client else "unknown")
+    LOGIN_BY_USERNAME.check(form.username.casefold())
     user = service.authenticate(session, form.username, form.password)
     if user is None:
         raise unauthorized()

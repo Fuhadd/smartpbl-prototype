@@ -114,6 +114,9 @@ def solve(
     not in this scenario are skipped); the result is never worse than that start."""
     params = params or SolverParams()
     carers, visits = scenario.carers, scenario.visits
+    if not carers:
+        # OR-Tools aborts the whole process (SIGABRT) on a model with zero vehicles.
+        raise ValueError("a scenario needs at least one carer")
     loc_index = matrix.index()
     n_v, n_c = len(visits), len(carers)
 

@@ -159,3 +159,11 @@ def test_committed_scenario_solves_and_verifies() -> None:
     assert sol.served + len(sol.dropped) == len(s.visits)
     assert len(sol.dropped) >= travel_free_drop_bound(s).min_dropped
     assert Path("docs/results/tier2_baseline.md").exists()
+
+
+def test_solver_refuses_a_scenario_without_carers() -> None:
+    """Guard in Python: OR-Tools would abort the process on zero vehicles."""
+    s = Scenario(name="none", seed=1, carers=(), clients=(client("CL-0001", NEAR, set()),),
+                 visits=(visit("V-0001", "CL-0001", 480, 540),))  # fmt: skip
+    with pytest.raises(ValueError, match="at least one carer"):
+        solve(s, haversine_matrix(scenario_points(s.carers, s.clients)), SolverParams())
