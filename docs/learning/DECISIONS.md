@@ -58,3 +58,19 @@
 - **Decision:** SQLAlchemy 2.x + Alembic. Tables: care_notes, extractions, risk_flags (mutable review_status), audit_events. A hand-written trigger rejects UPDATE/DELETE (row) and TRUNCATE (statement). Enums are VARCHAR + CHECK (`create_constraint=True`). Input hash = **HMAC-SHA256** with a secret key (deviation from the spec's plain SHA-256, to prevent dictionary attacks on short notes); `hash_alg` stored. `audit_events.note_id` is not a foreign key. Model work happens before the transaction; LLM failure degrades to baseline flags plus review. Postgres on 127.0.0.1:5442.
 - **Alternatives:** plain SHA-256; DB role permissions only; hash chain; external WORM/ledger; event sourcing.
 - **Consequences:** Tamper-resistant against the app, but not against the table owner or a superuser (DISABLE TRIGGER/DROP work). Production needs separate roles, plus a hash chain or external store. The HMAC key must be managed as a secret.
+
+## ADR-011: Review API with per-flag locked decisions, re-grounded edits and a stored diff (2026-11-07)
+- **Context:** Coordinators must approve, edit or reject flags. Decisions must be attributable, race-free, and recorded with what changed, without putting personal data into the permanent audit log.
+- **Decision:**
+  - **Routes:** `POST /notes`, `GET /notes/{id}`, `GET /review/queue`, `POST /review/{flag_id}` and `GET /audit/{note_id}`. Routers are thin over the `app/nlp/review.py` service.
+  - **Each decision is one transaction:** `SELECT … FOR UPDATE` on the flag, then update the flag, insert a `review_decisions` row (before, after, field diff, comment) and append a `review_decision` audit event (the diff and `has_comment` only).
+  - **Which flags can be reviewed:** decided flags return 409, and auto-accepted flags can be overridden.
+  - **Edits are re-grounded:** edited evidence must be grounded in the redacted note. The note's matched span is what gets stored.
+  - **Redacted text only:** responses use explicit Pydantic models, and `raw_text` is never returned.
+  - **Ingest:** `POST /notes` is synchronous. It checks for duplicates before calling the LLM and releases its connection during the call.
+  - **Reviewer identity** comes from the `X-Reviewer` header until Step 4.1. This is a declared stand-in, not access control.
+- **Alternatives:** optimistic concurrency (ETag/version column); diff only in the audit log; event-sourced flags; async ingest with 202 and a queue.
+- **Consequences:**
+  - Lost updates are prevented. This is tested by asserting the lock appears in the emitted SQL.
+  - Reviewer corrections become queryable labels.
+  - Gaps: notes whose LLM extraction failed and the baseline found nothing stay in the queue with no flag to act on, because there is no note-level sign-off yet. Reviewers can't add a flag the system missed. Decisions can't be corrected. The queue is sorted in Python.

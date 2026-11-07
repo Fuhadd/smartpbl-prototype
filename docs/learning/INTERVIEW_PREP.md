@@ -175,3 +175,34 @@ Current state for fast queue queries; full history in the append-only log, writt
 
 **With real PBL data?**
 Encryption at rest for raw_text, a retention job, separate DB roles, the HMAC key in a secrets manager with rotation, export to immutable storage, audit of reads too (Tier 4).
+
+### 1.8 API and human review
+
+**Two coordinators review the same flag at once?**
+`SELECT … FOR UPDATE` serialises them. The second waits, sees "approved", and gets 409. Without the lock you get a lost update. A test asserts the lock is emitted.
+
+**Why can't reviewers type any evidence?**
+It is re-grounded against the redacted note, and the note's own span is stored. The "evidence is in the note" invariant holds for human edits too, and names can't be typed in.
+
+**Comments vs the audit log?**
+Comments contain names, and the audit log is permanent. So the comment lives in `review_decisions`, which retention applies to, and the log records only `has_comment`.
+
+**Synchronous `POST /notes` at 6–18 s?**
+It's simplest for a prototype, and the pipeline degrades to the baseline if the LLM fails. At scale: 202, a queue, workers with retry, and idempotency keys. `process_note` is already independent of HTTP.
+
+**Why separate API schemas from ORM models?**
+The API is a privacy boundary. A new column must not leak automatically (OWASP API3, excessive data exposure). A test fails if `raw_text` or PII appears in a response.
+
+**Is `X-Reviewer` auth?**
+No. It is a declared stand-in so the audit actor field is populated. It is replaced by the JWT subject and a role check in 4.1, and it is already a dependency.
+
+**Why can auto-accepted flags be overridden but human decisions can't?**
+Policy decided the first, so a human override is the system working. Human decisions carry accountability, so re-opening one must be an explicit, audited action.
+
+**With real PBL data?**
+- Authenticated roles, and auditing of reads.
+- Raw text for authorised roles only.
+- Async ingest with idempotency keys.
+- ETags for long-lived review screens.
+- A priority column with SQL paging.
+- Reviewer decisions as the labelled dataset, with edit rate monitored as a drift signal.

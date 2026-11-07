@@ -1,7 +1,9 @@
 """Persistence for notes, extractions and flags (operational state, unlike the audit log).
 
-`risk_flags.review_status` is mutable workflow state. Every change to it is also
-written to the append-only audit log (Step 1.8), which is the history.
+`risk_flags` holds the current (possibly reviewer-edited) flag; mutable workflow state.
+`review_decisions` records each human decision with a before/after diff, queryable for
+metrics and future training labels. Every decision is also written to the append-only
+audit log, which is the tamper-resistant history.
 """
 
 from datetime import datetime
@@ -45,6 +47,12 @@ class ReviewStatus(StrEnum):
     APPROVED = "approved"
     EDITED = "edited"
     REJECTED = "rejected"
+
+
+class ReviewAction(StrEnum):
+    APPROVE = "approve"
+    EDIT = "edit"
+    REJECT = "reject"
 
 
 class CareNoteRecord(CreatedAtMixin, Base):
@@ -104,3 +112,16 @@ class RiskFlagRecord(CreatedAtMixin, Base):
     review_status: Mapped[ReviewStatus] = mapped_column(_enum(ReviewStatus), index=True)
 
     note: Mapped[CareNoteRecord] = relationship(back_populates="flags")
+
+
+class ReviewDecisionRecord(CreatedAtMixin, Base):
+    __tablename__ = "review_decisions"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    flag_id: Mapped[UUID] = mapped_column(ForeignKey("risk_flags.id"), index=True)
+    reviewer: Mapped[str] = mapped_column(String(100))
+    action: Mapped[ReviewAction] = mapped_column(_enum(ReviewAction))
+    before: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    after: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    diff: Mapped[dict[str, Any]] = mapped_column(JSONB)  # {field: {"before": x, "after": y}}
+    comment: Mapped[str | None] = mapped_column(String(1000))

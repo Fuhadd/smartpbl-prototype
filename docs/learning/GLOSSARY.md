@@ -67,3 +67,11 @@
 - **Savepoint**: A nested transaction marker that can be rolled back without ending the outer transaction.
 - **Storage limitation**: UK GDPR Art. 5(1)(e): keep identifiable data no longer than necessary.
 - **Event sourcing**: An architecture where state is derived by replaying an event log, rather than stored directly.
+- **Lost update**: Two transactions read the same row and both write; the later write silently overwrites the earlier one.
+- **Pessimistic locking (`SELECT … FOR UPDATE`)**: Lock the row when reading it, so other writers wait until the transaction ends.
+- **Optimistic concurrency**: No lock; each write checks that a version number (or ETag) is unchanged since the read, and fails if it isn't.
+- **Dependency override (FastAPI)**: Replacing a dependency function with another one, e.g. in tests (`app.dependency_overrides`).
+- **Excessive data exposure (OWASP API3:2023)**: An API returning object properties the caller doesn't need or shouldn't see.
+- **HTTP 409 Conflict**: The request conflicts with the resource's current state (e.g. the flag was already reviewed, or the note ID already exists).
+- **HTTP 422 Unprocessable Content**: The request is well-formed but its content fails validation.
+- **Idempotency key**: A client-supplied ID that lets a server recognise retries of the same request and apply it only once.

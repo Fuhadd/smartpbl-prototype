@@ -1,12 +1,15 @@
-"""FastAPI entry point. Routers are added per module in later steps."""
+"""FastAPI entry point."""
 
 from fastapi import FastAPI
 
+from app.api import audit, notes, review
 from app.core.config import get_settings
 
 settings = get_settings()
 
 app = FastAPI(title=settings.app_name, version="0.1.0")
+for module in (notes, review, audit):
+    app.include_router(module.router)
 
 
 @app.get("/health", tags=["meta"])

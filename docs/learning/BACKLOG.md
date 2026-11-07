@@ -17,4 +17,11 @@
 - **Tamper evidence:** hash-chained audit rows (row_hash = H(prev_hash ‖ row)) plus a verification job, or export to WORM storage.
 - **Encryption at rest** for `care_notes.raw_text`, and a **retention job** (delete/anonymise notes after the policy period; audit rows remain).
 - **HMAC key management:** move `SMARTPBL_AUDIT_HASH_KEY` to a secrets manager; a key-rotation plan using `hash_alg`/key id.
-- **Queue-based processing** with retry/backoff for LLM failures, instead of processing inside the request (Step 1.8 / Tier 4).
+- **Queue-based processing** with retry/backoff for LLM failures, instead of processing inside the request (Tier 4). `POST /notes` is still synchronous after 1.8; move to 202 + job + polling, with idempotency keys.
+- **Note-level sign-off:** a note whose LLM extraction failed and where the baseline found nothing stays in the queue with no flag to act on. Add `POST /review/notes/{id}` (sign off, or re-run extraction).
+- **Reviewer-added flags:** let a coordinator add a risk the system missed (the most important label for recall).
+- **Correcting a decision:** a manager-only re-open with a reason, audited separately; currently decided flags return 409.
+- **Optimistic concurrency (ETag / version column)** for long-lived review screens in the Flutter app (5.2).
+- **Queue at scale:** store a priority column, then sort and page in SQL instead of in Python.
+- **Raw-text access:** return `raw_text` only to authorised roles, and audit every read (Tier 4.1/4.2).
+- **Reviewer analytics:** edit/reject rate per category and per prompt version from `review_decisions`, as a quality and drift signal.
