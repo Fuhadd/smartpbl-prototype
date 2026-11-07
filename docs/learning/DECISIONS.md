@@ -434,3 +434,19 @@
   - The percentage split is a convention, which the footnote and note 28 state; exact log-odds stay in the API.
   - Trend, planning and per-carer access features are deferred (backlog).
   - The list loads all 200 carers, so one view's audit event lists 200 refs.
+
+## ADR-035: Carer app API: `/me` routes, object-level note checks, need-to-know handover, urgent concern (2026-11-07)
+- **Context:** Step 5.6 adds the carer app (Visits, VisitDetail, Note, Submitted designs). Carers previously had only `note.create`, with no link between a login and a scheduling identity, and could submit a note with any `carer_ref`, a latent BOLA issue.
+- **Decision:**
+  - **Identity link:** `users.carer_ref` is nullable and unique (migration 0010); `seed_demo` links Joy to CR-0001. New permission `visits.read.own`, for carers only.
+  - **Reads:** `GET /me/visits` and `GET /me/visits/{visit_id}` derive the carer from the token. Another carer's visit gets a 404 (no existence oracle).
+  - **Handover:** the detail includes the client's last 3 notes (redacted, rejected flags hidden), only for clients on today's rota, each read audited as `client_notes_viewed` (subject type `visit` added in migration 0011).
+  - **Writes:** for carers, `POST /notes` requires their own `carer_ref`, a `visit_id` on their current rota, and that visit's `client_ref` (403 otherwise). Coordinators are unchanged.
+  - **Note fields:** `visit_id`, `urgent` and `tasks_done` (optional). `urgent` forces `review_required`, sorts first and counts as high priority. A flag-less urgent note is acknowledged through the existing note decision.
+  - **"Done":** a note by this carer for the visit, created on the run's local calendar day (avoids comparing API and database clocks).
+  - **Hosting the carer app:** Vercel (the user's choice for frontends), not the Firebase Hosting named in CLAUDE.md; the user deploys.
+- **Alternatives:** `/carers/{ref}/visits` with per-handler checks; Postgres row-level security; a policy engine; a separate visit-notes table; no handover notes.
+- **Consequences:**
+  - "Today" is the latest run, since the prototype has one synthetic day.
+  - Visit details and locations exist only for the sample day.
+  - Neon was migrated to 0010 from a laptop whose `.env` pointed at it. 0011 must still be applied there (`alembic upgrade head` against Neon) before deploying this API image.

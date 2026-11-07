@@ -1,6 +1,7 @@
 /** The left panel of Review.dc.html: queue count, severity filter, notes by priority. */
 import { Link } from 'react-router'
 
+import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
 import type { QueueItem } from './api'
@@ -67,7 +68,14 @@ export function ReviewQueue({
                   className={cn('mt-1.5 size-2 flex-[0_0_8px] rounded-full', DOT[item.priority])}
                 />
                 <span className="flex min-w-0 flex-col gap-0.5">
-                  <span className="text-sm font-semibold">{queueTitle(item)}</span>
+                  <span className="flex flex-wrap items-center gap-1.5 text-sm font-semibold">
+                    {queueTitle(item)}
+                    {item.urgent && item.pending_flags.length > 0 && (
+                      <Badge variant="high" className="px-2 py-0 text-[11px]">
+                        Urgent concern
+                      </Badge>
+                    )}
+                  </span>
                   <span className="text-xs text-muted-foreground">
                     {item.carer_ref} · {queueTime(item.created_at, now)} · {n} {n === 1 ? 'flag' : 'flags'}
                   </span>

@@ -578,11 +578,39 @@
             "title": "Note Id",
             "type": "string"
           },
+          "tasks_done": {
+            "description": "Visit tasks the carer ticked.",
+            "items": {
+              "pattern": "^[a-z_]{1,40}$",
+              "type": "string"
+            },
+            "maxItems": 10,
+            "title": "Tasks Done",
+            "type": "array"
+          },
           "text": {
             "maxLength": 5000,
             "minLength": 1,
             "title": "Text",
             "type": "string"
+          },
+          "urgent": {
+            "default": false,
+            "description": "The carer raised an urgent concern.",
+            "title": "Urgent",
+            "type": "boolean"
+          },
+          "visit_id": {
+            "anyOf": [
+              {
+                "pattern": "^V-\\d{4}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visit Id"
           },
           "visit_time": {
             "format": "date-time",
@@ -788,6 +816,29 @@
         "title": "Client",
         "type": "object"
       },
+      "DaySummary": {
+        "properties": {
+          "done": {
+            "title": "Done",
+            "type": "integer"
+          },
+          "travel_min": {
+            "title": "Travel Min",
+            "type": "integer"
+          },
+          "visits": {
+            "title": "Visits",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "visits",
+          "done",
+          "travel_min"
+        ],
+        "title": "DaySummary",
+        "type": "object"
+      },
       "Detail": {
         "description": "One tile of an expanded row: a label, a bold value and an optional second line.",
         "properties": {
@@ -862,6 +913,7 @@
           "api_request",
           "review_queue_viewed",
           "review_escalated",
+          "client_notes_viewed",
           "refresh_token_reuse_detected"
         ],
         "title": "EventType",
@@ -1384,6 +1436,280 @@
         "title": "ModelInfo",
         "type": "object"
       },
+      "MyDay": {
+        "properties": {
+          "carer_ref": {
+            "title": "Carer Ref",
+            "type": "string"
+          },
+          "day": {
+            "format": "date",
+            "title": "Day",
+            "type": "string"
+          },
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/DaySummary"
+          },
+          "visits": {
+            "items": {
+              "$ref": "#/components/schemas/MyVisit"
+            },
+            "title": "Visits",
+            "type": "array"
+          }
+        },
+        "required": [
+          "run_id",
+          "day",
+          "carer_ref",
+          "summary",
+          "visits"
+        ],
+        "title": "MyDay",
+        "type": "object"
+      },
+      "MyVisit": {
+        "properties": {
+          "client_ref": {
+            "title": "Client Ref",
+            "type": "string"
+          },
+          "duration_min": {
+            "title": "Duration Min",
+            "type": "integer"
+          },
+          "end_min": {
+            "title": "End Min",
+            "type": "integer"
+          },
+          "familiarity": {
+            "title": "Familiarity",
+            "type": "string"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Place"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "note": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SubmittedNote"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sequence": {
+            "title": "Sequence",
+            "type": "integer"
+          },
+          "start_min": {
+            "title": "Start Min",
+            "type": "integer"
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/Task"
+            },
+            "title": "Tasks",
+            "type": "array"
+          },
+          "time_critical": {
+            "title": "Time Critical",
+            "type": "boolean"
+          },
+          "travel_min": {
+            "title": "Travel Min",
+            "type": "integer"
+          },
+          "visit_id": {
+            "title": "Visit Id",
+            "type": "string"
+          },
+          "window_end_min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window End Min"
+          },
+          "window_start_min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window Start Min"
+          }
+        },
+        "required": [
+          "visit_id",
+          "sequence",
+          "client_ref",
+          "start_min",
+          "end_min",
+          "duration_min",
+          "travel_min",
+          "familiarity",
+          "window_start_min",
+          "window_end_min",
+          "time_critical",
+          "tasks",
+          "location",
+          "note"
+        ],
+        "title": "MyVisit",
+        "type": "object"
+      },
+      "MyVisitDetail": {
+        "properties": {
+          "client_ref": {
+            "title": "Client Ref",
+            "type": "string"
+          },
+          "duration_min": {
+            "title": "Duration Min",
+            "type": "integer"
+          },
+          "end_min": {
+            "title": "End Min",
+            "type": "integer"
+          },
+          "familiarity": {
+            "title": "Familiarity",
+            "type": "string"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Place"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "note": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SubmittedNote"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "recent_notes": {
+            "items": {
+              "$ref": "#/components/schemas/RecentNote"
+            },
+            "title": "Recent Notes",
+            "type": "array"
+          },
+          "sequence": {
+            "title": "Sequence",
+            "type": "integer"
+          },
+          "start_min": {
+            "title": "Start Min",
+            "type": "integer"
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/Task"
+            },
+            "title": "Tasks",
+            "type": "array"
+          },
+          "time_critical": {
+            "title": "Time Critical",
+            "type": "boolean"
+          },
+          "travel_min": {
+            "title": "Travel Min",
+            "type": "integer"
+          },
+          "visit_id": {
+            "title": "Visit Id",
+            "type": "string"
+          },
+          "window_end_min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window End Min"
+          },
+          "window_start_min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window Start Min"
+          }
+        },
+        "required": [
+          "visit_id",
+          "sequence",
+          "client_ref",
+          "start_min",
+          "end_min",
+          "duration_min",
+          "travel_min",
+          "familiarity",
+          "window_start_min",
+          "window_end_min",
+          "time_critical",
+          "tasks",
+          "location",
+          "note",
+          "recent_notes"
+        ],
+        "title": "MyVisitDetail",
+        "type": "object"
+      },
+      "NoteFlag": {
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/RiskCategory"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/Severity"
+          }
+        },
+        "required": [
+          "category",
+          "severity"
+        ],
+        "title": "NoteFlag",
+        "type": "object"
+      },
       "NoteOut": {
         "description": "Redacted text only: raw text is withheld until role-based access exists (Tier 4).",
         "properties": {
@@ -1461,6 +1787,35 @@
             "title": "Review Required",
             "type": "boolean"
           },
+          "tasks_done": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tasks Done"
+          },
+          "urgent": {
+            "title": "Urgent",
+            "type": "boolean"
+          },
+          "visit_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visit Id"
+          },
           "visit_time": {
             "format": "date-time",
             "title": "Visit Time",
@@ -1475,6 +1830,9 @@
           "visit_time",
           "redacted_text",
           "review_required",
+          "visit_id",
+          "urgent",
+          "tasks_done",
           "created_at",
           "escalated_at",
           "escalated_by",
@@ -1603,7 +1961,8 @@
           "audit.read",
           "schedule.solve",
           "schedule.read",
-          "workforce.read"
+          "workforce.read",
+          "visits.read.own"
         ],
         "title": "Permission",
         "type": "string"
@@ -1751,6 +2110,10 @@
             "title": "Redacted Text",
             "type": "string"
           },
+          "urgent": {
+            "title": "Urgent",
+            "type": "boolean"
+          },
           "visit_time": {
             "format": "date-time",
             "title": "Visit Time",
@@ -1766,10 +2129,48 @@
           "created_at",
           "redacted_text",
           "extraction_failed",
+          "urgent",
           "priority",
           "pending_flags"
         ],
         "title": "QueueItem",
+        "type": "object"
+      },
+      "RecentNote": {
+        "properties": {
+          "flags": {
+            "items": {
+              "$ref": "#/components/schemas/NoteFlag"
+            },
+            "title": "Flags",
+            "type": "array"
+          },
+          "note_id": {
+            "title": "Note Id",
+            "type": "string"
+          },
+          "review_required": {
+            "title": "Review Required",
+            "type": "boolean"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "visit_time": {
+            "format": "date-time",
+            "title": "Visit Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "note_id",
+          "visit_time",
+          "text",
+          "review_required",
+          "flags"
+        ],
+        "title": "RecentNote",
         "type": "object"
       },
       "RefreshIn": {
@@ -2332,10 +2733,65 @@
           "risk_flag",
           "schedule_run",
           "carer",
-          "user"
+          "user",
+          "visit"
         ],
         "title": "SubjectType",
         "type": "string"
+      },
+      "SubmittedNote": {
+        "properties": {
+          "note_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note Id"
+          },
+          "submitted_at": {
+            "format": "date-time",
+            "title": "Submitted At",
+            "type": "string"
+          },
+          "urgent": {
+            "title": "Urgent",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "note_id",
+          "submitted_at",
+          "urgent"
+        ],
+        "title": "SubmittedNote",
+        "type": "object"
+      },
+      "Task": {
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "detail"
+        ],
+        "title": "Task",
+        "type": "object"
       },
       "TokenOut": {
         "properties": {
@@ -3074,6 +3530,82 @@
         ]
       }
     },
+    "/me/visits": {
+      "get": {
+        "description": "Today's visits for the signed-in carer, in order, with what's been written up.",
+        "operationId": "my_visits_me_visits_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyDay"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "My Visits",
+        "tags": [
+          "carer"
+        ]
+      }
+    },
+    "/me/visits/{visit_id}": {
+      "get": {
+        "description": "One visit on the carer's rota, with the client's most recent notes as a handover.",
+        "operationId": "my_visit_me_visits__visit_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "visit_id",
+            "required": true,
+            "schema": {
+              "pattern": "^V-\\d{4}$",
+              "title": "Visit Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyVisitDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "My Visit",
+        "tags": [
+          "carer"
+        ]
+      }
+    },
     "/notes": {
       "post": {
         "description": "Redact, extract (LLM + rules), ground, route and persist one note.\n\nSynchronous: the request waits for the LLM (~6 s on the dev laptop). A job queue is\nfuture work. If the LLM is down the note is still saved, with baseline flags.",
@@ -3256,7 +3788,7 @@
     },
     "/review/queue": {
       "get": {
-        "description": "Notes needing a human decision: highest pending severity first, then oldest first.",
+        "description": "Notes needing a human decision: urgent concerns, then highest pending severity, then\noldest first.",
         "operationId": "review_queue_review_queue_get",
         "parameters": [
           {

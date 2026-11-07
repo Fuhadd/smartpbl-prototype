@@ -33,6 +33,7 @@ class EventType(StrEnum):
     API_REQUEST = "api_request"
     REVIEW_QUEUE_VIEWED = "review_queue_viewed"  # which notes' text a reviewer was shown
     REVIEW_ESCALATED = "review_escalated"  # Step 5.2: sent to a care manager for sign-off
+    CLIENT_NOTES_VIEWED = "client_notes_viewed"  # Step 5.6: a carer read a client's notes
     REFRESH_TOKEN_REUSE_DETECTED = "refresh_token_reuse_detected"  # noqa: S105  (event name)  # likely token theft
 
 
@@ -44,6 +45,7 @@ class SubjectType(StrEnum):
     SCHEDULE_RUN = "schedule_run"
     CARER = "carer"
     USER = "user"
+    VISIT = "visit"  # Step 5.6: a rota visit (V-0001), read from the carer app
 
 
 class AuditEvent(Base):

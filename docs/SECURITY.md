@@ -87,6 +87,11 @@ The sensitive flows are bulk reading of workforce risk (profiling employees), ma
 - **`GET /schedule/{run_id}/map`** serves locations only for runs whose input HMAC matches the committed synthetic sample. Runs still store no locations.
 - **The dashboard loads map tiles from `tile.openstreetmap.org`,** a third party that sees which map areas are viewed. That is acceptable for synthetic demo data; production needs self-hosted or contracted tiles. The 5.5 CSP must allow this `img-src`.
 
+**Step 5.6a additions (API1, Broken Object Level Authorization):**
+- **Carer reads:** these use `/me/visits` and `/me/visits/{visit_id}`, which take the carer from the token, so there is no carer id in the URL. Another carer's visit is a 404, so the response doesn't confirm it exists.
+- **Carer writes:** `POST /notes` from a carer must name their own `carer_ref`, a visit on their current rota, and that visit's client. Otherwise it gets a 403. Tests tamper with each field.
+- **Handover notes:** carers can read only the last 3 redacted notes, for clients on today's rota. Each read is audited (`client_notes_viewed`, subject `visit`).
+
 **Step 5.4 additions:**
 - **Workforce responses add only derived, non-identifying fields:** `points` and `team_value`. The team value is a median across 200 carers, which reveals no individual. The label and age band are still never sent (an existing test still checks this).
 - **The workforce list loads the whole current workforce (200)** in one audited read, so the `workforce_risk_viewed` event lists every ref shown. Paging by patch is in the backlog, for least privilege at real scale.

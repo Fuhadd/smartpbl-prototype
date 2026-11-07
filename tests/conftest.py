@@ -98,6 +98,8 @@ def auth_headers(db_session: Session) -> AuthHeaders:
     def make(role: Role) -> dict[str, str]:
         if role not in cache:
             user = create_user(db_session, USERNAMES[role], TEST_PASSWORD, role)
+            if role is Role.CARER:
+                user.carer_ref = "CR-0001"  # as the demo seed links Joy (Step 5.6)
             token = issue_tokens(db_session, user).access_token
             # Commit = release the savepoint; the outer test transaction still rolls it all
             # back. Without it, an endpoint's own rollback() would discard the user.

@@ -272,3 +272,8 @@
 - **Diverging bar chart**: Bars extending left or right from a zero line, used for contributions that lower or raise a score.
 - **Disclosure pattern**: The WAI-ARIA show/hide pattern: a button with `aria-expanded` (and optionally `aria-controls`) toggling a region.
 - **Team median comparison**: Showing a carer's value next to the median across the current workforce, as a stand-in for trend data the snapshot lacks.
+- **BOLA (Broken Object Level Authorization)**: OWASP API1: an API checks who the caller is but not whether the specific object they name is theirs, so changing an id exposes someone else's data.
+- **`/me` endpoint**: A route that derives the subject from the authenticated token instead of a URL id, removing the id an attacker could change.
+- **Existence oracle**: A response difference (403 vs 404) that reveals whether an object exists; avoided by answering 404 for objects the caller may not see.
+- **Need-to-know access**: Limiting what a role can read to what its task requires, e.g. a carer's handover limited to today's clients and three redacted notes.
+- **Human-review trigger**: A signal that forces human review regardless of model output, such as the carer's urgent-concern switch.

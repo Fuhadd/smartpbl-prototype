@@ -29,13 +29,15 @@ class DemoAccount:
     password: str
     role: Role
     display_name: str
+    carer_ref: str | None = None  # carer logins act as one carer on the sample rota
 
 
 # Copy matches docs/design/screens/Login.dc.html ("Demo accounts"). Obviously synthetic.
 DEMO_ACCOUNTS = (
     DemoAccount("hannah@demo.smartpbl", "demo-coordinator", Role.COORDINATOR, "Hannah K."),
     DemoAccount("sam@demo.smartpbl", "demo-manager", Role.MANAGER, "Sam R."),
-    DemoAccount("joy@demo.smartpbl", "demo-carer", Role.CARER, "Joy A."),
+    # CR-0001: a full, mostly familiar round on the sample day (about 6 visits).
+    DemoAccount("joy@demo.smartpbl", "demo-carer", Role.CARER, "Joy A.", "CR-0001"),
 )
 
 
@@ -51,6 +53,7 @@ def seed(session: Session) -> list[str]:
         user.password_hash = hash_password(acct.password)
         user.role = acct.role
         user.display_name = acct.display_name
+        user.carer_ref = acct.carer_ref
         user.is_active = True
         done.append(f"{verb} {acct.role.value:<11} {acct.username}")
     session.flush()

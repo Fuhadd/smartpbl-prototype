@@ -117,3 +117,8 @@
 - **Support planning:** the design's "Plan" buttons: record a planned supportive action (owner, due date, outcome) with its own audit events, instead of a button that does nothing.
 - **Workforce list scale:** page and filter the risk list by band and patch instead of loading all carers (also shrinks each view's audit event).
 - **Rota-specific actions:** turn "Open in schedule" into a pre-filtered schedule view (that carer pinned) and quantify the saving, as in the design's "saves about 2.1 h a week".
+- **Carer app scope (5.6):** dated rotas (not "latest run"), offline drafts with a sync queue, a per-carer "my notes" history, a rota view, "Good to know" client preferences from the care plan, and notifications.
+- **Tasks as a care record:** `tasks_done` is a list of skill keys; a real eMAR needs per-dose rows (drug, dose, time, given/refused, witness).
+- **Handover window:** limit carer-visible notes by age (e.g. 7 days) as well as count, once agreed in the DPIA.
+- **Coordinator view of a carer's day:** a staff route for a named carer's rota (the `/me` routes are self-service only).
+- **Urgent concern in the review screen:** show the carer's concern and ticked tasks beside the note text, not only in the queue row.

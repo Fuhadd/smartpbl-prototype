@@ -51,7 +51,11 @@ def _queue_item(note: CareNoteRecord) -> QueueItem:
         e.source is ExtractionSource.LLM and e.status is ExtractionStatus.FAILED
         for e in note.extractions
     )
-    severities = [f.severity for f in pending] + ([Severity.MEDIUM] if failed else [])
+    severities = (
+        [f.severity for f in pending]
+        + ([Severity.MEDIUM] if failed else [])
+        + ([Severity.HIGH] if note.urgent else [])
+    )
     priority = max(severities, key=_RANK.__getitem__, default=Severity.LOW)
     pending.sort(key=lambda f: -_RANK[f.severity])
     return QueueItem(
@@ -63,6 +67,7 @@ def _queue_item(note: CareNoteRecord) -> QueueItem:
         created_at=note.created_at,
         redacted_text=note.redacted_text,
         extraction_failed=failed,
+        urgent=note.urgent,
         priority=priority,
         pending_flags=[FlagOut.model_validate(f) for f in pending],
     )
@@ -79,7 +84,9 @@ def queue_items(session: Session) -> list[QueueItem]:
         .where(CareNoteRecord.review_required.is_(True))
         .options(selectinload(CareNoteRecord.flags), selectinload(CareNoteRecord.extractions))
     ).all()
-    return sorted(map(_queue_item, notes), key=lambda q: (-_RANK[q.priority], q.created_at))
+    return sorted(
+        map(_queue_item, notes), key=lambda q: (not q.urgent, -_RANK[q.priority], q.created_at)
+    )
 
 
 @router.get("/queue")
@@ -88,7 +95,8 @@ def review_queue(
     session: SessionDep,
     limit: Annotated[int, Query(ge=1, le=200)] = 50,
 ) -> list[QueueItem]:
-    """Notes needing a human decision: highest pending severity first, then oldest first."""
+    """Notes needing a human decision: urgent concerns, then highest pending severity, then
+    oldest first."""
     page = queue_items(session)[:limit]
     # The queue discloses redacted note text: record exactly which notes were shown.
     record(session, EventType.REVIEW_QUEUE_VIEWED, actor=f"user:{viewer.username}",

@@ -7,7 +7,7 @@ same Pydantic model validates the response. One definition serves both, so they 
 
 from datetime import datetime
 from enum import StrEnum
-from typing import Any
+from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -54,6 +54,12 @@ class CareNote(_Strict):
     carer_ref: str = Field(pattern=_REF, description="Pseudonymous carer ID, e.g. 'CR-0001'.")
     visit_time: datetime
     text: str = Field(min_length=1, max_length=5000)
+    # Step 5.6 (carer app). Optional, so the datasets and other clients are unchanged.
+    visit_id: str | None = Field(default=None, pattern=r"^V-\d{4}$")
+    urgent: bool = Field(default=False, description="The carer raised an urgent concern.")
+    tasks_done: list[Annotated[str, Field(pattern=r"^[a-z_]{1,40}$")]] = Field(
+        default_factory=list, max_length=10, description="Visit tasks the carer ticked."
+    )
 
 
 class RiskFlag(_Strict):

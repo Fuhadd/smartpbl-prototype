@@ -700,3 +700,20 @@ It's twelve bars: a grid of list items gives screen-reader text per row and text
 - Names behind patch-scoped access, plus carer self-access.
 - Feature history; a DPIA and staff consultation (ICO monitoring-workers guidance).
 - Paging by band and patch.
+
+### 5.6a Carer app API
+
+**How do you stop a carer reading or writing someone else's data?**
+- Reads go through `/me`, with the identity taken from the token.
+- Writes check the object: own `carer_ref`, a visit on their own rota, and that visit's client.
+- Another carer's visit returns 404, so its existence isn't confirmed.
+- Tests tamper with each field.
+
+**Why is "same user id" not enough?**
+OWASP API1: the id can be the caller's own while the object (visit, client) belongs to someone else. Check the relationship, not just the identity.
+
+**Carers see other carers' notes?**
+Only a handover: clients on today's rota, the last 3 notes, redacted, with rejected flags hidden, and every read audited. Scope would be confirmed with the Caldicott Guardian and the DPIA.
+
+**Urgent switch?**
+A human-review trigger independent of the model: it goes to the top of the queue as high priority, and a flag-less note is acknowledged through the audited note decision.

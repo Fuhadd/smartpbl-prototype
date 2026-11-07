@@ -188,6 +188,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/visits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Visits
+         * @description Today's visits for the signed-in carer, in order, with what's been written up.
+         */
+        get: operations["my_visits_me_visits_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/visits/{visit_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Visit
+         * @description One visit on the carer's rota, with the client's most recent notes as a handover.
+         */
+        get: operations["my_visit_me_visits__visit_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/notes": {
         parameters: {
             query?: never;
@@ -276,7 +316,8 @@ export interface paths {
         };
         /**
          * Review Queue
-         * @description Notes needing a human decision: highest pending severity first, then oldest first.
+         * @description Notes needing a human decision: urgent concerns, then highest pending severity, then
+         *     oldest first.
          */
         get: operations["review_queue_review_queue_get"];
         put?: never;
@@ -644,8 +685,21 @@ export interface components {
             client_ref: string;
             /** Note Id */
             note_id: string;
+            /**
+             * Tasks Done
+             * @description Visit tasks the carer ticked.
+             */
+            tasks_done?: string[];
             /** Text */
             text: string;
+            /**
+             * Urgent
+             * @description The carer raised an urgent concern.
+             * @default false
+             */
+            urgent: boolean;
+            /** Visit Id */
+            visit_id?: string | null;
             /**
              * Visit Time
              * Format: date-time
@@ -719,6 +773,15 @@ export interface components {
              */
             recent_carers: string[];
         };
+        /** DaySummary */
+        DaySummary: {
+            /** Done */
+            done: number;
+            /** Travel Min */
+            travel_min: number;
+            /** Visits */
+            visits: number;
+        };
         /**
          * Detail
          * @description One tile of an expanded row: a label, a bold value and an optional second line.
@@ -751,7 +814,7 @@ export interface components {
          * EventType
          * @enum {string}
          */
-        EventType: "note_ingested" | "pii_redacted" | "extraction_completed" | "extraction_failed" | "baseline_completed" | "flags_routed" | "review_decision" | "schedule_solved" | "workforce_risk_viewed" | "workforce_explanation_viewed" | "api_request" | "review_queue_viewed" | "review_escalated" | "refresh_token_reuse_detected";
+        EventType: "note_ingested" | "pii_redacted" | "extraction_completed" | "extraction_failed" | "baseline_completed" | "flags_routed" | "review_decision" | "schedule_solved" | "workforce_risk_viewed" | "workforce_explanation_viewed" | "api_request" | "review_queue_viewed" | "review_escalated" | "client_notes_viewed" | "refresh_token_reuse_detected";
         /** ExplanationOut */
         ExplanationOut: {
             /** Average Risk */
@@ -922,6 +985,86 @@ export interface components {
             /** Version */
             version: string;
         };
+        /** MyDay */
+        MyDay: {
+            /** Carer Ref */
+            carer_ref: string;
+            /**
+             * Day
+             * Format: date
+             */
+            day: string;
+            /** Run Id */
+            run_id: string;
+            summary: components["schemas"]["DaySummary"];
+            /** Visits */
+            visits: components["schemas"]["MyVisit"][];
+        };
+        /** MyVisit */
+        MyVisit: {
+            /** Client Ref */
+            client_ref: string;
+            /** Duration Min */
+            duration_min: number;
+            /** End Min */
+            end_min: number;
+            /** Familiarity */
+            familiarity: string;
+            location: components["schemas"]["Place"] | null;
+            note: components["schemas"]["SubmittedNote"] | null;
+            /** Sequence */
+            sequence: number;
+            /** Start Min */
+            start_min: number;
+            /** Tasks */
+            tasks: components["schemas"]["Task"][];
+            /** Time Critical */
+            time_critical: boolean;
+            /** Travel Min */
+            travel_min: number;
+            /** Visit Id */
+            visit_id: string;
+            /** Window End Min */
+            window_end_min: number | null;
+            /** Window Start Min */
+            window_start_min: number | null;
+        };
+        /** MyVisitDetail */
+        MyVisitDetail: {
+            /** Client Ref */
+            client_ref: string;
+            /** Duration Min */
+            duration_min: number;
+            /** End Min */
+            end_min: number;
+            /** Familiarity */
+            familiarity: string;
+            location: components["schemas"]["Place"] | null;
+            note: components["schemas"]["SubmittedNote"] | null;
+            /** Recent Notes */
+            recent_notes: components["schemas"]["RecentNote"][];
+            /** Sequence */
+            sequence: number;
+            /** Start Min */
+            start_min: number;
+            /** Tasks */
+            tasks: components["schemas"]["Task"][];
+            /** Time Critical */
+            time_critical: boolean;
+            /** Travel Min */
+            travel_min: number;
+            /** Visit Id */
+            visit_id: string;
+            /** Window End Min */
+            window_end_min: number | null;
+            /** Window Start Min */
+            window_start_min: number | null;
+        };
+        /** NoteFlag */
+        NoteFlag: {
+            category: components["schemas"]["RiskCategory"];
+            severity: components["schemas"]["Severity"];
+        };
         /**
          * NoteOut
          * @description Redacted text only: raw text is withheld until role-based access exists (Tier 4).
@@ -955,6 +1098,12 @@ export interface components {
             redacted_text: string;
             /** Review Required */
             review_required: boolean;
+            /** Tasks Done */
+            tasks_done: string[] | null;
+            /** Urgent */
+            urgent: boolean;
+            /** Visit Id */
+            visit_id: string | null;
             /**
              * Visit Time
              * Format: date-time
@@ -1001,7 +1150,7 @@ export interface components {
          * Permission
          * @enum {string}
          */
-        Permission: "note.create" | "note.read" | "review.queue.read" | "review.decide" | "audit.read" | "schedule.solve" | "schedule.read" | "workforce.read";
+        Permission: "note.create" | "note.read" | "review.queue.read" | "review.decide" | "audit.read" | "schedule.solve" | "schedule.read" | "workforce.read" | "visits.read.own";
         /** PipelineHealth */
         PipelineHealth: {
             /** Extractions */
@@ -1054,6 +1203,24 @@ export interface components {
             priority: components["schemas"]["Severity"];
             /** Redacted Text */
             redacted_text: string;
+            /** Urgent */
+            urgent: boolean;
+            /**
+             * Visit Time
+             * Format: date-time
+             */
+            visit_time: string;
+        };
+        /** RecentNote */
+        RecentNote: {
+            /** Flags */
+            flags: components["schemas"]["NoteFlag"][];
+            /** Note Id */
+            note_id: string;
+            /** Review Required */
+            review_required: boolean;
+            /** Text */
+            text: string;
             /**
              * Visit Time
              * Format: date-time
@@ -1282,7 +1449,28 @@ export interface components {
          * @description What an audit row is about. `subject_id` is the id in that type's namespace.
          * @enum {string}
          */
-        SubjectType: "care_note" | "risk_flag" | "schedule_run" | "carer" | "user";
+        SubjectType: "care_note" | "risk_flag" | "schedule_run" | "carer" | "user" | "visit";
+        /** SubmittedNote */
+        SubmittedNote: {
+            /** Note Id */
+            note_id: string | null;
+            /**
+             * Submitted At
+             * Format: date-time
+             */
+            submitted_at: string;
+            /** Urgent */
+            urgent: boolean;
+        };
+        /** Task */
+        Task: {
+            /** Detail */
+            detail: string;
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+        };
         /** TokenOut */
         TokenOut: {
             /** Access Token */
@@ -1661,6 +1849,57 @@ export interface operations {
                     "application/json": {
                         [key: string]: string;
                     };
+                };
+            };
+        };
+    };
+    my_visits_me_visits_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyDay"];
+                };
+            };
+        };
+    };
+    my_visit_me_visits__visit_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                visit_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyVisitDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

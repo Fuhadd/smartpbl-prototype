@@ -18,13 +18,14 @@ class Permission(StrEnum):
     SCHEDULE_SOLVE = "schedule.solve"
     SCHEDULE_READ = "schedule.read"
     WORKFORCE_READ = "workforce.read"
+    VISITS_READ_OWN = "visits.read.own"  # Step 5.6: a carer's own rota and its clients' notes
 
 
 P = Permission
 ROLE_PERMISSIONS: dict[Role, frozenset[Permission]] = {
-    # Carers write notes from visits. Reading notes back needs object-level checks
-    # (only their own notes), which arrive with the carer app in Tier 5.
-    Role.CARER: frozenset({P.NOTE_CREATE}),
+    # Carers write notes from visits and read their own rota. Both are object-level
+    # checked against users.carer_ref (Step 5.6): own notes, own visits, today's clients.
+    Role.CARER: frozenset({P.NOTE_CREATE, P.VISITS_READ_OWN}),
     # Coordinators run the day: log notes, decide flags, plan rotas. Since ADR-029 (the
     # Tier 5 designs) they also read workforce risk, for supportive check-ins, and the
     # audit log, to see their own decisions recorded. Every such read is itself audited.

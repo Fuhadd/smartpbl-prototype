@@ -46,7 +46,7 @@ function note(id: string, over: Record<string, unknown> = {}) {
 function queueItem(n: ReturnType<typeof note>) {
   return {
     note_id: n.id, external_id: n.id, client_ref: n.client_ref, carer_ref: n.carer_ref, visit_time: n.visit_time,
-    created_at: n.created_at, redacted_text: n.redacted_text, extraction_failed: false, priority: 'high',
+    created_at: n.created_at, redacted_text: n.redacted_text, extraction_failed: false, urgent: false, priority: 'high',
     pending_flags: n.flags,
   }
 }

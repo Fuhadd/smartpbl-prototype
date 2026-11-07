@@ -11,7 +11,7 @@ from enum import StrEnum
 from typing import Any
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, false
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -57,6 +57,11 @@ class CareNoteRecord(CreatedAtMixin, Base):
     raw_text: Mapped[str] = mapped_column(Text)
     redacted_text: Mapped[str] = mapped_column(Text)
     review_required: Mapped[bool]
+    # Step 5.6 (carer app): which rota visit the note is for, the carer's urgent-concern
+    # switch (forces human review, top of the queue) and the visit tasks ticked as done.
+    visit_id: Mapped[str | None] = mapped_column(String(20), index=True)
+    urgent: Mapped[bool] = mapped_column(default=False, server_default=false())
+    tasks_done: Mapped[list[str] | None] = mapped_column(JSONB)
     # Step 5.2: a coordinator escalated this note to a care manager (operational state;
     # the decision itself is in review_decisions and the audit log).
     escalated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

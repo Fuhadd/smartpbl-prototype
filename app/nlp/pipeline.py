@@ -69,7 +69,11 @@ def process_note(
         visit_time=note.visit_time,
         raw_text=note.text,
         redacted_text=c.redacted.text,
-        review_required=c.decision.review_required,
+        # A carer's urgent concern always reaches a human, whatever the models found.
+        review_required=c.decision.review_required or note.urgent,
+        visit_id=note.visit_id,
+        urgent=note.urgent,
+        tasks_done=note.tasks_done or None,
     )
     session.add(rec)
     session.flush()  # assigns rec.id for the child rows and audit events
@@ -80,7 +84,7 @@ def process_note(
         actor=PIPELINE_ACTOR,
         note_id=rec.id,
         input_text=note.text,
-        output={"external_id": note.note_id},
+        output={"external_id": note.note_id, "visit_id": note.visit_id, "urgent": note.urgent},
     )
     record(
         session,
@@ -140,7 +144,8 @@ def process_note(
         actor=PIPELINE_ACTOR,
         note_id=rec.id,
         output={
-            "review_required": c.decision.review_required,
+            "review_required": rec.review_required,
+            "urgent": note.urgent,
             "note_reasons": [r.value for r in c.decision.note_reasons],
             "flags": [
                 {

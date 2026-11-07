@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import audit, auth, notes, overview, review, schedule, workforce
+from app.api import audit, auth, me, notes, overview, review, schedule, workforce
 from app.audit.middleware import AuditMiddleware, session_factory_for
 from app.core.config import get_settings
 from app.core.http import (
@@ -42,7 +42,7 @@ app.add_middleware(
     expose_headers=["X-Request-ID", "Retry-After"],
     max_age=600,
 )
-ROUTERS = tuple(m.router for m in (auth, notes, review, schedule, audit, workforce, overview))
+ROUTERS = tuple(m.router for m in (auth, notes, review, schedule, audit, workforce, overview, me))
 for router in ROUTERS:
     app.include_router(router)
 

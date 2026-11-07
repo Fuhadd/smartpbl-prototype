@@ -4,6 +4,7 @@ import { flagFixture } from '@/test/fixtures'
 
 import { draftOf, toDecisions } from './decisions'
 import { modelLine, noteTitle, queueTime, whyReview } from './format'
+import { queueTitle } from './queue'
 import { redactedTypes, segmentNote, sentenceCase } from './noteText'
 
 const NOTE = 'Arrived 08:15. <PERSON> found on floor. Daughter on <PHONE_NUMBER> informed.'
@@ -97,5 +98,13 @@ describe('toDecisions', () => {
 
   it('trims edited evidence and ignores whitespace-only changes', () => {
     expect(toDecisions([b], { b: { ...draftOf(b), evidence: '  refused tablets ' } }, false)[0]?.action).toBe('approve')
+  })
+})
+
+describe('queueTitle', () => {
+  const item = { client_ref: 'CL-0017', pending_flags: [], urgent: false } as unknown as Parameters<typeof queueTitle>[0]
+  it('names an urgent concern with no flags instead of calling it a failed extraction', () => {
+    expect(queueTitle({ ...item, urgent: true })).toBe('CL-0017 · Urgent concern')
+    expect(queueTitle(item)).toBe('CL-0017 · Extraction failed')
   })
 })

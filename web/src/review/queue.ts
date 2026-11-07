@@ -15,5 +15,7 @@ export function applyFilter(items: QueueItem[], filter: QueueFilter): QueueItem[
 
 export function queueTitle(item: QueueItem): string {
   const top = item.pending_flags[0]
-  return `${item.client_ref} · ${top ? CATEGORY[top.category].short : 'Extraction failed'}`
+  // A carer's urgent concern can arrive with no flags at all: say what it is, not "failed".
+  const what = top ? CATEGORY[top.category].short : item.urgent ? 'Urgent concern' : 'Extraction failed'
+  return `${item.client_ref} · ${what}`
 }

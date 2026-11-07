@@ -32,6 +32,7 @@ SUBJECT_PARAMS: dict[str, SubjectType] = {
     "flag_id": SubjectType.RISK_FLAG,
     "run_id": SubjectType.SCHEDULE_RUN,
     "carer_ref": SubjectType.CARER,
+    "visit_id": SubjectType.VISIT,
 }
 UNAUDITED_PATHS = frozenset({"/health"})  # liveness probes would drown the log
 READ_METHODS = frozenset({"GET", "HEAD"})

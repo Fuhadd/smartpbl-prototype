@@ -31,6 +31,9 @@ class User(CreatedAtMixin, Base):
     password_hash: Mapped[str] = mapped_column(String(255))
     role: Mapped[Role] = mapped_column(string_enum(Role, length=20))
     is_active: Mapped[bool] = mapped_column(default=True)
+    # Carer accounts only: the scheduling identity (CR-0001) this login acts as. Object-level
+    # checks compare it with the note or visit being touched (OWASP API1, Step 5.6).
+    carer_ref: Mapped[str | None] = mapped_column(String(20), unique=True)
 
 
 class RefreshToken(CreatedAtMixin, Base):

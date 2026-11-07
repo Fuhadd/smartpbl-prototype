@@ -55,6 +55,9 @@ class NoteOut(_Out):
     visit_time: datetime
     redacted_text: str
     review_required: bool
+    visit_id: str | None
+    urgent: bool
+    tasks_done: list[str] | None
     created_at: datetime
     escalated_at: datetime | None
     escalated_by: str | None
@@ -71,6 +74,7 @@ class QueueItem(BaseModel):
     created_at: datetime
     redacted_text: str
     extraction_failed: bool
+    urgent: bool  # the carer raised an urgent concern: counts as high, shown first
     priority: Severity  # highest pending severity; a failed extraction counts as medium
     pending_flags: list[FlagOut]
 

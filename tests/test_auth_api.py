@@ -43,6 +43,8 @@ MATRIX: list[tuple[str, str, str, dict, set[Role]]] = [
     ("GET", "/workforce/risk", "/workforce/risk", {"params": {"limit": 0}}, {C, M}),
     ("GET", "/workforce/{carer_ref}/explanation", "/workforce/CR-0001/explanation", {}, {C, M}),
     ("GET", "/auth/me", "/auth/me", {}, {C, M, W}),
+    ("GET", "/me/visits", "/me/visits", {}, {W}),
+    ("GET", "/me/visits/{visit_id}", "/me/visits/V-0001", {}, {W}),
 ]
 
 

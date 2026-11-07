@@ -2,18 +2,15 @@
 
 import json
 from datetime import datetime
-from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Any, Self
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field, model_validator
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, require
-from app.audit.log import input_hash
 from app.auth.models import User
 from app.auth.permissions import Permission
 from app.core.config import get_settings
@@ -22,12 +19,12 @@ from app.core.ratelimit import limiter
 from app.matching.data import Scenario, integrity_problems
 from app.matching.models import ScheduleRun
 from app.matching.presets import PRESET_WEIGHTS, Preset
+from app.matching.runs import SAMPLE_SCENARIO, latest_run, sample_scenario
 from app.matching.service import run_schedule
 
 router = APIRouter(prefix="/schedule", tags=["schedule"], dependencies=[Depends(get_current_user)])
 SessionDep = Annotated[Session, Depends(get_session)]
 SOLVES_BY_USER = limiter("solve_user", lambda: get_settings().solve_limit_per_user)
-SAMPLE_SCENARIO = Path("data/scheduling/scenario.json")
 TRADEOFF = Path("data/scheduling/tradeoff.json")  # written by scripts/sweep_continuity.py
 # Size caps for caller-supplied scenarios (OWASP API4): solver memory and time grow with
 # visits x carers. About 4x the sample day (17 carers, 40 clients, 106 visits).
@@ -213,23 +210,13 @@ class RunMap(BaseModel):
     visits: list[VisitPlace]
 
 
-@lru_cache(maxsize=1)
-def _sample() -> tuple[Scenario, str]:
-    scenario = Scenario.model_validate_json(SAMPLE_SCENARIO.read_text(encoding="utf-8"))
-    return scenario, input_hash(scenario.model_dump_json())
-
-
-def _latest(session: Session) -> ScheduleRun | None:
-    return session.scalars(select(ScheduleRun).order_by(ScheduleRun.created_at.desc())).first()
-
-
 @router.get("/latest")
 def latest_schedule(
     _: Annotated[User, Depends(require(Permission.SCHEDULE_READ))],
     session: SessionDep,
 ) -> ScheduleOut:
     """The most recently saved rota (the prototype plans one synthetic day)."""
-    run = _latest(session)
+    run = latest_run(session)
     if run is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "no schedule saved yet")
     return _out(run)
@@ -256,7 +243,7 @@ def schedule_map(
     run = session.get(ScheduleRun, run_id)
     if run is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "schedule run not found")
-    scenario, digest = _sample()
+    scenario, digest = sample_scenario()
     if run.scenario_hash != digest:
         raise HTTPException(
             status.HTTP_404_NOT_FOUND, "locations are only available for the sample scenario"
