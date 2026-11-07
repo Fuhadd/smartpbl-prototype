@@ -242,3 +242,19 @@
   - A null feature appears in the top-risk carer's explanation.
   - Selection ratio for 55+ vs 18–24 is 0.17, carried by tenure.
   - Path-dependent attributions follow data correlations. Explanations are presented as factors to discuss, not causes.
+
+## ADR-023: Workforce API serving out-of-sample scores, retrained at start-up, with audited reads (2026-11-07)
+- **Context:** Coordinators and managers need ranked risk and per-carer explanations. Scores about employees are sensitive, and the model card promises audited, supportive use.
+- **Decision:**
+  - **Endpoints:** `GET /workforce/risk` (rank, risk, `support_priority` for the top 20%, top 3 factors; paging; `priority_only`) and `GET /workforce/{carer_ref}/explanation` (12 SHAP factors in log-odds, `baseline_risk` vs `average_risk`, suggested support for provider levers adding ≥ 0.1 log-odds, caveats).
+  - **Served workforce:** the 200 held-out carers, so every score is out of sample.
+  - **Model loading:** retrained on first use from committed data (`lru_cache`, ~4 s), not unpickled. The version is a digest of the data, estimator, grid, and scikit-learn and SHAP versions.
+  - **Audit:** every read writes `workforce_risk_viewed` / `workforce_explanation_viewed` (actor, carer refs, model version), committed with the request. Migration 0004 is hand-written.
+  - **Minimal properties:** explicit response models, never the label or age band (tested).
+  - **No score table:** scores are recomputed, not stored.
+- **Alternatives:** pickle/joblib artefacts; a `skops` + registry setup; a batch score table; a separate scoring service.
+- **Consequences:**
+  - Cold start of about 4 s per worker process.
+  - GET requests write audit rows.
+  - Identity is still the prototype `X-Reviewer` header until 4.1, so these endpoints are **not access-controlled yet**.
+  - The audit `note_id` column is unused here (generic subject deferred to 4.2).

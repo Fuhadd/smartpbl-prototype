@@ -2,13 +2,13 @@
 
 from fastapi import FastAPI
 
-from app.api import audit, notes, review, schedule
+from app.api import audit, notes, review, schedule, workforce
 from app.core.config import get_settings
 
 settings = get_settings()
 
 app = FastAPI(title=settings.app_name, version="0.1.0")
-for module in (notes, review, audit, schedule):
+for module in (notes, review, audit, schedule, workforce):
     app.include_router(module.router)
 
 

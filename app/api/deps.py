@@ -8,6 +8,7 @@ from fastapi import Header
 from app.core.config import get_settings
 from app.nlp.llm import ChatClient, OllamaClient
 from app.nlp.prompts import PromptTemplate, load_prompt
+from app.workforce.service import WorkforceRisk, get_workforce_risk
 
 
 @lru_cache
@@ -26,3 +27,8 @@ def get_reviewer(
     """PROTOTYPE ONLY: the reviewer's identity is whatever the client claims. Replaced by
     the authenticated user from a JWT in Step 4.1; until then this is not access control."""
     return x_reviewer
+
+
+def get_workforce() -> WorkforceRisk:
+    """The cached attrition model and its scored workforce (trained on first use)."""
+    return get_workforce_risk()

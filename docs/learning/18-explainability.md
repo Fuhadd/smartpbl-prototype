@@ -76,7 +76,7 @@ TreeSHAP computes this exactly for trees in polynomial time instead of over all 
 
 Model bars are generally shorter than truth bars: shallow trees with a low learning rate shrink effects, as LR's regularisation does. The ordering is still largely right.
 
-**A local explanation** for the highest-risk test carer (WF-0461; model risk 80% against 28% on average; actually left):
+**A local explanation** for the highest-risk test carer (WF-0461; model risk 80% against a 28% baseline, the SHAP base value as a probability; actually left):
 
 ![Waterfall](../figures/tier3_shap_waterfall.png)
 

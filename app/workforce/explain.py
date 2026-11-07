@@ -98,7 +98,9 @@ class Reason:
 @dataclass(frozen=True)
 class CarerExplanation:
     risk: float  # model probability
-    average_risk: float  # probability at the base value (the average carer)
+    # Probability at the SHAP base value (mean log-odds), where the explanation starts.
+    # Not the mean predicted probability: sigmoid(mean log-odds) < mean(sigmoid) here.
+    baseline_risk: float
     reasons: tuple[Reason, ...]
 
 
@@ -131,7 +133,7 @@ def explain_carer(sv: shap.Explanation, i: int, raw: pd.Series, top: int = 5) ->
         )
     return CarerExplanation(
         risk=round(_sigmoid(base + values.sum()), 3),
-        average_risk=round(_sigmoid(base), 3),
+        baseline_risk=round(_sigmoid(base), 3),
         reasons=tuple(reasons),
     )
 

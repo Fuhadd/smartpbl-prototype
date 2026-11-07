@@ -104,6 +104,7 @@ def chart_vs_truth(model_imp: pd.Series, truth_imp: pd.Series) -> None:
 
 def _shap_plot(path: Path, draw: Callable[[], None], title: str) -> None:
     plt.figure(facecolor=SURFACE)
+    np.random.seed(SEED)  # shap's beeswarm jitters dots with the global RNG
     draw()
     fig = plt.gcf()
     fig.suptitle(title, x=0.01, ha="left", color=INK, fontsize=11)
@@ -202,7 +203,7 @@ def main() -> None:
         "",
         f"## Local explanation: {carer.carer_ref} (highest model risk in the test split)",
         "",
-        f"Model risk **{expl.risk:.0%}** vs {expl.average_risk:.0%} for the average carer "
+        f"Model risk **{expl.risk:.0%}** vs {expl.baseline_risk:.0%} at the baseline "
         f"(base value). Actually left: {'yes' if carer[LABEL] else 'no'}.",
         "",
         "| Factor | This carer | Effect (log-odds) | Provider can change it? | Support to offer |",

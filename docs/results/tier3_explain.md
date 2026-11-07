@@ -30,7 +30,7 @@
 
 ## Local explanation: WF-0461 (highest model risk in the test split)
 
-Model risk **80%** vs 28% for the average carer (base value). Actually left: yes.
+Model risk **80%** vs 28% at the baseline (base value). Actually left: yes.
 
 | Factor | This carer | Effect (log-odds) | Provider can change it? | Support to offer |
 |---|---|---|---|---|

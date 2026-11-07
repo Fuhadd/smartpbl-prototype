@@ -453,3 +453,26 @@ DPIA and consultation first, audits of all lawfully measurable characteristics, 
 
 **A null feature appears in an explanation?**
 The model fitted noise (a split at 25.55 h); SHAP faithfully reports the model's error. Present explanations as factors to discuss; don't act on small contributions.
+
+### 3.4 Workforce API
+
+**Walk me through it.**
+`/workforce/risk` (ranked, top 3 factors, support priority for the top 20%) and `/workforce/{ref}/explanation` (12 additive SHAP factors, baseline vs average risk, support actions, caveats). A use notice in every response; every read audited; out-of-sample scores only.
+
+**Why retrain at start-up?**
+Pickle runs arbitrary code on load and isn't supported across sklearn versions. A 4 s deterministic retrain plus a version digest; in production, a registry with skops artefacts.
+
+**Why audit reads?**
+Misuse of employee risk happens by reading. Log viewer, carers shown and model version, committed with the request.
+
+**What's left out of responses?**
+The label (future outcome) and age band (protected). Explicit response models (OWASP API3:2023), with a test scanning the raw JSON.
+
+**In-process vs separate scoring service?**
+In-process: simple, fine for 150 trees. Separate: independent scaling and canaries, but more infrastructure; a score table stores derived personal data.
+
+**With real data?**
+JWT roles and per-patch scoping, carer self-access and contest, a snapshot date in the response, drift monitoring, a DPIA and audit retention.
+
+**average_risk vs baseline_risk?**
+Mean probability 0.306 vs sigmoid(mean log-odds) 0.282; Jensen's inequality. Named apart and tested.

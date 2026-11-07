@@ -66,3 +66,8 @@
 - **Counterfactual suggestions:** "risk would fall from 80% to X% with 2 changes a month", computed by re-scoring with a changed lever.
 - **Explanation stability:** compare SHAP rankings across bootstrap retrains and report unstable features.
 - **New-starter programme analysis:** quantify how much of the age disparity a tenure-based policy (not individual flags) would absorb.
+- **Project-plan OWASP link:** `owasp.org/API-Security/` now 308-redirects to `api-security.owasp.org` (verified 2026-11-07).
+- **Workforce access control (4.1):** manager/coordinator roles only, per-patch scoping, and a carer self-access endpoint for their own explanation.
+- **Model registry:** `skops` artefacts plus metadata (data snapshot, code commit, versions, CV score) instead of training at start-up, once training is no longer instant.
+- **Warm-up:** build the workforce model at application start-up (lifespan event) rather than on the first request.
+- **Snapshot date and drift monitoring** in workforce responses once features come from live rota data.

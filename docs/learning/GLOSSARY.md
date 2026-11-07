@@ -172,3 +172,12 @@
 - **Selection rate / four-fifths heuristic**: The share of a group flagged; a group selected at under 80% of the most-selected group's rate suggests adverse impact (a screening rule, not a legal test).
 - **Accurate and disparate**: A model can be calibrated within every group and still select groups at very different rates, because base rates differ.
 - **Self-fulfilling prediction (feedback loop)**: Acting on a prediction changes the outcome it predicted, e.g. cutting shifts for "likely leavers" makes them leave.
+- **Out-of-sample scoring**: Serving predictions only for people the model wasn't trained on, so scores reflect real generalisation.
+- **Model version digest**: A hash of everything that determines a fitted model (data, code settings, library versions), recorded with every prediction or view.
+- **Pickle deserialisation risk**: Loading a pickle can execute arbitrary code, so pickled models must only come from trusted, verified sources.
+- **skops**: A scikit-learn persistence format that loads only explicitly trusted types, avoiding pickle's arbitrary-code risk.
+- **Model registry**: A store of versioned model artefacts with lineage and stage (staging, production), e.g. MLflow.
+- **Audit on read**: Logging who accessed sensitive data, not only who changed it.
+- **Broken Object Property Level Authorization (OWASP API3:2023)**: Exposing (or allowing writes to) object fields a client shouldn't see; prevented by explicit response schemas.
+- **Jensen's inequality (here)**: For a convex function f, mean(f(x)) ≥ f(mean(x)); so the mean of probabilities differs from the probability of the mean log-odds.
+- **Cold start**: The extra latency of the first request while a process initialises (here, training the model).

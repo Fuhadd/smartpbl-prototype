@@ -27,6 +27,8 @@ class EventType(StrEnum):
     FLAGS_ROUTED = "flags_routed"
     REVIEW_DECISION = "review_decision"  # Step 1.8
     SCHEDULE_SOLVED = "schedule_solved"  # Step 2.6
+    WORKFORCE_RISK_VIEWED = "workforce_risk_viewed"  # Step 3.4: who saw which carers' risk
+    WORKFORCE_EXPLANATION_VIEWED = "workforce_explanation_viewed"
 
 
 class AuditEvent(Base):
