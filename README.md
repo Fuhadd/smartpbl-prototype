@@ -4,7 +4,7 @@
 
 A working prototype of **SMARTPBL**, an AI platform for a domiciliary (home) care provider. I built it for a KTP Associate application (AI Software Engineer, Birmingham City University × PBL Care).
 
-> **All data is synthetic.** No real people, clients or PBL Care records are used. Results on synthetic data do not show real-world performance.
+> **Independent prototype, all data synthetic.** This is not affiliated with or endorsed by PBL Care. No real people, clients or PBL Care records are used. Results on synthetic data do not show real-world performance.
 
 ## The problem
 

@@ -466,3 +466,9 @@
   - First load is about 2.4 MB gzipped on the Wasm path (about 3.6 MB on the JS fallback), against 0.15 MB for the dashboard. The service worker caches the app after the first load.
   - A reload signs the carer out.
   - There is no offline mode yet.
+
+## ADR-037: Keep the SMARTPBL name; state independence from PBL Care (2026-11-07)
+- **Context:** Before submitting the application, I considered renaming the project.
+- **Decision:** Keep SMARTPBL for the repo, package, `SMARTPBL_*` settings, Cloud Run service `smartpbl-api` and UI. It is the KTP project's own name, so the panel will recognise it straight away. The README now says the prototype is independent and not affiliated with or endorsed by PBL Care. The login screens keep the design's "portfolio prototype / synthetic data" notices unchanged.
+- **Alternatives:** a new product name (the panel would need to map it back to SMARTPBL); renaming only the GitHub repo (GitHub redirects the old URL).
+- **Consequences:** No deployment changes. The demo must never use PBL Care's logo or branding.
