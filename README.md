@@ -12,7 +12,7 @@ A portfolio prototype of an AI platform for domiciliary care. It has three parts
 
 - [x] Step 0: setup
 - [x] Tier 1: care-notes NLP (schemas, synthetic data, PII redaction, rules baseline, LLM extraction, grounding + routing, persistence + audit, API + human review, evaluation)
-- [ ] Tier 2: carer matching (2.1 scheduling data ✅, 2.2 travel matrix ✅, 2.3 VRPTW baseline ✅, 2.4 continuity trade-off ✅, 2.5 greedy comparison ✅, 2.6 schedule API ✅)
+- [x] Tier 2: carer matching (scheduling data, OSRM travel matrix, OR-Tools VRPTW, continuity trade-off, greedy comparison, schedule API)
 - [ ] Tiers 3–6: attrition, production layer, Flutter app, packaging
 
 ## Quick start
@@ -119,10 +119,110 @@ uv run python -m scripts.run_extraction --split test --model llama3.1:8b --promp
 - **No authentication yet.** The reviewer is identified by an `X-Reviewer` header, replaced by JWT and roles in Tier 4. The API returns redacted text only.
 - **Ingestion is synchronous** (6–18 s per note), and raw text is not encrypted at rest. Both are in [`BACKLOG.md`](docs/learning/BACKLOG.md).
 
+## Tier 2: carer matching
+
+A day's visits are assigned to carers, respecting skills, shifts and arrival windows, while trading travel against continuity of care. Every assignment comes with checkable reasons.
+
+### Architecture
+
+```mermaid
+flowchart LR
+    SC[Scenario<br/>carers · clients · visits<br/>skills, shifts, windows,<br/>preferred/recent carers] --> V{integrity<br/>check}
+    V -->|malformed| E[422]
+    V --> TM[Travel matrix<br/>cached OSRM, West Midlands, car<br/>→ live OSRM → calibrated haversine]
+    TM --> P1[Phase 1: OR-Tools VRPTW<br/>min driving + drop penalties<br/>time-critical ×2]
+    P1 -->|warm start| P2[Phase 2: + continuity weight w<br/>new = w, recent = w/2, preferred = 0]
+    P2 --> CK[Independent checker<br/>skills · windows · shifts · travel]
+    CK --> EX[Explanations<br/>reasons per assignment,<br/>cause per unassigned visit]
+    EX --> DB[(schedule_runs<br/>schedule_assignments<br/>no locations stored)]
+    EX -.-> AU[(audit_events<br/>schedule_solved: params, seed,<br/>objective, solver version)]
+```
+
+**Design principles:**
+- **Hard constraints in the model, preferences as priced costs.** w = minutes of driving accepted to send a familiar carer.
+- **Never "infeasible".** An overloaded day returns the best partial plan, plus the reason each visit is unassigned.
+- **Continuity never costs a visit.** A penalty guard plus the two-phase warm start ensure this.
+- **Every solution is re-verified,** and every number is framed against a proven CP-SAT bound.
+- **Client locations stay in-house:** self-hosted routing, and runs store only a keyed hash of the input.
+
+Notes 10–15 in [`docs/learning/`](docs/learning/) explain each part.
+
+### Results
+
+**Travel times** (58 points, 3,306 ordered pairs; [`tier2_travel.md`](docs/results/tier2_travel.md)):
+- Road distance is **1.34×** the straight line.
+- The fitted fallback is **115 s + road distance at 42.3 km/h** (free-flow), with a mean absolute error of 1.3 minutes against OSRM.
+- A naive straight line at 30 km/h underestimates by 1.4 minutes per trip.
+
+**Baseline day** (seed 42: 17 carers, 106 visits; [`tier2_baseline.md`](docs/results/tier2_baseline.md)):
+- OR-Tools leaves **12 visits unassigned** (11 with 60 s of search). A CP-SAT relaxation proves at least **2** are unavoidable even with zero travel.
+- The causes are a morning dementia/catheter skill-mix bottleneck and an evening bed-time peak.
+- Staffing what-ifs: training one carer and adding one late carer cuts unassigned visits to 7.
+
+![Baseline routes](docs/figures/tier2_baseline_routes.png)
+
+**Travel vs continuity** (94 visits with coverage fixed; [`tier2_continuity.md`](docs/results/tier2_continuity.md)):
+- Familiar carers rise from **29% to 56%** as w goes from 0 to 30 minutes, against a proven ceiling of 81%.
+- The first 7 points cost only 7 minutes a day.
+- The middle of the curve costs about **6.5 minutes of driving per extra familiar visit**, and about 19 minutes past the knee at w ≈ 15.
+
+![Travel vs continuity](docs/figures/tier2_pareto.png)
+
+**OR-Tools vs a nearest-available-carer greedy**, mean over 5 synthetic days ([`tier2_comparison.md`](docs/results/tier2_comparison.md)):
+
+| | Greedy | OR-Tools, w=0 | OR-Tools, w=15, two-phase |
+|---|---|---|---|
+| Unassigned visits (of ~106) | 25.2 | 17.8 | **17.0** |
+| Time-critical visits unassigned | **5.4** | **0** | **0** |
+| Driving (min/day) | 663 | **596** | 687 |
+| Familiar carer (% of served) | 22% | 29% | **56%** |
+| Runtime | 7 ms | 10 s | 20 s |
+
+![Comparison](docs/figures/tier2_comparison.png)
+
+**Reading the results honestly:**
+- **The optimiser wins on coverage, driving and safety on every day tested.** Greedy's myopia costs about 5 time-critical medication visits a day.
+- **Continuity has a clear price curve.** Choosing a point on it is a decision for the registered manager, carers and families, not a technical one.
+- **Utilisation is only about 50–55% for every method.** Demand peaks at 08:00 and 20:00, so workforce design (split shifts, staggered starts) matters as much as routing.
+
+### Plan a day through the API
+
+```bash
+uv run uvicorn app.main:app --reload
+curl -X POST localhost:8000/schedule/solve -H 'X-Reviewer: coord.alpha' \
+  -H 'content-type: application/json' -d '{"time_limit_s": 10, "continuity_weight_min": 15}'
+# -> routes per carer with reasons, unassigned visits with causes, metrics, run id
+curl localhost:8000/schedule/<run id>
+
+# Reproduce the Tier 2 results (OSRM optional; committed matrices are used):
+uv run python -m scripts.solve_baseline     # strategies, bound, what-ifs (~5 min)
+uv run python -m scripts.sweep_continuity   # Pareto sweep (~6 min)
+uv run python -m scripts.compare_solvers    # greedy vs OR-Tools over 5 days (~3 min)
+```
+
+### Tier 2 limitations
+
+- **One synthetic city day per seed.** The generator's staffing is tight for its demand peaks (12–27 visits unassigned even by OR-Tools). It rejected 3 of 8 seeds for skill-mix gaps, so the valid days are a filtered sample.
+- **Simplified workforce:** everyone drives; continuous shifts without breaks; no double-up (two-carer) calls; waiting time isn't costed, which leaves visible 1–2.5 h mid-shift gaps.
+- **Free-flow travel times.** OSRM has no traffic, so peak-hour Birmingham is slower than modelled. There's no parking or door-to-door overhead.
+- **Heuristic search with a wall-clock limit.** Results vary a few percent between identical runs (3 of 10 sweep points changed on a rerun), and nothing is proven optimal. The proven bounds show the remaining gap.
+- **The fair real-world baseline is PBL's actual rota,** replayed with call-monitoring data, not the greedy heuristic.
+- **Synchronous API** (up to 60 s per request) with no authentication yet (Tier 4).
+
+## Roadmap: Tiers 3–6
+
+| Tier | What | Builds on |
+|---|---|---|
+| **3 · Attrition prediction** | Synthetic workforce features derived from Tier 2 schedules (travel burden, continuity, hours, idle gaps, short-notice changes, tenure). Logistic regression vs HistGradientBoosting with stratified CV, ROC-AUC/PR-AUC, calibration and Brier score. SHAP global and per-carer explanations. A model card on punitive use and proxy discrimination. `GET /workforce/risk` | Idle gaps and travel from the solver become features. The circularity of synthetic labels is documented up front |
+| **4 · Production layer** | JWT auth with coordinator/manager/carer roles replacing `X-Reviewer`; unified audit middleware with a generic subject id; OWASP API Top 10 review (rate limits for `/schedule/solve`, input limits, secrets, CORS); Docker Compose for API + DB + OSRM; GitHub Actions CI | Backlog items from Tiers 1–2: DB roles for the append-only audit, async jobs, raw-text access control |
+| **5 · Flutter coordinator app** | Riverpod/GoRouter/Dio clean architecture; review queue with highlighted evidence; schedule map (`flutter_map`, OSM tiles) with routes and assignment reasons; supportive workforce-risk screen | Tier 1 and 2 APIs as built; `span_start/end` and assignment reasons are already in the responses |
+| **6 · Packaging** | Final README and architecture diagram, DPIA-style data-protection note, model cards, 3-minute demo script, interview pack | Learning notes 00–15, the ADR log, `INTERVIEW_PREP.md` |
+
 ## Layout
 
 ```
-app/        core (config, db) · nlp (schemas, redact, baseline, extract, ground, route, review, evaluation) · audit · api
+app/        core (config, db) · nlp (schemas, redact, baseline, extract, ground, route, review, evaluation)
+            matching (data, travel, solver, check, bounds, continuity, greedy, explain, service) · audit · api
 prompts/    versioned prompt templates          data/      synthetic notes, data card, cached predictions
 scripts/    data generation, extraction, eval   migrations/ Alembic
 tests/      unit + Postgres integration tests   docs/      learning notes, results, figures
