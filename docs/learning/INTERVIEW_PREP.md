@@ -790,3 +790,14 @@ Users get the pipeline's output: LLM recall 0.857, but the pipeline lets 0/19 hi
 
 **What to monitor?**
 Recall by category from double-reading samples, the share sent to review, accuracy of auto-accepted flags, grounding and schema failures, and latency. Re-evaluate on any change to the model, prompt or redaction (all versioned in the audit log).
+
+### 6.4 Demo script
+
+**Three minutes?**
+Problem, then one note from carer to coordinator (grounded flag, approve), then schedule reasons and the trade-off, then workforce as support, then audit and limits. See `docs/DEMO_SCRIPT.md`.
+
+**What did you cut?**
+Overview, audit filters and CSV, charts and security. They don't change the story and are one click away.
+
+**Model gets it wrong live?**
+Use it: that's why people review every flag, why there's a rules safety net, and why carers have the urgent switch.
