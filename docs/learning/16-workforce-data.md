@@ -23,7 +23,7 @@
 - **A known mechanism is the only honest use of synthetic labels.** Inventing a label rule and then "discovering" it with a model proves nothing about real carers. What it can prove is that the *pipeline* works: models recover planted effects, explanations rank real effects above null ones, calibration can be checked against the true probability. So the ground truth is explicit, documented and shaped to stress the pipeline:
   - steps and hinges, which are non-linear;
   - an interaction;
-  - four null features;
+  - five null features (weekly paid hours was omitted from this list at first and corrected in Step 3.3);
   - correlated features (gaps and split shifts, r = 0.82);
   - a large unobserved factor.
 - **An oracle sets the ceiling.** `p_oracle` is the best calibrated probability any model of these 12 features could produce. Without it, an AUC of 0.72 sounds mediocre. With it, 0.72 means "within 0.01 of perfect for this data". It also catches leakage: a model that *beats* the oracle on held-out data must be cheating.
@@ -99,7 +99,7 @@ Even with nothing hidden, a carer with a 40% risk may or may not leave: the coin
 ## 5. Interview questions and answers
 
 **Q1. Your attrition data is synthetic. What can a model trained on it tell you?**
-Only whether the pipeline works. The generator has a documented ground truth, so I can check that models recover planted effects, that SHAP ranks the four null features near zero, and that calibrated probabilities match the oracle. It says nothing about why real carers leave: any effect the model "finds" is one I put in. I state that limit in the data card, the model card and the README, and the real evaluation would happen on PBL's HR data under a DPIA.
+Only whether the pipeline works. The generator has a documented ground truth, so I can check that models recover planted effects, that SHAP ranks the five null features near zero, and that calibrated probabilities match the oracle. It says nothing about why real carers leave: any effect the model "finds" is one I put in. I state that limit in the data card, the model card and the README, and the real evaluation would happen on PBL's HR data under a DPIA.
 
 **Q2. What is the oracle and why compute it?**
 It's the probability of leaving given only the observed features, averaging over the unobserved factor: the best calibrated prediction any model could make from this data. It gives three things:

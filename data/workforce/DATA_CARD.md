@@ -62,12 +62,12 @@
 | Familiar clients | −1.2 × (share − 0.55) | 0.20 |
 | Short-notice changes | +0.3 per change/month above 2 | 0.25 |
 | … extra if zero-hours (interaction) | +0.3 per change above 2 | 0.23 |
-| **No effect:** `late_shift`, `skills_count`, `visits_per_shift`, `shifts_per_week`, `age_band` | 0 | 0 |
+| **No effect:** `late_shift`, `skills_count`, `visits_per_shift`, `shifts_per_week`, `weekly_paid_hours`, `age_band` | 0 | 0 |
 | Latent U (unobserved) | N(0, 1) | **1.00** |
 
 The shapes are deliberate tests of the Tier 3 pipeline:
 - **Steps and hinges** (tenure, short-notice changes) and an **interaction** (zero-hours × changes): a linear model can't represent them exactly; gradient boosting can.
-- **Null features:** a sound explanation method should give them near-zero importance.
+- **Null features (five, plus age):** a sound explanation method should give them near-zero importance. `weekly_paid_hours` was missing from the null list until Step 3.3 (the data was unaffected).
 - **Correlated features** (gaps and split shifts both come from idle time): importance may be shared or swapped between them.
 - **A strong unobserved factor:** U has about 4× the spread of any single observed term, and about the same spread as all observed terms combined (SD of observed log-odds 0.97).
 - **Irreducible noise has two sources.** With U removed, the oracle AUC is still only 0.754, because a carer with a 40% chance of leaving may or may not leave: the outcome is a coin flip at moderate probabilities. U lowers the ceiling further, to 0.726 (with U at SD 2 it would be 0.683). Real attrition is like this. Much of why people leave is never in the HR system.

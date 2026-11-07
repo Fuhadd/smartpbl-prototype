@@ -427,3 +427,29 @@ A time-based split, wide CIs with a few hundred carers, drift monitoring and rec
 
 **What does nested CV protect against?**
 Optimism from tuning on the scored folds (my exploratory peek). The inner grid search runs on the 640 training rows only; a test logs every fit and predict to prove the 160 validation rows stay unseen.
+
+### 3.3 Explainability and model card
+
+**How do you explain one carer's risk?**
+SHAP top-5 in plain units, with direction, whether the provider can change it, and a support action. The values add up exactly to the score (tested). Lead with levers: the action is a better rota.
+
+**How do you know the explanations are right?**
+Synthetic: true Shapley values of the generator vs model SHAP give Spearman 0.81, and r > 0.9 for tenure, contract and changes. It also found that split shifts are under-credited because gaps carry their signal. Real data: stability across retrains, agreement with LR, coordinator review.
+
+**Age removed: fair now?**
+No. Top 20% = 47% of 18–24s vs 8% of 55+ (ratio 0.17), via tenure, while calibrated within groups. Accurate and disparate. The control is on use (support only) plus a published audit.
+
+**Why not interventional SHAP?**
+It failed additivity for HGB in shap 0.54.1 (exact for GradientBoosting), so path-dependent mode, the check left on, and a regression test. Never disable `check_additivity`.
+
+**SHAP vs LR coefficients?**
+LR: exact and global, but misses the step and interaction (−12 points top-10% precision). SHAP: faithful local attributions of the better model, but not causes, and credit swaps between correlated features.
+
+**Ethical risks?**
+Punitive use and self-fulfilling flags; proxy age discrimination; surveillance. Mitigations: prohibited uses, lever framing, audited role access, an outcome review of support offered, worker consultation, the right to contest.
+
+**With real data?**
+DPIA and consultation first, audits of all lawfully measurable characteristics, explanation stability checks, and recording interventions to avoid feedback-loop bias.
+
+**A null feature appears in an explanation?**
+The model fitted noise (a split at 25.55 h); SHAP faithfully reports the model's error. Present explanations as factors to discuss; don't act on small contributions.

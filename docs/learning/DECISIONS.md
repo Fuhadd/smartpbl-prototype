@@ -199,7 +199,7 @@
   - **Calibration:** `scripts/calibrate_workforce.py` solves the 5 Tier 2 evaluation days (OSRM, w=15 two-phase) once and commits 85 carer-days. This keeps solver noise out of the generator.
   - **Working conditions:** per carer, a home round (p=0.6) or another same-rota day for each of 13 weeks of shifts. Driving, unpaid gaps, split-day share (single gap ≥ 90 min), visits and familiarity are averages over those shifts.
   - **Employment features** are stated assumptions: age band, tenure, zero-hours (about 37%), shifts per week, short-notice changes.
-  - **Label:** an explicit ground-truth logistic model (steps, hinge, an interaction, 4 null features) plus an unobserved factor U ~ N(0,1). The intercept is solved to give a 30% leaver rate (an assumption between sector-wide ~25% and older domiciliary ~39% figures).
+  - **Label:** an explicit ground-truth logistic model (steps, hinge, an interaction, 5 null features: `weekly_paid_hours` was missing from the list until Step 3.3) plus an unobserved factor U ~ N(0,1). The intercept is solved to give a 30% leaver rate (an assumption between sector-wide ~25% and older domiciliary ~39% figures).
   - **Oracle:** `p_oracle = E_U[sigmoid(·)]` by Gauss–Hermite quadrature, kept in a separate file that is never a model input.
   - **Protected attribute:** `age_band` is stored for auditing only, excluded from `FEATURES` (enforced by a test), with no direct effect.
   - **Size and split:** n = 1,000, stratified 80/20 split with `random_state=42`, fixed before looking.
@@ -226,3 +226,19 @@
   - **Test** cannot separate the models (LR 0.772, HGB 0.759, overlapping CIs).
   - HGB chooses depth 2 and learning rate 0.03 in most folds: shallow trees, which can still represent the steps and pairwise interaction.
   - About 2 minutes per run; deterministic (fixed seeds, no early stopping below 10k rows).
+
+## ADR-022: SHAP path-dependent explanations, a ground-truth check, and use-restricted fairness (2026-11-07)
+- **Context:** Coordinators need per-carer reasons; managers and auditors need global behaviour and a fairness view. Age is excluded from the inputs but correlates with tenure and contract type.
+- **Decision:**
+  - **Explainer:** SHAP `TreeExplainer` on the re-tuned HGB in log-odds, `feature_perturbation="tree_path_dependent"`. Interventional mode was tried first and **rejected**: in shap 0.54.1 its values fail additivity for `HistGradientBoostingClassifier` (up to 0.51 log-odds, growing with the number of trees; exact for `GradientBoostingClassifier`). The additivity check stays on, with a regression test.
+  - **Reasons:** top contributions in plain units, a lever flag, and a support action only when risk is raised.
+  - **Ground-truth check (synthetic only):** exact Shapley values of the generator's log-odds per carer (one- and two-feature terms), compared with model SHAP.
+  - **Fairness:** an age audit on 1,000 out-of-sample predictions (selection rate in the top 20%, ratio to the most-flagged band, calibration by band). Fairness is controlled through **restricted use** in the model card, not by altering the model.
+  - **Correction:** `weekly_paid_hours` added to `NULL_FEATURES` (5 null features).
+- **Alternatives:** interventional SHAP; permutation importance; LR coefficients; counterfactual explanations; fairness-constrained training (e.g. equalising selection rates by age, which would deliberately under-serve young carers who really are at higher risk).
+- **Consequences:**
+  - Global ranking vs truth: Spearman 0.81. Per-carer r ≥ 0.90 for tenure, contract and changes.
+  - **Split shifts are under-credited** (r 0.13), because their signal is carried by the correlated gaps.
+  - A null feature appears in the top-risk carer's explanation.
+  - Selection ratio for 55+ vs 18–24 is 0.17, carried by tenure.
+  - Path-dependent attributions follow data correlations. Explanations are presented as factors to discuss, not causes.

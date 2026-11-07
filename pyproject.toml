@@ -20,6 +20,7 @@ dependencies = [
     "pydantic-settings>=2.6",
     "rapidfuzz>=3.14.6",
     "scikit-learn>=1.9.1",
+    "shap>=0.54.1",
     "spacy>=3.8.18",
     "sqlalchemy>=2.0",
     "uvicorn[standard]>=0.32",
@@ -53,6 +54,8 @@ ignore = ["ANN401"]
 "app/nlp/baseline.py" = ["E501"]  # regex lexicon reads better unwrapped
 # scikit-learn convention: capital X for a feature matrix.
 "app/workforce/models.py" = ["N803", "N806"]
+"app/workforce/explain.py" = ["N806"]
+"scripts/explain_attrition.py" = ["N806"]
 "scripts/train_attrition.py" = ["N803", "N806"]
 "tests/test_workforce_models.py" = ["ANN", "N803", "N806"]
 

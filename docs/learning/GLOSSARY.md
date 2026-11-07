@@ -159,3 +159,16 @@
 - **Brier score**: Mean squared error of probabilities, (p−y)²; mixes calibration and discrimination. The base-rate predictor scores p(1−p).
 - **Post-hoc calibration**: Re-mapping a model's scores to probabilities (Platt/sigmoid or isotonic) on held-out data.
 - **Bootstrap confidence interval**: Resampling rows with replacement to estimate the sampling spread of a metric.
+- **Shapley value**: A feature's marginal contribution to a prediction, averaged over all orders of adding features; the unique attribution with efficiency, symmetry, dummy and additivity properties.
+- **SHAP**: SHapley Additive exPlanations; Shapley values for model predictions, with fast exact algorithms for trees (TreeSHAP).
+- **Additivity / efficiency (SHAP)**: Base value + sum of a row's SHAP values = the model's output for that row.
+- **Base value (SHAP)**: The model's average output over the background distribution; where every explanation starts.
+- **Interventional vs path-dependent SHAP**: Interventional replaces "unknown" features with values from a background sample, independently of the known ones; path-dependent uses the trees' training-leaf counts, so it follows the data's correlations.
+- **Local vs global explanation**: Why this one prediction (waterfall) vs how the model behaves overall (beeswarm, mean |SHAP|).
+- **Beeswarm plot**: One dot per row per feature, at its SHAP value, coloured by the feature value.
+- **Waterfall plot**: One row's explanation as steps from the base value to the model output.
+- **Attribution swapping (correlated features)**: When two features carry the same signal, the model and its explanations may credit either, so importance moves between them.
+- **Model card**: A short document of a model's intended use, out-of-scope uses, evaluation, factors, ethical considerations and caveats.
+- **Selection rate / four-fifths heuristic**: The share of a group flagged; a group selected at under 80% of the most-selected group's rate suggests adverse impact (a screening rule, not a legal test).
+- **Accurate and disparate**: A model can be calibrated within every group and still select groups at very different rates, because base rates differ.
+- **Self-fulfilling prediction (feedback loop)**: Acting on a prediction changes the outcome it predicted, e.g. cutting shifts for "likely leavers" makes them leave.

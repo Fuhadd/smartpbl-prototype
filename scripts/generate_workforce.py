@@ -74,7 +74,26 @@ GROUND_TRUTH: dict[str, Callable[[Row], float]] = {
         0.3 * r["zero_hours"] * max(0.0, r["short_notice_changes_per_month"] - 2)
     ),
 }
-NULL_FEATURES = ("late_shift", "skills_count", "visits_per_shift", "shifts_per_week")
+# Which features each term reads (for computing the truth's own Shapley values in 3.3).
+TERM_FEATURES: dict[str, tuple[str, ...]] = {
+    "new starter (tenure < 6 months)": ("tenure_months",),
+    "first year (6-11 months)": ("tenure_months",),
+    "long tenure, per log-year past 1": ("tenure_months",),
+    "zero-hours contract": ("zero_hours",),
+    "driving, per minute/shift over 40": ("drive_min_per_shift",),
+    "unpaid gaps, per minute/shift over 90": ("gap_min_per_shift",),
+    "split-shift share": ("split_shift_share",),
+    "familiar clients, vs 55% share": ("familiar_share",),
+    "short-notice changes above 2/month": ("short_notice_changes_per_month",),
+    "  extra if zero-hours (interaction)": ("zero_hours", "short_notice_changes_per_month"),
+}
+NULL_FEATURES = (
+    "late_shift",
+    "skills_count",
+    "visits_per_shift",
+    "shifts_per_week",
+    "weekly_paid_hours",
+)
 
 
 def load_calibration() -> pd.DataFrame:

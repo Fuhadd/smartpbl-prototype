@@ -61,3 +61,8 @@
 - **Threshold / budget curve:** precision and recall against the number of carers contacted, for a manager to choose a retention budget.
 - **Model persistence:** save the fitted HGB with a version, training-data hash and seed for the 3.4 API (or train deterministically at startup).
 - **Engineered-feature LR** (tenure steps, a changes hinge, a zero-hours interaction) as a transparent alternative, if PBL governance requires coefficients.
+- **Interventional SHAP for HGB:** re-test additivity on each shap upgrade; prepare a minimal reproduction (GBC exact vs HGB failing) for an upstream issue.
+- **Grouped explanations:** present correlated features as one factor ("idle time between visits" = gaps + split shifts) in the coordinator view.
+- **Counterfactual suggestions:** "risk would fall from 80% to X% with 2 changes a month", computed by re-scoring with a changed lever.
+- **Explanation stability:** compare SHAP rankings across bootstrap retrains and report unstable features.
+- **New-starter programme analysis:** quantify how much of the age disparity a tenure-based policy (not individual flags) would absorb.
