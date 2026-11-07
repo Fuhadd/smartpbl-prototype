@@ -177,3 +177,18 @@
 
   - **Utilisation** is about 50–55% for every method, because peaks bind.
   - **The generator rejected 3 of 8 seeds,** so the valid days are a filtered sample.
+
+## ADR-019: Schedule API with fact-based explanations, minimised persistence, and audited runs (2026-11-07)
+- **Context:** Coordinators need plans they can trust and challenge. Runs must be traceable without keeping copies of client locations.
+- **Decision:**
+  - **Endpoints:** `POST /schedule/solve` (scenario or committed sample; time limit ≤ 30 s; weight 0–60 min; two-phase if weight > 0) and `GET /schedule/{id}`.
+  - **Explanations:** reasons recomputed from scenario and matrix (skills, drive and origin, arrival vs window, familiarity, other eligible carers); dropped visits classed as `no_eligible_carer` or `eligible_carers_busy`.
+  - **Persistence:** `schedule_runs` and `schedule_assignments`. The scenario itself is not stored, only its name, seed and an HMAC of its canonical JSON (skill sets serialise sorted).
+  - **Audit:** a `schedule_solved` event (parameters, seed, objective, OR-Tools version, backend, run id), written once with a pre-generated run UUID. The CHECK swap is hand-written in migration 0003.
+  - **Validation:** integrity problems return 422; unservable visits are planned around and reported.
+  - **Timing rule:** earliest service within each window; the carer departs as late as still reaches the first visit.
+- **Alternatives:** counterfactual "why not X?" explanations; objective decomposition; storing full scenarios; async jobs.
+- **Consequences:**
+  - Live on the sample day: w=0 drops 12 with 30.9% familiar at 629 min; w=15 drops 11 with 47.4% familiar at 700 min.
+  - Requests block for up to 2 × the time limit, so a queue plus rate limiting are needed in Tier 4.
+  - The audit table's `note_id` is note-specific; a generic subject id is deferred to 4.2.

@@ -9,17 +9,17 @@
 
 | Strategy | Status | Dropped | Drive (min) | Objective | Wall (s) | Checked |
 |---|---|---|---|---|---|---|
-| PATH_CHEAPEST_ARC | PARTIAL_SUCCESS_LOCAL_OPTIMUM_NOT_REACHED | 47 | 374 | 57,022,422 | 0.03 | yes |
+| PATH_CHEAPEST_ARC | PARTIAL_SUCCESS_LOCAL_OPTIMUM_NOT_REACHED | 47 | 374 | 57,022,422 | 0.02 | yes |
 | PARALLEL_CHEAPEST_INSERTION | PARTIAL_SUCCESS_LOCAL_OPTIMUM_NOT_REACHED | 15 | 730 | 15,043,827 | 0.02 | yes |
 | LOCAL_CHEAPEST_INSERTION | PARTIAL_SUCCESS_LOCAL_OPTIMUM_NOT_REACHED | 16 | 744 | 16,044,625 | 0.01 | yes |
-| SAVINGS | PARTIAL_SUCCESS_LOCAL_OPTIMUM_NOT_REACHED | 40 | 514 | 49,030,861 | 0.70 | yes |
+| SAVINGS | PARTIAL_SUCCESS_LOCAL_OPTIMUM_NOT_REACHED | 40 | 514 | 49,030,861 | 0.69 | yes |
 | CHRISTOFIDES | PARTIAL_SUCCESS_LOCAL_OPTIMUM_NOT_REACHED | 45 | 527 | 57,031,632 | 0.02 | yes |
 
 ## Local-search metaheuristics (from PARALLEL_CHEAPEST_INSERTION)
 
 | Metaheuristic, limit | Status | Dropped | Drive (min) | Objective | Wall (s) | Checked |
 |---|---|---|---|---|---|---|
-| GREEDY_DESCENT, 10 s | SUCCESS | 13 | 625 | 13,037,485 | 1.73 | yes |
+| GREEDY_DESCENT, 10 s | SUCCESS | 13 | 625 | 13,037,485 | 1.68 | yes |
 | GREEDY_DESCENT, 60 s | SUCCESS | 13 | 625 | 13,037,485 | 1.73 | yes |
 | GUIDED_LOCAL_SEARCH, 10 s | SUCCESS | 13 | 608 | 13,036,510 | 10.00 | yes |
 | GUIDED_LOCAL_SEARCH, 60 s | SUCCESS | 12 | 621 | 12,037,278 | 60.00 | yes |
@@ -30,7 +30,7 @@
 
 ## Why visits are dropped
 
-- **Proven lower bound:** even with *zero* travel, at least **2** visits cannot be served (CP-SAT, optimal): V-0009, V-0076.
+- **Proven lower bound:** even with *zero* travel, at least **2** visits cannot be served (CP-SAT, optimal): V-0070, V-0076.
 - **Best found:** 11 dropped (TABU_SEARCH, 60 s). The gap is the cost of travel plus heuristic sub-optimality; this bound cannot separate the two.
 
 Dropped by the default configuration (TABU_SEARCH, 10 s):
@@ -56,12 +56,12 @@ Dropped by the default configuration (TABU_SEARCH, 10 s):
 |---|---|---|---|---|
 | None (baseline) | 12 | 629 | 2 | yes |
 | Train CR-0001 (early) in dementia care + medication | 10 | 611 | 1 | yes |
-| Add one late carer (CR-0018, at CR-0011's location) | 9 | 673 | 1 | yes |
+| Add one late carer (CR-0018, at CR-0011's location) | 9 | 670 | 1 | yes |
 | Both | 7 | 642 | 0 | yes |
 
 ## Default solution summary
 
 - 94 visits served by 17 carers; 629 min driving (6.7 min per visit).
-- Busy share of each carer's working span (visit + driving, excluding waiting): median 80%.
+- Busy share of each carer's working span (visit + driving, excluding waiting): median 77%.
 
 ![Baseline routes](../figures/tier2_baseline_routes.png)

@@ -164,6 +164,9 @@ def solve(
     for node, v in enumerate(visits):
         index = manager.NodeToIndex(node)
         time_dim.CumulVar(index).SetRange(v.window_start * 60, v.window_end * 60)
+        # Timing within a fixed route: serve as early as the window allows, leaving slack
+        # for real-world delays (doesn't change routes or the objective).
+        routing.AddVariableMinimizedByFinalizer(time_dim.CumulVar(index))
         allowed = [k for k, c in enumerate(carers) if can_serve(c, v)]
         # Vehicle variable domain: eligible carers, or -1 (= dropped via the disjunction).
         routing.VehicleVar(index).SetValues([-1, *allowed])
@@ -173,9 +176,6 @@ def solve(
     for k, c in enumerate(carers):
         time_dim.CumulVar(routing.Start(k)).SetRange(c.shift_start * 60, c.shift_end * 60)
         time_dim.CumulVar(routing.End(k)).SetRange(c.shift_start * 60, c.shift_end * 60)
-        # Prefer late departures/early finishes among equal-cost schedules (tidy timings).
-        routing.AddVariableMaximizedByFinalizer(time_dim.CumulVar(routing.Start(k)))
-        routing.AddVariableMinimizedByFinalizer(time_dim.CumulVar(routing.End(k)))
 
     search = pywrapcp.DefaultRoutingSearchParameters()
     search.first_solution_strategy = getattr(FirstSolution, params.first_solution)
@@ -228,6 +228,8 @@ def solve(
             served.add(v.visit_id)
             prev = node
             index = assignment.Value(routing.NextVar(index))
+        if stops:  # leave as late as still reaches the first visit on time (no idle wait)
+            departs = max(departs, stops[0].start_s - stops[0].travel_s)
         routes.append(Route(c.carer_ref, departs, tuple(stops)))
 
     dropped = tuple(v.visit_id for v in visits if v.visit_id not in served)

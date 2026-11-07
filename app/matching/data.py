@@ -8,8 +8,9 @@ window (no split shifts or breaks); no visit needs two carers ("double-up").
 """
 
 from enum import StrEnum
+from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, PlainSerializer, model_validator
 
 MINUTES_PER_DAY = 24 * 60
 
@@ -20,6 +21,14 @@ class Skill(StrEnum):
     MANUAL_HANDLING = "manual_handling"  # hoists and transfer aids
     DEMENTIA_CARE = "dementia_care"
     CATHETER_CARE = "catheter_care"
+
+
+# Sets serialise in sorted order, so equal scenarios always produce identical JSON (and
+# therefore identical audit hashes). Frozenset iteration order is not stable across runs.
+SkillSet = Annotated[
+    frozenset[Skill],
+    PlainSerializer(lambda s: sorted(x.value for x in s), return_type=list[str]),
+]
 
 
 class _Model(BaseModel):
@@ -33,7 +42,7 @@ class Location(_Model):
 
 class Carer(_Model):
     carer_ref: str = Field(pattern=r"^CR-\d{4}$")
-    skills: frozenset[Skill]
+    skills: SkillSet
     shift_start: int = Field(ge=0, lt=MINUTES_PER_DAY)
     shift_end: int = Field(gt=0, le=MINUTES_PER_DAY)
     home: Location
@@ -51,7 +60,7 @@ class Carer(_Model):
 class Client(_Model):
     client_ref: str = Field(pattern=r"^CL-\d{4}$")
     location: Location
-    needs: frozenset[Skill]
+    needs: SkillSet
     preferred_carers: tuple[str, ...] = ()  # stated by the client or family
     recent_carers: tuple[str, ...] = ()  # visited in the last 28 days
 
@@ -62,7 +71,7 @@ class Visit(_Model):
     window_start: int = Field(ge=0, lt=MINUTES_PER_DAY)  # earliest arrival
     window_end: int = Field(gt=0, le=MINUTES_PER_DAY)  # latest arrival
     duration: int = Field(gt=0, le=240)  # minutes on site
-    required_skills: frozenset[Skill]
+    required_skills: SkillSet
     time_critical: bool = False  # e.g. Parkinson's medication: narrow window
 
     @model_validator(mode="after")
@@ -94,8 +103,9 @@ def can_serve(carer: Carer, visit: Visit) -> bool:
     return qualified(carer, visit) and max(visit.window_start, carer.shift_start) <= latest_start
 
 
-def validate_scenario(s: Scenario) -> list[str]:
-    """Structural problems that would make visits impossible regardless of routing."""
+def integrity_problems(s: Scenario) -> list[str]:
+    """Malformed input: duplicates, unknown references, skills a client doesn't need.
+    The API rejects these (422)."""
     problems: list[str] = []
     carers = {c.carer_ref for c in s.carers}
     clients = {c.client_ref: c for c in s.clients}
@@ -111,12 +121,27 @@ def validate_scenario(s: Scenario) -> list[str]:
         client = clients.get(v.client_ref)
         if client is None:
             problems.append(f"{v.visit_id}: unknown client {v.client_ref}")
-            continue
-        if not v.required_skills <= client.needs | {Skill.PERSONAL_CARE}:
+        elif not v.required_skills <= client.needs | {Skill.PERSONAL_CARE}:
             problems.append(f"{v.visit_id}: requires skills the client doesn't need")
-        if not any(can_serve(c, v) for c in s.carers):
-            problems.append(f"{v.visit_id}: no carer has the skills and shift for it")
     return problems
+
+
+def unservable_visits(s: Scenario) -> list[str]:
+    """Well-formed visits that no carer could ever do (skills or shift). The API still
+    plans the rest and reports these; the synthetic generator rejects them."""
+    return [
+        f"{v.visit_id}: no carer has the skills and shift for it"
+        for v in s.visits
+        if not any(can_serve(c, v) for c in s.carers)
+    ]
+
+
+def validate_scenario(s: Scenario) -> list[str]:
+    """Strict check (used by the generator): integrity problems plus unservable visits."""
+    problems = integrity_problems(s)
+    known = {c.client_ref for c in s.clients}
+    servable = s.model_copy(update={"visits": tuple(v for v in s.visits if v.client_ref in known)})
+    return problems + unservable_visits(servable)
 
 
 def _duplicates(items: list[str]) -> list[tuple[str, int]]:

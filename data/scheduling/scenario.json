@@ -5,9 +5,9 @@
   {
    "carer_ref": "CR-0001",
    "skills": [
-    "personal_care",
+    "catheter_care",
     "manual_handling",
-    "catheter_care"
+    "personal_care"
    ],
    "shift_start": 420,
    "shift_end": 870,
@@ -23,10 +23,10 @@
   {
    "carer_ref": "CR-0002",
    "skills": [
+    "catheter_care",
     "dementia_care",
     "medication",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "shift_start": 420,
    "shift_end": 870,
@@ -60,8 +60,8 @@
   {
    "carer_ref": "CR-0004",
    "skills": [
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "shift_start": 420,
    "shift_end": 870,
@@ -77,9 +77,9 @@
   {
    "carer_ref": "CR-0005",
    "skills": [
-    "personal_care",
+    "manual_handling",
     "medication",
-    "manual_handling"
+    "personal_care"
    ],
    "shift_start": 420,
    "shift_end": 870,
@@ -95,9 +95,9 @@
   {
    "carer_ref": "CR-0006",
    "skills": [
-    "personal_care",
+    "manual_handling",
     "medication",
-    "manual_handling"
+    "personal_care"
    ],
    "shift_start": 420,
    "shift_end": 870,
@@ -146,8 +146,8 @@
   {
    "carer_ref": "CR-0009",
    "skills": [
-    "personal_care",
-    "catheter_care"
+    "catheter_care",
+    "personal_care"
    ],
    "shift_start": 420,
    "shift_end": 870,
@@ -163,11 +163,11 @@
   {
    "carer_ref": "CR-0010",
    "skills": [
-    "medication",
     "catheter_care",
     "dementia_care",
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "medication",
+    "personal_care"
    ],
    "shift_start": 420,
    "shift_end": 870,
@@ -183,9 +183,9 @@
   {
    "carer_ref": "CR-0011",
    "skills": [
-    "personal_care",
+    "manual_handling",
     "medication",
-    "manual_handling"
+    "personal_care"
    ],
    "shift_start": 900,
    "shift_end": 1320,
@@ -202,9 +202,9 @@
    "carer_ref": "CR-0012",
    "skills": [
     "dementia_care",
+    "manual_handling",
     "medication",
-    "personal_care",
-    "manual_handling"
+    "personal_care"
    ],
    "shift_start": 900,
    "shift_end": 1320,
@@ -238,10 +238,10 @@
   {
    "carer_ref": "CR-0014",
    "skills": [
-    "personal_care",
-    "medication",
+    "catheter_care",
     "manual_handling",
-    "catheter_care"
+    "medication",
+    "personal_care"
    ],
    "shift_start": 900,
    "shift_end": 1320,
@@ -274,11 +274,11 @@
   {
    "carer_ref": "CR-0016",
    "skills": [
-    "medication",
     "catheter_care",
     "dementia_care",
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "medication",
+    "personal_care"
    ],
    "shift_start": 900,
    "shift_end": 1320,
@@ -317,8 +317,8 @@
     "lon": -1.95
    },
    "needs": [
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0001",
@@ -370,9 +370,9 @@
     "lon": -1.886
    },
    "needs": [
+    "catheter_care",
     "dementia_care",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0010"
@@ -437,8 +437,8 @@
     "lon": -1.9
    },
    "needs": [
-    "personal_care",
-    "catheter_care"
+    "catheter_care",
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0009",
@@ -456,8 +456,8 @@
     "lon": -1.836
    },
    "needs": [
-    "personal_care",
-    "catheter_care"
+    "catheter_care",
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0001"
@@ -474,9 +474,9 @@
     "lon": -1.879
    },
    "needs": [
-    "personal_care",
+    "manual_handling",
     "medication",
-    "manual_handling"
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0006",
@@ -533,9 +533,9 @@
     "lon": -1.908
    },
    "needs": [
-    "personal_care",
+    "manual_handling",
     "medication",
-    "manual_handling"
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0005",
@@ -573,9 +573,9 @@
     "lon": -1.818
    },
    "needs": [
+    "catheter_care",
     "medication",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "preferred_carers": [],
    "recent_carers": [
@@ -609,9 +609,9 @@
     "lon": -1.876
    },
    "needs": [
-    "personal_care",
+    "catheter_care",
     "manual_handling",
-    "catheter_care"
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0014"
@@ -629,8 +629,8 @@
    },
    "needs": [
     "dementia_care",
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0010",
@@ -683,8 +683,8 @@
     "lon": -1.961
    },
    "needs": [
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0004",
@@ -723,10 +723,10 @@
     "lon": -1.903
    },
    "needs": [
+    "catheter_care",
     "dementia_care",
     "medication",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "preferred_carers": [],
    "recent_carers": [
@@ -780,10 +780,10 @@
     "lon": -1.964
    },
    "needs": [
+    "catheter_care",
     "dementia_care",
     "medication",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0002",
@@ -802,9 +802,9 @@
     "lon": -1.931
    },
    "needs": [
-    "personal_care",
+    "manual_handling",
     "medication",
-    "manual_handling"
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0006",
@@ -952,8 +952,8 @@
     "lon": -1.851
    },
    "needs": [
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0001"
@@ -970,8 +970,8 @@
     "lon": -1.818
    },
    "needs": [
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0004",
@@ -1025,9 +1025,9 @@
     "lon": -1.98
    },
    "needs": [
+    "catheter_care",
     "medication",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "preferred_carers": [
     "CR-0016"
@@ -1065,9 +1065,9 @@
    "window_end": 480,
    "duration": 60,
    "required_skills": [
-    "personal_care",
+    "catheter_care",
     "manual_handling",
-    "catheter_care"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1102,9 +1102,9 @@
    "window_end": 485,
    "duration": 30,
    "required_skills": [
+    "catheter_care",
     "medication",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1139,9 +1139,9 @@
    "window_end": 490,
    "duration": 45,
    "required_skills": [
-    "personal_care",
+    "manual_handling",
     "medication",
-    "manual_handling"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1188,8 +1188,8 @@
    "window_end": 515,
    "duration": 60,
    "required_skills": [
-    "personal_care",
-    "catheter_care"
+    "catheter_care",
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1223,9 +1223,9 @@
    "window_end": 520,
    "duration": 30,
    "required_skills": [
+    "catheter_care",
     "medication",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1248,8 +1248,8 @@
    "window_end": 530,
    "duration": 30,
    "required_skills": [
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1272,9 +1272,9 @@
    "window_end": 535,
    "duration": 60,
    "required_skills": [
-    "personal_care",
+    "manual_handling",
     "medication",
-    "manual_handling"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1321,8 +1321,8 @@
    "window_end": 535,
    "duration": 30,
    "required_skills": [
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1333,9 +1333,9 @@
    "window_end": 540,
    "duration": 45,
    "required_skills": [
+    "catheter_care",
     "dementia_care",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1358,8 +1358,8 @@
    "window_end": 550,
    "duration": 45,
    "required_skills": [
-    "personal_care",
-    "catheter_care"
+    "catheter_care",
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1395,10 +1395,10 @@
    "window_end": 555,
    "duration": 45,
    "required_skills": [
+    "catheter_care",
     "dementia_care",
     "medication",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1421,8 +1421,8 @@
    "window_end": 565,
    "duration": 30,
    "required_skills": [
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1445,10 +1445,10 @@
    "window_end": 535,
    "duration": 45,
    "required_skills": [
+    "catheter_care",
     "dementia_care",
     "medication",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "time_critical": true
   },
@@ -1493,9 +1493,9 @@
    "window_end": 590,
    "duration": 60,
    "required_skills": [
-    "personal_care",
+    "manual_handling",
     "medication",
-    "manual_handling"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1507,8 +1507,8 @@
    "duration": 60,
    "required_skills": [
     "dementia_care",
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1519,8 +1519,8 @@
    "window_end": 595,
    "duration": 60,
    "required_skills": [
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1974,8 +1974,8 @@
    "window_end": 1205,
    "duration": 30,
    "required_skills": [
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -1997,9 +1997,9 @@
    "window_end": 1210,
    "duration": 30,
    "required_skills": [
-    "personal_care",
+    "catheter_care",
     "manual_handling",
-    "catheter_care"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -2044,8 +2044,8 @@
    "window_end": 1220,
    "duration": 30,
    "required_skills": [
-    "personal_care",
-    "catheter_care"
+    "catheter_care",
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -2069,10 +2069,10 @@
    "window_end": 1200,
    "duration": 30,
    "required_skills": [
+    "catheter_care",
     "dementia_care",
     "medication",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "time_critical": true
   },
@@ -2096,8 +2096,8 @@
    "window_end": 1235,
    "duration": 45,
    "required_skills": [
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -2130,8 +2130,8 @@
    "window_end": 1245,
    "duration": 30,
    "required_skills": [
-    "personal_care",
-    "catheter_care"
+    "catheter_care",
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -2154,8 +2154,8 @@
    "window_end": 1250,
    "duration": 45,
    "required_skills": [
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -2166,9 +2166,9 @@
    "window_end": 1260,
    "duration": 30,
    "required_skills": [
-    "personal_care",
+    "manual_handling",
     "medication",
-    "manual_handling"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -2191,10 +2191,10 @@
    "window_end": 1265,
    "duration": 45,
    "required_skills": [
+    "catheter_care",
     "dementia_care",
     "medication",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -2230,9 +2230,9 @@
    "window_end": 1270,
    "duration": 45,
    "required_skills": [
+    "catheter_care",
     "dementia_care",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -2279,9 +2279,9 @@
    "window_end": 1285,
    "duration": 30,
    "required_skills": [
-    "personal_care",
+    "manual_handling",
     "medication",
-    "manual_handling"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -2304,9 +2304,9 @@
    "window_end": 1290,
    "duration": 45,
    "required_skills": [
+    "catheter_care",
     "medication",
-    "personal_care",
-    "catheter_care"
+    "personal_care"
    ],
    "time_critical": false
   },
@@ -2330,8 +2330,8 @@
    "duration": 30,
    "required_skills": [
     "dementia_care",
-    "personal_care",
-    "manual_handling"
+    "manual_handling",
+    "personal_care"
    ],
    "time_critical": false
   },

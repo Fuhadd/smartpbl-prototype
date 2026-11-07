@@ -49,3 +49,7 @@
 - **Same-day re-optimisation:** fast greedy or locked-assignment OR-Tools runs for "who can cover this call now?".
 - **Workforce design levers:** split shifts and staggered start times to lift the ~50–55% utilisation that peak demand imposes.
 - **Historical-rota evaluation** with real call-monitoring data (KTP proper).
+- **Async schedule jobs:** 202 Accepted + status endpoint + worker queue; rate-limit `/schedule/solve` (Tier 4).
+- **Counterfactual explanations:** "why not carer X?" by re-solving with X forced or forbidden.
+- **Generic audit subject:** add `subject_type`/`subject_id` to audit events (Tier 4.2) instead of note-specific `note_id`.
+- **Locked assignments:** pin coordinator-chosen assignments and re-solve around them.

@@ -26,6 +26,7 @@ class EventType(StrEnum):
     BASELINE_COMPLETED = "baseline_completed"
     FLAGS_ROUTED = "flags_routed"
     REVIEW_DECISION = "review_decision"  # Step 1.8
+    SCHEDULE_SOLVED = "schedule_solved"  # Step 2.6
 
 
 class AuditEvent(Base):

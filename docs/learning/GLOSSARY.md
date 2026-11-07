@@ -122,3 +122,7 @@
 - **Regret insertion**: Insert first the visit whose best and second-best options differ most (the one you'd regret postponing).
 - **Utilisation**: Share of paid shift time spent on visits and driving.
 - **Shadow mode**: Running a new system alongside the current process, without acting on its outputs, to compare decisions.
+- **Explainability (operational)**: Giving checkable reasons for each automated decision, in terms users understand.
+- **Counterfactual explanation**: What would change if a different choice were made ("CR-0007 would add 14 minutes").
+- **Canonical serialisation**: A single, deterministic encoding of equal data (e.g. sorted sets), so hashes are stable.
+- **Finaliser (OR-Tools)**: A secondary preference applied after the search, used to pick exact values (such as times) within a fixed solution.

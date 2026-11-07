@@ -353,3 +353,23 @@ Peaks bind, not total hours. Continuous shifts mean waiting through troughs. Lev
 
 **With real data?**
 Replay historical days against the actual rota using call-monitoring data, a shadow-mode pilot (measure acceptance and overrides), client outcomes (missed medication, complaints, continuity) and carer outcomes (idle time, mileage).
+
+### 2.6 Schedule API and explainability
+
+**Why was a carer assigned?**
+Recomputed facts: skills, drive time and from where, arrival vs window, familiarity, other eligible carers. Drops are classed no-eligible (structural: train or hire) or eligible-busy (capacity: change the rota).
+
+**What do you store?**
+Run parameters, results, reasons and audit. Not the scenario (it has client locations): HMAC of canonical JSON, name and seed only.
+
+**Partial plan vs rejection?**
+An impossible visit is a workforce fact, not a malformed request: plan the other 105 and flag it. Malformed input still returns 422.
+
+**Hash bug?**
+Frozenset order wasn't stable, so equal inputs gave different hashes. Fixed with canonical (sorted) serialisation, and tested end to end.
+
+**At scale?**
+Async jobs (202 plus status), auth and roles, counterfactual "why not X?", a generic audit subject id, locked assignments with re-solve, retention.
+
+**Arrival timing change?**
+Latest-departure finalisers put visits at the end of their windows, which is brittle. Now earliest service and latest departure; same routes and objective, slack where it protects clients.
