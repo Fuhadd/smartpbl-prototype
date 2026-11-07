@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SMARTPBL – Sign in</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#18181B;text-decoration:none}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #F4F4F2; font-family: Inter, system-ui, sans-serif; color: #18181B; padding: 20px; box-sizing: border-box; gap: 20px">
+
+<section aria-label="About SMARTPBL" style="flex: 1 1 420px; min-width: 0; background: #111113; color: #FFFFFF; border-radius: 28px; padding: 48px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; gap: 40px">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="width: 44px; height: 44px; border-radius: 12px; background: #FFFFFF; color: #111113; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px">S</div>
+<span style="font-size: 18px; font-weight: 600">SMARTPBL</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 20px; max-width: 480px">
+<h1 style="margin: 0; font-size: 40px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Safer visits, fairer rotas, a steadier team.</h1>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; font-size: 15px; color: #E4E4E7">
+<li style="display: flex; gap: 12px; align-items: center"><span style="width: 32px; height: 32px; border-radius: 10px; background: #2A2A2E; display: flex; align-items: center; justify-content: center; flex: 0 0 32px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg></span>Care notes read for risks, with evidence</li>
+<li style="display: flex; gap: 12px; align-items: center"><span style="width: 32px; height: 32px; border-radius: 10px; background: #2A2A2E; display: flex; align-items: center; justify-content: center; flex: 0 0 32px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"></path><circle cx="12" cy="11" r="2"></circle></svg></span>Rotas balancing travel and continuity</li>
+<li style="display: flex; gap: 12px; align-items: center"><span style="width: 32px; height: 32px; border-radius: 10px; background: #2A2A2E; display: flex; align-items: center; justify-content: center; flex: 0 0 32px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"></path></svg></span>Early, explainable signals to support carers</li>
+</ul>
+</div>
+<p style="margin: 0; font-size: 13px; color: #A1A1AA">A portfolio prototype. All people and data are synthetic.</p>
+</section>
+
+<main style="flex: 1 1 420px; min-width: 0; display: flex; align-items: center; justify-content: center; padding: 32px 16px; box-sizing: border-box">
+<div style="width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h2 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.02em">Sign in</h2>
+<p style="margin: 0; font-size: 15px; color: #5F5F66">Choose a demo role to explore what each user sees.</p>
+</div>
+
+<div role="group" aria-label="Demo role" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #FFFFFF; border: 1px solid #E7E7E4; border-radius: 14px; padding: 4px; gap: 4px">
+<button type="button" aria-pressed="true" style="height: 40px; border-radius: 10px; border: 0; background: #111113; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600">Coordinator</button>
+<button type="button" aria-pressed="false" style="height: 40px; border-radius: 10px; border: 0; background: transparent; font: inherit; font-size: 13px; font-weight: 500; color: #3F3F46">Care manager</button>
+<a href="CarerLogin.dc.html" style="height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: #3F3F46">Carer app</a>
+</div>
+
+<form style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="email" style="font-size: 13px; font-weight: 600">Email</label>
+<input id="email" type="email" value="hannah@demo.smartpbl" style="height: 50px; border: 1px solid #E7E7E4; border-radius: 12px; padding: 0 14px; font: inherit; font-size: 15px; background: #FFFFFF; color: #18181B">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="pass" style="font-size: 13px; font-weight: 600">Password</label>
+<input id="pass" type="password" value="demo-coordinator" style="height: 50px; border: 1px solid #E7E7E4; border-radius: 12px; padding: 0 14px; font: inherit; font-size: 15px; background: #FFFFFF; color: #18181B">
+</div>
+<a href="Main.dc.html" style="height: 52px; border-radius: 12px; background: #111113; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; margin-top: 4px">Sign in</a>
+</form>
+
+<section aria-labelledby="creds" style="background: #FFFFFF; border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px">
+<h3 id="creds" style="margin: 0; font-size: 13px; font-weight: 600">Demo accounts</h3>
+<div style="display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; font-size: 13px">
+<span style="color: #5F5F66">Coordinator</span><span style="font-family: ui-monospace, monospace">hannah@demo.smartpbl · demo-coordinator</span>
+<span style="color: #5F5F66">Care manager</span><span style="font-family: ui-monospace, monospace">sam@demo.smartpbl · demo-manager</span>
+<span style="color: #5F5F66">Carer</span><span style="font-family: ui-monospace, monospace">joy@demo.smartpbl · demo-carer</span>
+</div>
+</section>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

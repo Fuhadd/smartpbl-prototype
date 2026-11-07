@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SMARTPBL – Schedule and map</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#18181B;text-decoration:none}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #F4F4F2; font-family: Inter, system-ui, sans-serif; color: #18181B">
+
+<nav aria-label="Main" style="flex: 0 0 76px; background: #FFFFFF; border-right: 1px solid #E7E7E4; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 0; box-sizing: border-box">
+<div style="width: 40px; height: 40px; border-radius: 12px; background: #111113; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px; margin-bottom: 16px">S</div>
+<a href="Main.dc.html" aria-label="Overview" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #5F5F66"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg></a>
+<a href="Review.dc.html" aria-label="Review queue" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #5F5F66"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v12h-5l-3 3-3-3H4z"></path><path d="M9 10l2 2 4-4"></path></svg></a>
+<a href="Schedule.dc.html" aria-label="Schedule" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: #111113; color: #FFFFFF"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"></path><circle cx="12" cy="11" r="2"></circle></svg></a>
+<a href="Workforce.dc.html" aria-label="Workforce" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #5F5F66"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7"></path><path d="M18.5 14.8c1.6.8 2.6 2.6 3 5.2"></path></svg></a>
+<a href="Audit.dc.html" aria-label="Audit log" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #5F5F66"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V3h6v1"></path><path d="M9 10h6M9 14h6M9 18h4"></path></svg></a>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 24px 32px 40px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.02em">Schedule</h1>
+<div style="display: flex; align-items: center; gap: 4px; background: #FFFFFF; border: 1px solid #E7E7E4; border-radius: 999px; padding: 4px">
+<button type="button" aria-label="Previous day" style="width: 32px; height: 32px; border-radius: 999px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #18181B"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<span style="font-size: 14px; font-weight: 600; padding: 0 6px">Sat 7 Nov</span>
+<button type="button" aria-label="Next day" style="width: 32px; height: 32px; border-radius: 999px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #18181B"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+<span style="font-size: 12px; font-weight: 500; color: #93370D; background: #FFFAEB; border: 1px solid #FEDF89; padding: 3px 10px; border-radius: 999px">Demo data · synthetic</span>
+</div>
+<div style="display: flex; align-items: center; gap: 10px">
+<div style="display: flex; background: #FFFFFF; border: 1px solid #E7E7E4; border-radius: 999px; padding: 4px">
+<button type="button" aria-pressed="true" style="height: 36px; padding: 0 18px; border-radius: 999px; border: 0; background: #111113; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 500">Map</button>
+<button type="button" aria-pressed="false" style="height: 36px; padding: 0 18px; border-radius: 999px; border: 0; background: transparent; font: inherit; font-size: 14px; font-weight: 500; color: #18181B">Timeline</button>
+</div>
+<button type="button" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 0; background: #111113; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Re-optimise</button>
+</div>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+<section aria-labelledby="carers" style="flex: 1 1 240px; max-width: 280px; min-width: 0; background: #FFFFFF; border-radius: 22px; padding: 18px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0 6px 6px">
+<h2 id="carers" style="margin: 0; font-size: 15px; font-weight: 600">Carers on shift</h2>
+<span style="font-size: 12px; color: #5F5F66">31</span>
+</div>
+<button type="button" aria-pressed="true" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 14px; border: 0; background: #F4F4F2; font: inherit; text-align: left; cursor: pointer"><span style="width: 12px; height: 12px; border-radius: 999px; background: #4338CA; flex: 0 0 12px"></span><span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 600; color: #18181B">Joy A.</span><span style="font-size: 12px; color: #5F5F66">5 visits · 38 min travel</span></span><span style="font-size: 12px; font-weight: 600; color: #18181B">92%</span></button>
+<button type="button" aria-pressed="false" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 14px; border: 0; background: transparent; font: inherit; text-align: left; cursor: pointer"><span style="width: 12px; height: 12px; border-radius: 999px; background: #F97316; flex: 0 0 12px"></span><span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 600; color: #18181B">Marcus T.</span><span style="font-size: 12px; color: #5F5F66">5 visits · 46 min travel</span></span><span style="font-size: 12px; font-weight: 600; color: #18181B">80%</span></button>
+<button type="button" aria-pressed="false" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 14px; border: 0; background: transparent; font: inherit; text-align: left; cursor: pointer"><span style="width: 12px; height: 12px; border-radius: 999px; background: #0D9488; flex: 0 0 12px"></span><span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 600; color: #18181B">Priya S.</span><span style="font-size: 12px; color: #5F5F66">5 visits · 41 min travel</span></span><span style="font-size: 12px; font-weight: 600; color: #18181B">74%</span></button>
+<button type="button" aria-pressed="false" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 14px; border: 0; background: transparent; font: inherit; text-align: left; cursor: pointer"><span style="width: 12px; height: 12px; border-radius: 999px; background: #D4D4D8; flex: 0 0 12px"></span><span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 600; color: #18181B">Daniel O.</span><span style="font-size: 12px; color: #5F5F66">6 visits · 52 min travel</span></span><span style="font-size: 12px; font-weight: 600; color: #18181B">67%</span></button>
+<button type="button" aria-pressed="false" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 14px; border: 0; background: transparent; font: inherit; text-align: left; cursor: pointer"><span style="width: 12px; height: 12px; border-radius: 999px; background: #D4D4D8; flex: 0 0 12px"></span><span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 600; color: #18181B">Amara K.</span><span style="font-size: 12px; color: #5F5F66">4 visits · 29 min travel</span></span><span style="font-size: 12px; font-weight: 600; color: #18181B">88%</span></button>
+<div style="height: 1px; background: #E7E7E4; margin: 8px 6px"></div>
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 6px">
+<span style="font-size: 14px; font-weight: 600">Unassigned</span>
+<span style="font-size: 12px; font-weight: 600; color: #93370D; background: #FFFAEB; padding: 2px 8px; border-radius: 999px">3</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border: 1px dashed #D4D4D8; border-radius: 12px"><span style="font-size: 13px; font-weight: 600">C-0208 · 12:30–13:00</span><span style="font-size: 12px; color: #5F5F66">Needs medication-trained carer</span></div>
+</section>
+
+<div style="flex: 999 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+
+<section aria-label="Route map" style="background: #FFFFFF; border-radius: 22px; padding: 10px; position: relative">
+<svg viewBox="0 0 760 440" width="100%" style="display: block; border-radius: 16px" role="img" aria-label="Map of today's routes: three carer routes across south Birmingham with numbered visits and one unassigned visit">
+<rect width="760" height="440" fill="#EEF0EB"></rect>
+<path d="M40 40 C120 20 200 60 230 120 C250 170 180 200 120 190 C60 180 20 120 40 40z" fill="#DCE9D5"></path>
+<path d="M560 300 C620 280 720 300 740 360 C760 420 660 440 600 420 C540 400 520 320 560 300z" fill="#DCE9D5"></path>
+<path d="M0 230 C140 210 260 260 380 230 C500 200 600 240 760 210" stroke="#D3E4EE" stroke-width="16" fill="none"></path>
+<path d="M0 330 L760 300" stroke="#FFFFFF" stroke-width="10" fill="none"></path>
+<path d="M260 0 L320 440" stroke="#FFFFFF" stroke-width="10" fill="none"></path>
+<path d="M520 0 L480 440" stroke="#FFFFFF" stroke-width="10" fill="none"></path>
+<path d="M0 120 L760 90" stroke="#FFFFFF" stroke-width="6" fill="none"></path>
+<path d="M120 440 L200 0" stroke="#FFFFFF" stroke-width="5" fill="none"></path>
+<path d="M640 0 L700 440" stroke="#FFFFFF" stroke-width="5" fill="none"></path>
+<path d="M380 0 L420 440" stroke="#FFFFFF" stroke-width="4" fill="none"></path>
+<polyline points="90,390 150,310 240,260 330,285 300,170" fill="none" stroke="#4338CA" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"></polyline>
+<polyline points="690,400 610,335 525,365 470,265 545,190" fill="none" stroke="#F97316" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="1 0"></polyline>
+<polyline points="420,40 380,115 470,140 610,105 680,180" fill="none" stroke="#0D9488" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"></polyline>
+<rect x="80" y="380" width="20" height="20" rx="5" fill="#4338CA"></rect>
+<rect x="680" y="390" width="20" height="20" rx="5" fill="#F97316"></rect>
+<rect x="410" y="30" width="20" height="20" rx="5" fill="#0D9488"></rect>
+<g font-family="Inter, sans-serif" font-size="12" font-weight="700" text-anchor="middle">
+<circle cx="150" cy="310" r="13" fill="#FFFFFF" stroke="#4338CA" stroke-width="3"></circle><text x="150" y="314" fill="#4338CA">1</text>
+<circle cx="240" cy="260" r="20" fill="#4338CA" opacity="0.18"></circle><circle cx="240" cy="260" r="14" fill="#4338CA"></circle><text x="240" y="264" fill="#FFFFFF">2</text>
+<circle cx="330" cy="285" r="13" fill="#FFFFFF" stroke="#4338CA" stroke-width="3"></circle><text x="330" y="289" fill="#4338CA">3</text>
+<circle cx="300" cy="170" r="13" fill="#FFFFFF" stroke="#4338CA" stroke-width="3"></circle><text x="300" y="174" fill="#4338CA">4</text>
+<circle cx="610" cy="335" r="13" fill="#FFFFFF" stroke="#F97316" stroke-width="3"></circle><text x="610" y="339" fill="#C2410C">1</text>
+<circle cx="525" cy="365" r="13" fill="#FFFFFF" stroke="#F97316" stroke-width="3"></circle><text x="525" y="369" fill="#C2410C">2</text>
+<circle cx="470" cy="265" r="13" fill="#FFFFFF" stroke="#F97316" stroke-width="3"></circle><text x="470" y="269" fill="#C2410C">3</text>
+<circle cx="545" cy="190" r="13" fill="#FFFFFF" stroke="#F97316" stroke-width="3"></circle><text x="545" y="194" fill="#C2410C">4</text>
+<circle cx="380" cy="115" r="13" fill="#FFFFFF" stroke="#0D9488" stroke-width="3"></circle><text x="380" y="119" fill="#0F766E">1</text>
+<circle cx="470" cy="140" r="13" fill="#FFFFFF" stroke="#0D9488" stroke-width="3"></circle><text x="470" y="144" fill="#0F766E">2</text>
+<circle cx="610" cy="105" r="13" fill="#FFFFFF" stroke="#0D9488" stroke-width="3"></circle><text x="610" y="109" fill="#0F766E">3</text>
+<circle cx="680" cy="180" r="13" fill="#FFFFFF" stroke="#0D9488" stroke-width="3"></circle><text x="680" y="184" fill="#0F766E">4</text>
+<circle cx="200" cy="110" r="13" fill="#FFFFFF" stroke="#71717A" stroke-width="2" stroke-dasharray="4 3"></circle><text x="200" y="114" fill="#52525B">!</text>
+</g>
+</svg>
+<div style="position: absolute; left: 24px; bottom: 24px; display: flex; gap: 14px; background: #FFFFFF; border-radius: 12px; padding: 8px 12px; font-size: 12px; color: #3F3F46; flex-wrap: wrap">
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #3F3F46"></span>Carer home</span>
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; border-radius: 999px; border: 2px solid #3F3F46; box-sizing: border-box"></span>Visit (order)</span>
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; border-radius: 999px; border: 2px dashed #71717A; box-sizing: border-box"></span>Unassigned</span>
+</div>
+</section>
+
+<section aria-labelledby="tl" style="background: #FFFFFF; border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<h2 id="tl" style="margin: 0; font-size: 15px; font-weight: 600">Timeline</h2>
+<span style="font-size: 12px; color: #5F5F66">Visits as blocks · gaps are travel</span>
+</div>
+<div style="overflow-x: auto">
+<div style="min-width: 560px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: grid; grid-template-columns: 96px 1fr; font-size: 11px; color: #5F5F66"><span></span><div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr))"><span>07:00</span><span>08:00</span><span>09:00</span><span>10:00</span><span>11:00</span><span>12:00</span><span>13:00</span></div></div>
+<div style="display: grid; grid-template-columns: 96px 1fr; align-items: center"><span style="font-size: 13px; font-weight: 600">Joy A.</span><div style="position: relative; height: 32px; background: #FAFAF9; border-radius: 8px"><span style="position: absolute; left: 4%; width: 10%; top: 4px; bottom: 4px; background: #4338CA; border-radius: 6px"></span><span style="position: absolute; left: 18%; width: 9%; top: 0; bottom: 0; background: #4338CA; border-radius: 6px; outline: 2px solid #111113; outline-offset: 2px"></span><span style="position: absolute; left: 32%; width: 11%; top: 4px; bottom: 4px; background: #4338CA; border-radius: 6px"></span><span style="position: absolute; left: 49%; width: 8%; top: 4px; bottom: 4px; background: #4338CA; border-radius: 6px"></span><span style="position: absolute; left: 66%; width: 10%; top: 4px; bottom: 4px; background: #4338CA; border-radius: 6px"></span></div></div>
+<div style="display: grid; grid-template-columns: 96px 1fr; align-items: center"><span style="font-size: 13px; font-weight: 600">Marcus T.</span><div style="position: relative; height: 32px; background: #FAFAF9; border-radius: 8px"><span style="position: absolute; left: 2%; width: 9%; top: 4px; bottom: 4px; background: #F97316; border-radius: 6px"></span><span style="position: absolute; left: 16%; width: 12%; top: 4px; bottom: 4px; background: #F97316; border-radius: 6px"></span><span style="position: absolute; left: 34%; width: 9%; top: 4px; bottom: 4px; background: #F97316; border-radius: 6px"></span><span style="position: absolute; left: 52%; width: 11%; top: 4px; bottom: 4px; background: #F97316; border-radius: 6px"></span><span style="position: absolute; left: 70%; width: 9%; top: 4px; bottom: 4px; background: #F97316; border-radius: 6px"></span></div></div>
+<div style="display: grid; grid-template-columns: 96px 1fr; align-items: center"><span style="font-size: 13px; font-weight: 600">Priya S.</span><div style="position: relative; height: 32px; background: #FAFAF9; border-radius: 8px"><span style="position: absolute; left: 6%; width: 11%; top: 4px; bottom: 4px; background: #0D9488; border-radius: 6px"></span><span style="position: absolute; left: 22%; width: 9%; top: 4px; bottom: 4px; background: #0D9488; border-radius: 6px"></span><span style="position: absolute; left: 38%; width: 10%; top: 4px; bottom: 4px; background: #0D9488; border-radius: 6px"></span><span style="position: absolute; left: 56%; width: 9%; top: 4px; bottom: 4px; background: #0D9488; border-radius: 6px"></span><span style="position: absolute; left: 72%; width: 11%; top: 4px; bottom: 4px; background: #0D9488; border-radius: 6px"></span></div></div>
+</div>
+</div>
+</section>
+</div>
+
+<aside aria-label="Visit and trade-off" style="flex: 1 1 300px; max-width: 340px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+
+<section aria-labelledby="visit" style="background: #FFFFFF; border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 36px; height: 36px; border-radius: 999px; background: #4338CA; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">2</span>
+<div style="display: flex; flex-direction: column"><h2 id="visit" style="margin: 0; font-size: 16px; font-weight: 600">C-0091 · Joy A.</h2><span style="font-size: 13px; color: #5F5F66">Window 09:30–10:15 · arrives 09:40</span></div>
+</div>
+<h3 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: #5F5F66">WHY JOY WAS ASSIGNED</h3>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+<li style="display: flex; gap: 10px; align-items: flex-start"><span style="color: #067647; display: flex; margin-top: 2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span><span><strong>Skills match</strong> · medication, dementia care</span></li>
+<li style="display: flex; gap: 10px; align-items: flex-start"><span style="color: #067647; display: flex; margin-top: 2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span><span><strong>Familiar carer</strong> · 14 previous visits</span></li>
+<li style="display: flex; gap: 10px; align-items: flex-start"><span style="color: #067647; display: flex; margin-top: 2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span><span><strong>9 min travel</strong> from previous visit</span></li>
+</ul>
+<div style="background: #FAFAF9; border-radius: 14px; padding: 12px 14px; font-size: 13px; color: #3F3F46; line-height: 1.5">Next best: <strong style="color: #18181B">Marcus T.</strong> · +22 min travel, new to this client</div>
+</section>
+
+<section aria-labelledby="trade" style="background: #FFFFFF; border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<h2 id="trade" style="margin: 0; font-size: 15px; font-weight: 600">Optimise for</h2>
+<div role="group" aria-label="Optimisation priority" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #F4F4F2; border-radius: 12px; padding: 4px; gap: 4px">
+<button type="button" aria-pressed="false" style="height: 36px; border-radius: 9px; border: 0; background: transparent; font: inherit; font-size: 13px; font-weight: 500; color: #3F3F46">Travel</button>
+<button type="button" aria-pressed="true" style="height: 36px; border-radius: 9px; border: 0; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; color: #18181B; box-shadow: 0 1px 2px rgba(0,0,0,0.08)">Balanced</button>
+<button type="button" aria-pressed="false" style="height: 36px; border-radius: 9px; border: 0; background: transparent; font: inherit; font-size: 13px; font-weight: 500; color: #3F3F46">Continuity</button>
+</div>
+<svg viewBox="0 0 280 150" width="100%" role="img" aria-label="Trade-off curve: as continuity rises from 61 to 86 percent, total travel rises from 38.8 to 46.5 hours; the balanced setting sits at 78 percent and 41.2 hours" style="display: block">
+<line x1="36" y1="120" x2="272" y2="120" stroke="#E7E7E4"></line>
+<line x1="36" y1="12" x2="36" y2="120" stroke="#E7E7E4"></line>
+<path d="M50 104 C100 100 140 92 170 78 C200 64 230 40 262 18" fill="none" stroke="#A1A1AA" stroke-width="2"></path>
+<circle cx="50" cy="104" r="4" fill="#A1A1AA"></circle>
+<circle cx="262" cy="18" r="4" fill="#A1A1AA"></circle>
+<circle cx="170" cy="78" r="10" fill="#111113" opacity="0.12"></circle>
+<circle cx="170" cy="78" r="6" fill="#111113"></circle>
+<g font-family="Inter, sans-serif" font-size="10" fill="#5F5F66">
+<text x="154" y="140" text-anchor="middle">Continuity of care →</text>
+<text x="12" y="70" text-anchor="middle" transform="rotate(-90 12 70)">Travel (h) →</text>
+<text x="178" y="72" fill="#18181B" font-weight="600">78% · 41.2 h</text>
+</g>
+</svg>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<div style="background: #FAFAF9; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5F5F66">Travel vs fastest</span><span style="font-size: 18px; font-weight: 700">+2.4 h</span></div>
+<div style="background: #FAFAF9; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5F5F66">Continuity gain</span><span style="font-size: 18px; font-weight: 700">+17 pts</span></div>
+</div>
+<button type="button" style="height: 44px; border-radius: 12px; border: 0; background: #111113; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Apply and re-optimise</button>
+</section>
+</aside>
+
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SMARTPBL – Interface states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#18181B;text-decoration:none}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1000px; box-sizing: border-box; background: #F4F4F2; font-family: Inter, system-ui, sans-serif; color: #18181B; padding: 48px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 32px">
+
+<section aria-labelledby="s1" style="display: flex; flex-direction: column; gap: 12px; min-height: 0">
+<h2 id="s1" style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #5F5F66">EMPTY · REVIEW QUEUE</h2>
+<div style="flex: 1; background: #FFFFFF; border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 32px">
+<span style="width: 64px; height: 64px; border-radius: 999px; background: #ECFDF3; color: #067647; display: flex; align-items: center; justify-content: center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>
+<h3 style="margin: 0; font-size: 20px; font-weight: 700">All caught up</h3>
+<p style="margin: 0; font-size: 14px; color: #5F5F66; max-width: 360px; line-height: 1.5">No care notes are waiting for review. New flags appear here automatically.</p>
+<a href="Audit.dc.html" style="margin-top: 4px; height: 42px; padding: 0 18px; border-radius: 999px; border: 1px solid #E7E7E4; display: flex; align-items: center; font-size: 14px; font-weight: 600">View recent decisions</a>
+</div>
+</section>
+
+<section aria-labelledby="s2" style="display: flex; flex-direction: column; gap: 12px; min-height: 0">
+<h2 id="s2" style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #5F5F66">LOADING · OVERVIEW</h2>
+<div aria-busy="true" style="flex: 1; background: #FFFFFF; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 18px">
+<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Loading overview</span>
+<div style="width: 220px; height: 22px; border-radius: 8px; background: #EFEFED"></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+<div style="height: 92px; border-radius: 16px; background: #F4F4F2"></div>
+<div style="height: 92px; border-radius: 16px; background: #F4F4F2"></div>
+<div style="height: 92px; border-radius: 16px; background: #F4F4F2"></div>
+</div>
+<div style="display: flex; align-items: center; gap: 14px"><div style="width: 44px; height: 44px; border-radius: 14px; background: #F4F4F2"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px"><div style="width: 60%; height: 12px; border-radius: 6px; background: #EFEFED"></div><div style="width: 40%; height: 10px; border-radius: 6px; background: #F4F4F2"></div></div></div>
+<div style="display: flex; align-items: center; gap: 14px"><div style="width: 44px; height: 44px; border-radius: 14px; background: #F4F4F2"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px"><div style="width: 52%; height: 12px; border-radius: 6px; background: #EFEFED"></div><div style="width: 34%; height: 10px; border-radius: 6px; background: #F4F4F2"></div></div></div>
+<div style="display: flex; align-items: center; gap: 14px"><div style="width: 44px; height: 44px; border-radius: 14px; background: #F4F4F2"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 8px"><div style="width: 66%; height: 12px; border-radius: 6px; background: #EFEFED"></div><div style="width: 30%; height: 10px; border-radius: 6px; background: #F4F4F2"></div></div></div>
+</div>
+</section>
+
+<section aria-labelledby="s3" style="display: flex; flex-direction: column; gap: 12px; min-height: 0">
+<h2 id="s3" style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #5F5F66">ERROR · SCHEDULE</h2>
+<div role="alert" style="flex: 1; background: #FFFFFF; border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 32px">
+<span style="width: 64px; height: 64px; border-radius: 999px; background: #FFFAEB; color: #93370D; display: flex; align-items: center; justify-content: center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17.5v.01"></path></svg></span>
+<h3 style="margin: 0; font-size: 20px; font-weight: 700">Couldn't re-optimise the schedule</h3>
+<p style="margin: 0; font-size: 14px; color: #5F5F66; max-width: 380px; line-height: 1.5">The optimiser didn't respond in time. Your last saved rota is still in place, so nothing has changed for carers.</p>
+<div style="display: flex; gap: 10px; margin-top: 4px">
+<button type="button" style="height: 42px; padding: 0 18px; border-radius: 999px; border: 0; background: #111113; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Try again</button>
+<a href="Schedule.dc.html" style="height: 42px; padding: 0 18px; border-radius: 999px; border: 1px solid #E7E7E4; display: flex; align-items: center; font-size: 14px; font-weight: 600">View saved rota</a>
+</div>
+<span style="font-size: 12px; color: #5F5F66; font-family: ui-monospace, monospace">Reference: req_8f2c41</span>
+</div>
+</section>
+
+<section aria-labelledby="s4" style="display: flex; flex-direction: column; gap: 12px; min-height: 0">
+<h2 id="s4" style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #5F5F66">ACCESS DENIED · WRONG ROLE</h2>
+<div style="flex: 1; background: #FFFFFF; border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 32px">
+<span style="width: 64px; height: 64px; border-radius: 999px; background: #F4F4F2; color: #18181B; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></span>
+<h3 style="margin: 0; font-size: 20px; font-weight: 700">You don't have access to this page</h3>
+<p style="margin: 0; font-size: 14px; color: #5F5F66; max-width: 380px; line-height: 1.5">Workforce risk is visible to coordinators and care managers. You're signed in as <strong style="color: #18181B">Joy A. (carer)</strong>.</p>
+<a href="Visits.dc.html" style="margin-top: 4px; height: 42px; padding: 0 18px; border-radius: 999px; background: #111113; color: #FFFFFF; display: flex; align-items: center; font-size: 14px; font-weight: 600">Back to my visits</a>
+<span style="font-size: 12px; color: #5F5F66">This attempt was recorded in the audit log.</span>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

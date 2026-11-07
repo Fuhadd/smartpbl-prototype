@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SMARTPBL – Care-note review</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#18181B;text-decoration:none}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; background: #F4F4F2; font-family: Inter, system-ui, sans-serif; color: #18181B">
+
+<nav aria-label="Main" style="flex: 0 0 76px; background: #FFFFFF; border-right: 1px solid #E7E7E4; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 0; box-sizing: border-box">
+<div style="width: 40px; height: 40px; border-radius: 12px; background: #111113; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px; margin-bottom: 16px">S</div>
+<a href="Main.dc.html" aria-label="Overview" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #5F5F66"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg></a>
+<a href="Review.dc.html" aria-label="Review queue" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: #111113; color: #FFFFFF"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v12h-5l-3 3-3-3H4z"></path><path d="M9 10l2 2 4-4"></path></svg></a>
+<a href="Schedule.dc.html" aria-label="Schedule" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #5F5F66"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"></path><circle cx="12" cy="11" r="2"></circle></svg></a>
+<a href="Workforce.dc.html" aria-label="Workforce" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #5F5F66"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7"></path><path d="M18.5 14.8c1.6.8 2.6 2.6 3 5.2"></path></svg></a>
+<a href="Audit.dc.html" aria-label="Audit log" style="width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #5F5F66"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V3h6v1"></path><path d="M9 10h6M9 14h6M9 18h4"></path></svg></a>
+</nav>
+
+<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+
+<header style="background: #FFFFFF; border-bottom: 1px solid #E7E7E4; padding: 14px 28px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px">
+<a href="Review.dc.html" style="color: #5F5F66">Review queue</a>
+<span style="color: #A1A1AA" aria-hidden="true">/</span>
+<span style="font-weight: 600">C-0142 · Visit note</span>
+<span style="font-size: 12px; font-weight: 600; color: #B42318; background: #FEF3F2; border: 1px solid #FECDCA; padding: 2px 8px; border-radius: 6px">High risk</span>
+<span style="font-size: 12px; font-weight: 500; color: #93370D; background: #FFFAEB; border: 1px solid #FEDF89; padding: 2px 10px; border-radius: 999px">Demo data · synthetic</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<button type="button" style="height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid #E7E7E4; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Previous</button>
+<button type="button" style="height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid #E7E7E4; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer">Next note</button>
+</div>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; gap: 0; flex: 1">
+
+<aside aria-labelledby="queue" style="flex: 1 1 260px; max-width: 300px; min-width: 0; background: #FFFFFF; border-right: 1px solid #E7E7E4; padding: 20px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0 8px">
+<h2 id="queue" style="margin: 0; font-size: 15px; font-weight: 600">Review queue</h2>
+<span style="font-size: 12px; font-weight: 600; background: #F4F4F2; padding: 2px 8px; border-radius: 999px">6</span>
+</div>
+<div style="display: flex; gap: 6px; padding: 0 8px">
+<button type="button" style="height: 32px; padding: 0 12px; border-radius: 999px; border: 0; background: #111113; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 500">All</button>
+<button type="button" style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid #E7E7E4; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 500">High</button>
+<button type="button" style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid #E7E7E4; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 500">Medium</button>
+</div>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px">
+<li><a href="Review.dc.html" aria-current="page" style="display: flex; gap: 10px; padding: 12px; border-radius: 14px; background: #F4F4F2"><span style="width: 8px; height: 8px; border-radius: 999px; background: #D92D20; margin-top: 6px; flex: 0 0 8px"></span><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 14px; font-weight: 600">C-0142 · Falls</span><span style="font-size: 12px; color: #5F5F66">Joy A. · 08:47 · 3 flags</span></span></a></li>
+<li><a href="Review.dc.html" style="display: flex; gap: 10px; padding: 12px; border-radius: 14px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #D92D20; margin-top: 6px; flex: 0 0 8px"></span><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 14px; font-weight: 600">C-0077 · Safeguarding</span><span style="font-size: 12px; color: #5F5F66">Marcus T. · 07:52 · 1 flag</span></span></a></li>
+<li><a href="Review.dc.html" style="display: flex; gap: 10px; padding: 12px; border-radius: 14px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #F79009; margin-top: 6px; flex: 0 0 8px"></span><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 14px; font-weight: 600">C-0315 · Medication</span><span style="font-size: 12px; color: #5F5F66">Priya S. · Yesterday · 1 flag</span></span></a></li>
+<li><a href="Review.dc.html" style="display: flex; gap: 10px; padding: 12px; border-radius: 14px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #F79009; margin-top: 6px; flex: 0 0 8px"></span><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 14px; font-weight: 600">C-0261 · Nutrition</span><span style="font-size: 12px; color: #5F5F66">Daniel O. · Yesterday · 2 flags</span></span></a></li>
+<li><a href="Review.dc.html" style="display: flex; gap: 10px; padding: 12px; border-radius: 14px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #F79009; margin-top: 6px; flex: 0 0 8px"></span><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 14px; font-weight: 600">C-0119 · Skin integrity</span><span style="font-size: 12px; color: #5F5F66">Joy A. · Thu · 1 flag</span></span></a></li>
+<li><a href="Review.dc.html" style="display: flex; gap: 10px; padding: 12px; border-radius: 14px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #2E90FA; margin-top: 6px; flex: 0 0 8px"></span><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 14px; font-weight: 600">C-0188 · Mood</span><span style="font-size: 12px; color: #5F5F66">Amara K. · Thu · 1 flag</span></span></a></li>
+</ul>
+</aside>
+
+<main style="flex: 999 1 520px; min-width: 0; padding: 28px 32px 40px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.02em">Fall reported during morning visit</h1>
+<p style="margin: 0; font-size: 14px; color: #5F5F66">Carer Joy A. · Sat 7 Nov, 08:15–08:45 · Submitted 08:47</p>
+</div>
+
+<section aria-labelledby="orig" style="background: #FFFFFF; border: 1px solid #E7E7E4; border-radius: 18px; overflow: hidden">
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #FAFAF9; border-bottom: 1px solid #E7E7E4">
+<h2 id="orig" style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: #5F5F66">ORIGINAL CARE NOTE</h2>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: #067647"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"></path></svg>3 identifiers redacted</span>
+</div>
+<p style="margin: 0; padding: 20px; font-size: 15px; line-height: 1.75; color: #27272A">Arrived 08:15. <span style="background: #F4F4F2; padding: 1px 6px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 13px">[NAME]</span> <mark style="background: #FEEBD8; color: #18181B; padding: 2px 4px; border-radius: 4px">found sitting on bedroom floor, said she slipped getting out of bed around 6am, unable to get up on her own</mark>. No visible injury, helped up with assistance. Morning meds given (Donepezil 5mg). <mark style="background: #DCEBFE; color: #18181B; padding: 2px 4px; border-radius: 4px">Refused breakfast, only had half a cup of tea</mark>. <mark style="background: #EAE7FD; color: #18181B; padding: 2px 4px; border-radius: 4px">Seemed more confused than usual, asked twice who I was</mark>. Left with call bell in reach. Daughter on <span style="background: #F4F4F2; padding: 1px 6px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 13px">[PHONE]</span> informed.</p>
+</section>
+
+<section aria-labelledby="extr" style="background: #FFFFFF; border: 1px solid #D9D6FB; border-radius: 18px; overflow: hidden">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; background: #F6F5FF; border-bottom: 1px solid #E7E5FC; flex-wrap: wrap">
+<h2 id="extr" style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: #3B32B8"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>AI EXTRACTION</h2>
+<span style="font-size: 12px; color: #5F5F66">llama3.1:8b · prompt v3 · 2.8 s</span>
+</div>
+<div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 12px">
+
+<div style="border: 1px solid #E7E7E4; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600"><span style="width: 10px; height: 10px; border-radius: 3px; background: #F38744"></span>Falls</span>
+<span style="font-size: 12px; font-weight: 600; color: #B42318; background: #FEF3F2; padding: 2px 8px; border-radius: 999px">High</span>
+<span style="margin-left: auto; font-size: 12px; color: #5F5F66">Confidence 0.91</span>
+<span style="display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; color: #067647"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Grounded</span>
+</div>
+<p style="margin: 0; font-size: 14px; color: #3F3F46; background: #FAFAF9; border-radius: 10px; padding: 10px 12px">“found sitting on bedroom floor … unable to get up on her own”</p>
+</div>
+
+<div style="border: 1px solid #E7E7E4; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600"><span style="width: 10px; height: 10px; border-radius: 3px; background: #5AA2F7"></span>Nutrition / hydration</span>
+<span style="font-size: 12px; font-weight: 600; color: #93370D; background: #FFFAEB; padding: 2px 8px; border-radius: 999px">Medium</span>
+<span style="margin-left: auto; font-size: 12px; color: #5F5F66">Confidence 0.78</span>
+<span style="display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; color: #067647"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Grounded</span>
+</div>
+<p style="margin: 0; font-size: 14px; color: #3F3F46; background: #FAFAF9; border-radius: 10px; padding: 10px 12px">“Refused breakfast, only had half a cup of tea”</p>
+</div>
+
+<div style="border: 1px solid #E7E7E4; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600"><span style="width: 10px; height: 10px; border-radius: 3px; background: #8B80F0"></span>Mood / behaviour change</span>
+<span style="font-size: 12px; font-weight: 600; color: #93370D; background: #FFFAEB; padding: 2px 8px; border-radius: 999px">Medium</span>
+<span style="margin-left: auto; font-size: 12px; color: #5F5F66">Confidence 0.72</span>
+<span style="display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; color: #067647"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Grounded</span>
+</div>
+<p style="margin: 0; font-size: 14px; color: #3F3F46; background: #FAFAF9; border-radius: 10px; padding: 10px 12px">“Seemed more confused than usual, asked twice who I was”</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; font-size: 13px">
+<div style="background: #FAFAF9; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px"><span style="color: #5F5F66">Medication</span><span style="font-weight: 600">Administered · no issues</span></div>
+<div style="background: #FAFAF9; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px"><span style="color: #5F5F66">Follow-up required</span><span style="font-weight: 600">Yes · within 24 h</span></div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 14px 20px; border-top: 1px solid #E7E7E4; flex-wrap: wrap">
+<button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #E7E7E4; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>Edit</button>
+<span style="flex: 1"></span>
+<button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 10px; border: 0; background: transparent; font: inherit; font-size: 14px; font-weight: 500; color: #3F3F46; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>Reject</button>
+<button type="button" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 10px; border: 0; background: #111113; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Approve extraction</button>
+</div>
+</section>
+
+<section aria-labelledby="proto" style="background: #FFFFFF; border: 1px solid #E7E7E4; border-radius: 18px; overflow: hidden">
+<div style="padding: 12px 20px; background: #FAFAF9; border-bottom: 1px solid #E7E7E4">
+<h2 id="proto" style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: #5F5F66">PBL FALLS PROTOCOL</h2>
+</div>
+<p style="margin: 0; padding: 16px 20px; font-size: 14px; line-height: 1.6; color: #3F3F46">[PLACEHOLDER: PBL's falls protocol — e.g. after an unwitnessed fall, notify the GP and next of kin, and review the falls risk assessment within 24 hours.]</p>
+</section>
+</main>
+
+<aside aria-label="Decision support" style="flex: 1 1 300px; max-width: 360px; min-width: 0; padding: 28px 28px 40px 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+
+<section aria-labelledby="why" style="background: #FFFFFF; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+<h2 id="why" style="margin: 0; font-size: 15px; font-weight: 600">Why this needs review</h2>
+<p style="margin: 0; font-size: 13px; line-height: 1.6; color: #5F5F66">Routed because one flag is <strong style="color: #18181B">high severity (falls)</strong>. All flags passed the confidence threshold of 0.70.</p>
+</section>
+
+<section aria-labelledby="checks" style="background: #FFFFFF; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<h2 id="checks" style="margin: 0; font-size: 15px; font-weight: 600">Safety checks</h2>
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; gap: 8px"><span style="color: #3F3F46">Evidence found in note</span><span style="font-size: 12px; font-weight: 600; color: #067647; background: #ECFDF3; padding: 2px 8px; border-radius: 6px">3 / 3</span></div>
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; gap: 8px"><span style="color: #3F3F46">Schema validation</span><span style="font-size: 12px; font-weight: 600; color: #067647; background: #ECFDF3; padding: 2px 8px; border-radius: 6px">Passed</span></div>
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; gap: 8px"><span style="color: #3F3F46">Identifiers redacted before AI</span><span style="font-size: 12px; font-weight: 600; color: #067647; background: #ECFDF3; padding: 2px 8px; border-radius: 6px">Name, phone, address</span></div>
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; gap: 8px"><span style="color: #3F3F46">Data left this device</span><span style="font-size: 12px; font-weight: 600; color: #067647; background: #ECFDF3; padding: 2px 8px; border-radius: 6px">No</span></div>
+</section>
+
+<section aria-labelledby="route" style="background: #FFFFFF; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 8px">
+<h2 id="route" style="margin: 0 0 4px; font-size: 15px; font-weight: 600">Approval routing</h2>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #E7E7E4; border-radius: 12px; font-size: 13px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #12B76A"></span><span style="flex: 1">AI extraction</span><span style="font-size: 11px; font-weight: 600; color: #067647; border: 1px solid #ABEFC6; padding: 1px 6px; border-radius: 6px">Done</span></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #111113; border-radius: 12px; font-size: 13px; font-weight: 600"><span style="width: 8px; height: 8px; border-radius: 999px; background: #111113"></span><span style="flex: 1">Coordinator review</span><span style="font-size: 11px; font-weight: 600; color: #175CD3; border: 1px solid #B2DDFF; padding: 1px 6px; border-radius: 6px">Current</span></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #E7E7E4; border-radius: 12px; font-size: 13px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #D4D4D8"></span><span style="flex: 1">Care manager sign-off</span><span style="font-size: 11px; font-weight: 600; color: #93370D; border: 1px solid #FEDF89; padding: 1px 6px; border-radius: 6px">Required</span></div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #E7E7E4; border-radius: 12px; font-size: 13px; color: #5F5F66"><span style="width: 8px; height: 8px; border-radius: 999px; background: #D4D4D8"></span><span style="flex: 1">Written to audit log</span></div>
+</section>
+
+<button type="button" style="height: 46px; border-radius: 12px; border: 1px solid #E7E7E4; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Escalate to care manager</button>
+<button type="button" style="height: 46px; border-radius: 12px; border: 0; background: #111113; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Approve and log decision</button>
+</aside>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

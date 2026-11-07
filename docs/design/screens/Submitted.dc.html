@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Carer app – Note submitted</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#18181B;text-decoration:none}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F4F4F2; font-family: Inter, system-ui, sans-serif; color: #18181B; position: relative; overflow: hidden; padding: 72px 20px 0; display: flex; flex-direction: column; gap: 20px">
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center">
+<span style="width: 84px; height: 84px; border-radius: 999px; background: #ECFDF3; color: #067647; display: flex; align-items: center; justify-content: center"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>
+<h1 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.02em">Note sent for review</h1>
+<p style="margin: 0; font-size: 15px; color: #5F5F66; line-height: 1.5; max-width: 300px">Your coordinator will see it shortly. Thank you, Joy.</p>
+</div>
+
+<section aria-label="Summary" style="background: #FFFFFF; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+<div style="display: flex; justify-content: space-between"><span style="color: #5F5F66">Client</span><span style="font-weight: 600">C-0091 · Moseley</span></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #5F5F66">Submitted</span><span style="font-weight: 600">10:12</span></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #5F5F66">Tasks</span><span style="font-weight: 600">3 of 4 completed</span></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #5F5F66">Urgent concern</span><span style="font-weight: 600">None raised</span></div>
+</section>
+
+<section aria-labelledby="next" style="background: #FFFFFF; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<h2 id="next" style="margin: 0; font-size: 14px; font-weight: 600">What happens next</h2>
+<div style="display: flex; gap: 12px; align-items: center; font-size: 13px"><span style="width: 26px; height: 26px; border-radius: 999px; background: #111113; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: 0 0 26px">1</span><span>Names removed, then AI checks for risks</span></div>
+<div style="display: flex; gap: 12px; align-items: center; font-size: 13px"><span style="width: 26px; height: 26px; border-radius: 999px; background: #F4F4F2; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: 0 0 26px">2</span><span>A coordinator reviews anything flagged</span></div>
+<div style="display: flex; gap: 12px; align-items: center; font-size: 13px"><span style="width: 26px; height: 26px; border-radius: 999px; background: #F4F4F2; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: 0 0 26px">3</span><span>Every decision is logged for audit</span></div>
+</section>
+
+<div style="position: absolute; left: 20px; right: 20px; bottom: 24px; display: flex; flex-direction: column; gap: 10px">
+<a href="VisitDetail.dc.html" style="display: flex; align-items: center; gap: 12px; background: #FFFFFF; border-radius: 18px; padding: 12px 14px"><span style="display: flex; flex-direction: column; flex: 1"><span style="font-size: 12px; color: #5F5F66">Next visit · 10:45</span><span style="font-size: 15px; font-weight: 600">C-0144 · Kings Heath</span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5F5F66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+<a href="Visits.dc.html" style="height: 56px; border-radius: 999px; background: #111113; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600">Back to today</a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

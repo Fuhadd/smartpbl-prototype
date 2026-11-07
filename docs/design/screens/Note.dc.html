@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Carer app – Write care note</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#18181B;text-decoration:none}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F4F4F2; font-family: Inter, system-ui, sans-serif; color: #18181B; position: relative; overflow: hidden; padding: 28px 20px 0; display: flex; flex-direction: column; gap: 16px">
+
+<header style="display: flex; align-items: center; justify-content: space-between">
+<a href="Visits.dc.html" aria-label="Back to today's visits" style="width: 44px; height: 44px; border-radius: 999px; background: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></a>
+<span style="font-size: 13px; font-weight: 500; color: #5F5F66">Visit in progress · 09:41</span>
+<button type="button" aria-label="More options" style="width: 44px; height: 44px; border-radius: 999px; border: 0; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: #18181B"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="19" cy="12" r="1.6"></circle></svg></button>
+</header>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.02em">Care note</h1>
+<p style="margin: 0; font-size: 14px; color: #5F5F66">C-0091 · Moseley · 09:30–10:15</p>
+</div>
+
+<section aria-labelledby="tasks" style="background: #FFFFFF; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<h2 id="tasks" style="margin: 0; font-size: 14px; font-weight: 600">Tasks completed</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{tasks}}" as="t" hint-placeholder-count="4">
+<sc-if value="{{t.on}}" hint-placeholder-val="{{true}}">
+<button type="button" aria-pressed="true" onClick="{{t.toggle}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #111113; background: #111113; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>{{t.label}}</button>
+</sc-if>
+<sc-if value="{{t.off}}" hint-placeholder-val="{{false}}">
+<button type="button" aria-pressed="false" onClick="{{t.toggle}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #E7E7E4; background: #FFFFFF; color: #18181B; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer">{{t.label}}</button>
+</sc-if>
+</sc-for>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+<label for="note" style="font-size: 14px; font-weight: 600">How was the visit?</label>
+<span style="font-size: 12px; color: #5F5F66">Note any changes, concerns or incidents, written as you'd say them.</span>
+<textarea id="note" rows="6" style="border: 1px solid #E7E7E4; border-radius: 14px; padding: 12px; font: inherit; font-size: 15px; line-height: 1.5; color: #18181B; resize: none; background: #FAFAF9">Mr R was up and dressed when I arrived. Meds taken with water. Ate most of his porridge. Said his left knee is more painful going down stairs, walked slower than usual.</textarea>
+</section>
+
+<section style="background: #FFFFFF; border-radius: 22px; padding: 14px 16px; display: flex; align-items: center; gap: 12px">
+<span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 600">Raise an urgent concern</span><span style="font-size: 12px; color: #5F5F66">Alerts the coordinator straight away</span></span>
+<sc-if value="{{concern}}" hint-placeholder-val="{{false}}">
+<button type="button" role="switch" aria-checked="true" aria-label="Raise an urgent concern" onClick="{{toggleConcern}}" style="width: 52px; height: 32px; border-radius: 999px; border: 0; background: #B42318; position: relative; cursor: pointer"><span style="position: absolute; top: 4px; left: 24px; width: 24px; height: 24px; border-radius: 999px; background: #FFFFFF"></span></button>
+</sc-if>
+<sc-if value="{{noConcern}}" hint-placeholder-val="{{true}}">
+<button type="button" role="switch" aria-checked="false" aria-label="Raise an urgent concern" onClick="{{toggleConcern}}" style="width: 52px; height: 32px; border-radius: 999px; border: 0; background: #D4D4D8; position: relative; cursor: pointer"><span style="position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 999px; background: #FFFFFF"></span></button>
+</sc-if>
+</section>
+
+<p style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 12px; color: #067647"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 16px"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"></path></svg>Names and addresses are removed before AI review.</p>
+
+<div style="position: absolute; left: 20px; right: 20px; bottom: 24px">
+<a href="Submitted.dc.html" style="height: 56px; border-radius: 999px; background: #111113; color: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 600">Submit note<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { done: { med: true, meal: true, care: true, mob: false }, concern: false };
+  }
+  renderVals() {
+    const labels = [['med', 'Medication'], ['meal', 'Meal'], ['care', 'Personal care'], ['mob', 'Mobility support']];
+    const done = this.state.done;
+    const tasks = labels.map(([id, label]) => ({
+      id, label, on: !!done[id], off: !done[id],
+      toggle: () => this.setState({ done: { ...this.state.done, [id]: !this.state.done[id] } })
+    }));
+    return {
+      tasks,
+      concern: this.state.concern,
+      noConcern: !this.state.concern,
+      toggleConcern: () => this.setState({ concern: !this.state.concern })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Carer app – Visit detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#18181B;text-decoration:none}a:hover{color:#000000}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F4F4F2; font-family: Inter, system-ui, sans-serif; color: #18181B; position: relative; overflow: hidden; padding: 28px 20px 0; display: flex; flex-direction: column; gap: 14px">
+
+<header style="display: flex; align-items: center; justify-content: space-between">
+<a href="Visits.dc.html" aria-label="Back to today's visits" style="width: 44px; height: 44px; border-radius: 999px; background: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></a>
+<span style="font-size: 12px; font-weight: 600; background: #FFFFFF; padding: 6px 12px; border-radius: 999px">Familiar client · 14 visits</span>
+</header>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.02em">C-0091</h1>
+<p style="margin: 0; font-size: 14px; color: #5F5F66">09:30–10:15 · Moseley · 45 min</p>
+</div>
+
+<section aria-labelledby="todo" style="background: #FFFFFF; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+<h2 id="todo" style="margin: 0; font-size: 14px; font-weight: 600">Tasks this visit</h2>
+<div style="display: flex; align-items: center; gap: 12px; font-size: 14px"><span style="width: 36px; height: 36px; border-radius: 10px; background: #F4F4F2; display: flex; align-items: center; justify-content: center; flex: 0 0 36px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="7" rx="3.5"></rect><path d="M12 9v7"></path></svg></span><span style="display: flex; flex-direction: column"><span style="font-weight: 600">Medication</span><span style="font-size: 12px; color: #5F5F66">Morning blister pack, with water</span></span></div>
+<div style="display: flex; align-items: center; gap: 12px; font-size: 14px"><span style="width: 36px; height: 36px; border-radius: 10px; background: #F4F4F2; display: flex; align-items: center; justify-content: center; flex: 0 0 36px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14a7 7 0 0 1-14 0z"></path><path d="M9 4v3M12 3v4M15 4v3"></path></svg></span><span style="display: flex; flex-direction: column"><span style="font-weight: 600">Breakfast</span><span style="font-size: 12px; color: #5F5F66">Porridge or toast · encourage fluids</span></span></div>
+<div style="display: flex; align-items: center; gap: 12px; font-size: 14px"><span style="width: 36px; height: 36px; border-radius: 10px; background: #F4F4F2; display: flex; align-items: center; justify-content: center; flex: 0 0 36px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3.5"></circle><path d="M5 21c1-4 3.5-6.5 7-6.5s6 2.5 7 6.5"></path></svg></span><span style="display: flex; flex-direction: column"><span style="font-weight: 600">Personal care</span><span style="font-size: 12px; color: #5F5F66">Wash and dress · prefers to choose clothes</span></span></div>
+</section>
+
+<section aria-labelledby="know" style="background: #FFFFFF; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+<h2 id="know" style="margin: 0; font-size: 14px; font-weight: 600">Good to know</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<span style="font-size: 12px; font-weight: 500; background: #F4F4F2; padding: 6px 10px; border-radius: 999px">Uses walking frame</span>
+<span style="font-size: 12px; font-weight: 500; background: #F4F4F2; padding: 6px 10px; border-radius: 999px">Tea before breakfast</span>
+<span style="font-size: 12px; font-weight: 500; background: #F4F4F2; padding: 6px 10px; border-radius: 999px">Key safe · side door</span>
+</div>
+</section>
+
+<section aria-labelledby="recent" style="background: #FFFFFF; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+<h2 id="recent" style="margin: 0; font-size: 14px; font-weight: 600">Recent notes</h2>
+<div style="display: flex; gap: 10px; align-items: flex-start"><span style="font-size: 12px; font-weight: 600; color: #5F5F66; width: 34px; flex: 0 0 34px">Thu</span><span style="flex: 1; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; color: #27272A">Mentioned knee pain on stairs.</span><span style="align-self: flex-start; font-size: 11px; font-weight: 600; color: #93370D; background: #FFFAEB; padding: 2px 8px; border-radius: 999px">Mobility · reviewed</span></span></div>
+<div style="display: flex; gap: 10px; align-items: flex-start"><span style="font-size: 12px; font-weight: 600; color: #5F5F66; width: 34px; flex: 0 0 34px">Wed</span><span style="flex: 1; font-size: 13px; color: #27272A">Good morning, ate well, chatty.</span></div>
+</section>
+
+<div style="position: absolute; left: 20px; right: 20px; bottom: 24px; display: grid; grid-template-columns: 1fr 2fr; gap: 10px">
+<a href="#" style="height: 56px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E7E7E4; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600">Call office</a>
+<a href="Note.dc.html" style="height: 56px; border-radius: 999px; background: #111113; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600">Write care note</a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
