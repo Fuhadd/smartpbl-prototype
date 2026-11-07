@@ -1,0 +1,2352 @@
+{
+ "name": "birmingham-day-seed42",
+ "seed": 42,
+ "carers": [
+  {
+   "carer_ref": "CR-0001",
+   "skills": [
+    "personal_care",
+    "manual_handling",
+    "catheter_care"
+   ],
+   "shift_start": 420,
+   "shift_end": 870,
+   "home": {
+    "lat": 52.516,
+    "lon": -1.901
+   },
+   "start": {
+    "lat": 52.478,
+    "lon": -1.89
+   }
+  },
+  {
+   "carer_ref": "CR-0002",
+   "skills": [
+    "dementia_care",
+    "medication",
+    "personal_care",
+    "catheter_care"
+   ],
+   "shift_start": 420,
+   "shift_end": 870,
+   "home": {
+    "lat": 52.477,
+    "lon": -1.814
+   },
+   "start": {
+    "lat": 52.477,
+    "lon": -1.814
+   }
+  },
+  {
+   "carer_ref": "CR-0003",
+   "skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "shift_start": 420,
+   "shift_end": 870,
+   "home": {
+    "lat": 52.433,
+    "lon": -1.919
+   },
+   "start": {
+    "lat": 52.433,
+    "lon": -1.919
+   }
+  },
+  {
+   "carer_ref": "CR-0004",
+   "skills": [
+    "personal_care",
+    "manual_handling"
+   ],
+   "shift_start": 420,
+   "shift_end": 870,
+   "home": {
+    "lat": 52.46,
+    "lon": -1.89
+   },
+   "start": {
+    "lat": 52.478,
+    "lon": -1.89
+   }
+  },
+  {
+   "carer_ref": "CR-0005",
+   "skills": [
+    "personal_care",
+    "medication",
+    "manual_handling"
+   ],
+   "shift_start": 420,
+   "shift_end": 870,
+   "home": {
+    "lat": 52.488,
+    "lon": -1.86
+   },
+   "start": {
+    "lat": 52.488,
+    "lon": -1.86
+   }
+  },
+  {
+   "carer_ref": "CR-0006",
+   "skills": [
+    "personal_care",
+    "medication",
+    "manual_handling"
+   ],
+   "shift_start": 420,
+   "shift_end": 870,
+   "home": {
+    "lat": 52.509,
+    "lon": -1.93
+   },
+   "start": {
+    "lat": 52.509,
+    "lon": -1.93
+   }
+  },
+  {
+   "carer_ref": "CR-0007",
+   "skills": [
+    "personal_care"
+   ],
+   "shift_start": 420,
+   "shift_end": 870,
+   "home": {
+    "lat": 52.476,
+    "lon": -1.879
+   },
+   "start": {
+    "lat": 52.476,
+    "lon": -1.879
+   }
+  },
+  {
+   "carer_ref": "CR-0008",
+   "skills": [
+    "medication",
+    "personal_care"
+   ],
+   "shift_start": 420,
+   "shift_end": 870,
+   "home": {
+    "lat": 52.466,
+    "lon": -1.98
+   },
+   "start": {
+    "lat": 52.466,
+    "lon": -1.98
+   }
+  },
+  {
+   "carer_ref": "CR-0009",
+   "skills": [
+    "personal_care",
+    "catheter_care"
+   ],
+   "shift_start": 420,
+   "shift_end": 870,
+   "home": {
+    "lat": 52.481,
+    "lon": -1.898
+   },
+   "start": {
+    "lat": 52.481,
+    "lon": -1.898
+   }
+  },
+  {
+   "carer_ref": "CR-0010",
+   "skills": [
+    "medication",
+    "catheter_care",
+    "dementia_care",
+    "personal_care",
+    "manual_handling"
+   ],
+   "shift_start": 420,
+   "shift_end": 870,
+   "home": {
+    "lat": 52.42,
+    "lon": -1.847
+   },
+   "start": {
+    "lat": 52.42,
+    "lon": -1.847
+   }
+  },
+  {
+   "carer_ref": "CR-0011",
+   "skills": [
+    "personal_care",
+    "medication",
+    "manual_handling"
+   ],
+   "shift_start": 900,
+   "shift_end": 1320,
+   "home": {
+    "lat": 52.537,
+    "lon": -1.863
+   },
+   "start": {
+    "lat": 52.537,
+    "lon": -1.863
+   }
+  },
+  {
+   "carer_ref": "CR-0012",
+   "skills": [
+    "dementia_care",
+    "medication",
+    "personal_care",
+    "manual_handling"
+   ],
+   "shift_start": 900,
+   "shift_end": 1320,
+   "home": {
+    "lat": 52.497,
+    "lon": -1.923
+   },
+   "start": {
+    "lat": 52.497,
+    "lon": -1.923
+   }
+  },
+  {
+   "carer_ref": "CR-0013",
+   "skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "shift_start": 900,
+   "shift_end": 1320,
+   "home": {
+    "lat": 52.487,
+    "lon": -1.899
+   },
+   "start": {
+    "lat": 52.478,
+    "lon": -1.89
+   }
+  },
+  {
+   "carer_ref": "CR-0014",
+   "skills": [
+    "personal_care",
+    "medication",
+    "manual_handling",
+    "catheter_care"
+   ],
+   "shift_start": 900,
+   "shift_end": 1320,
+   "home": {
+    "lat": 52.518,
+    "lon": -1.98
+   },
+   "start": {
+    "lat": 52.518,
+    "lon": -1.98
+   }
+  },
+  {
+   "carer_ref": "CR-0015",
+   "skills": [
+    "medication",
+    "personal_care"
+   ],
+   "shift_start": 900,
+   "shift_end": 1320,
+   "home": {
+    "lat": 52.54,
+    "lon": -1.939
+   },
+   "start": {
+    "lat": 52.54,
+    "lon": -1.939
+   }
+  },
+  {
+   "carer_ref": "CR-0016",
+   "skills": [
+    "medication",
+    "catheter_care",
+    "dementia_care",
+    "personal_care",
+    "manual_handling"
+   ],
+   "shift_start": 900,
+   "shift_end": 1320,
+   "home": {
+    "lat": 52.479,
+    "lon": -1.803
+   },
+   "start": {
+    "lat": 52.479,
+    "lon": -1.803
+   }
+  },
+  {
+   "carer_ref": "CR-0017",
+   "skills": [
+    "medication",
+    "personal_care"
+   ],
+   "shift_start": 900,
+   "shift_end": 1320,
+   "home": {
+    "lat": 52.512,
+    "lon": -1.854
+   },
+   "start": {
+    "lat": 52.478,
+    "lon": -1.89
+   }
+  }
+ ],
+ "clients": [
+  {
+   "client_ref": "CL-0001",
+   "location": {
+    "lat": 52.479,
+    "lon": -1.95
+   },
+   "needs": [
+    "personal_care",
+    "manual_handling"
+   ],
+   "preferred_carers": [
+    "CR-0001",
+    "CR-0014"
+   ],
+   "recent_carers": [
+    "CR-0001",
+    "CR-0014"
+   ]
+  },
+  {
+   "client_ref": "CL-0002",
+   "location": {
+    "lat": 52.492,
+    "lon": -1.871
+   },
+   "needs": [
+    "dementia_care",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0002",
+    "CR-0012"
+   ],
+   "recent_carers": [
+    "CR-0002",
+    "CR-0012"
+   ]
+  },
+  {
+   "client_ref": "CL-0003",
+   "location": {
+    "lat": 52.474,
+    "lon": -1.931
+   },
+   "needs": [
+    "dementia_care",
+    "personal_care"
+   ],
+   "preferred_carers": [],
+   "recent_carers": [
+    "CR-0010"
+   ]
+  },
+  {
+   "client_ref": "CL-0004",
+   "location": {
+    "lat": 52.477,
+    "lon": -1.886
+   },
+   "needs": [
+    "dementia_care",
+    "personal_care",
+    "catheter_care"
+   ],
+   "preferred_carers": [
+    "CR-0010"
+   ],
+   "recent_carers": [
+    "CR-0010"
+   ]
+  },
+  {
+   "client_ref": "CL-0005",
+   "location": {
+    "lat": 52.442,
+    "lon": -1.807
+   },
+   "needs": [
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0003",
+    "CR-0011"
+   ],
+   "recent_carers": [
+    "CR-0003",
+    "CR-0011"
+   ]
+  },
+  {
+   "client_ref": "CL-0006",
+   "location": {
+    "lat": 52.466,
+    "lon": -1.953
+   },
+   "needs": [
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [],
+   "recent_carers": [
+    "CR-0003"
+   ]
+  },
+  {
+   "client_ref": "CL-0007",
+   "location": {
+    "lat": 52.492,
+    "lon": -1.935
+   },
+   "needs": [
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0001"
+   ],
+   "recent_carers": [
+    "CR-0001"
+   ]
+  },
+  {
+   "client_ref": "CL-0008",
+   "location": {
+    "lat": 52.486,
+    "lon": -1.9
+   },
+   "needs": [
+    "personal_care",
+    "catheter_care"
+   ],
+   "preferred_carers": [
+    "CR-0009",
+    "CR-0014"
+   ],
+   "recent_carers": [
+    "CR-0009",
+    "CR-0014"
+   ]
+  },
+  {
+   "client_ref": "CL-0009",
+   "location": {
+    "lat": 52.482,
+    "lon": -1.836
+   },
+   "needs": [
+    "personal_care",
+    "catheter_care"
+   ],
+   "preferred_carers": [
+    "CR-0001"
+   ],
+   "recent_carers": [
+    "CR-0001",
+    "CR-0016"
+   ]
+  },
+  {
+   "client_ref": "CL-0010",
+   "location": {
+    "lat": 52.5,
+    "lon": -1.879
+   },
+   "needs": [
+    "personal_care",
+    "medication",
+    "manual_handling"
+   ],
+   "preferred_carers": [
+    "CR-0006",
+    "CR-0016"
+   ],
+   "recent_carers": [
+    "CR-0006",
+    "CR-0016"
+   ]
+  },
+  {
+   "client_ref": "CL-0011",
+   "location": {
+    "lat": 52.464,
+    "lon": -1.806
+   },
+   "needs": [
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0002",
+    "CR-0012"
+   ],
+   "recent_carers": [
+    "CR-0002",
+    "CR-0012"
+   ]
+  },
+  {
+   "client_ref": "CL-0012",
+   "location": {
+    "lat": 52.48,
+    "lon": -1.877
+   },
+   "needs": [
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0003",
+    "CR-0016"
+   ],
+   "recent_carers": [
+    "CR-0003",
+    "CR-0016",
+    "CR-0017"
+   ]
+  },
+  {
+   "client_ref": "CL-0013",
+   "location": {
+    "lat": 52.478,
+    "lon": -1.908
+   },
+   "needs": [
+    "personal_care",
+    "medication",
+    "manual_handling"
+   ],
+   "preferred_carers": [
+    "CR-0005",
+    "CR-0016"
+   ],
+   "recent_carers": [
+    "CR-0005",
+    "CR-0016"
+   ]
+  },
+  {
+   "client_ref": "CL-0014",
+   "location": {
+    "lat": 52.466,
+    "lon": -1.904
+   },
+   "needs": [
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0005",
+    "CR-0016"
+   ],
+   "recent_carers": [
+    "CR-0002",
+    "CR-0005",
+    "CR-0016"
+   ]
+  },
+  {
+   "client_ref": "CL-0015",
+   "location": {
+    "lat": 52.467,
+    "lon": -1.818
+   },
+   "needs": [
+    "medication",
+    "personal_care",
+    "catheter_care"
+   ],
+   "preferred_carers": [],
+   "recent_carers": [
+    "CR-0002",
+    "CR-0016"
+   ]
+  },
+  {
+   "client_ref": "CL-0016",
+   "location": {
+    "lat": 52.499,
+    "lon": -1.9
+   },
+   "needs": [
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0010",
+    "CR-0011"
+   ],
+   "recent_carers": [
+    "CR-0010",
+    "CR-0011"
+   ]
+  },
+  {
+   "client_ref": "CL-0017",
+   "location": {
+    "lat": 52.476,
+    "lon": -1.876
+   },
+   "needs": [
+    "personal_care",
+    "manual_handling",
+    "catheter_care"
+   ],
+   "preferred_carers": [
+    "CR-0014"
+   ],
+   "recent_carers": [
+    "CR-0001",
+    "CR-0014"
+   ]
+  },
+  {
+   "client_ref": "CL-0018",
+   "location": {
+    "lat": 52.488,
+    "lon": -1.854
+   },
+   "needs": [
+    "dementia_care",
+    "personal_care",
+    "manual_handling"
+   ],
+   "preferred_carers": [
+    "CR-0010",
+    "CR-0012"
+   ],
+   "recent_carers": [
+    "CR-0010",
+    "CR-0012"
+   ]
+  },
+  {
+   "client_ref": "CL-0019",
+   "location": {
+    "lat": 52.481,
+    "lon": -1.858
+   },
+   "needs": [
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [],
+   "recent_carers": [
+    "CR-0010",
+    "CR-0013"
+   ]
+  },
+  {
+   "client_ref": "CL-0020",
+   "location": {
+    "lat": 52.484,
+    "lon": -1.902
+   },
+   "needs": [
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0002",
+    "CR-0015"
+   ],
+   "recent_carers": [
+    "CR-0002",
+    "CR-0015"
+   ]
+  },
+  {
+   "client_ref": "CL-0021",
+   "location": {
+    "lat": 52.46,
+    "lon": -1.961
+   },
+   "needs": [
+    "personal_care",
+    "manual_handling"
+   ],
+   "preferred_carers": [
+    "CR-0004",
+    "CR-0012"
+   ],
+   "recent_carers": [
+    "CR-0004",
+    "CR-0012"
+   ]
+  },
+  {
+   "client_ref": "CL-0022",
+   "location": {
+    "lat": 52.474,
+    "lon": -1.939
+   },
+   "needs": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0010",
+    "CR-0012"
+   ],
+   "recent_carers": [
+    "CR-0002",
+    "CR-0010",
+    "CR-0012"
+   ]
+  },
+  {
+   "client_ref": "CL-0023",
+   "location": {
+    "lat": 52.458,
+    "lon": -1.903
+   },
+   "needs": [
+    "dementia_care",
+    "medication",
+    "personal_care",
+    "catheter_care"
+   ],
+   "preferred_carers": [],
+   "recent_carers": [
+    "CR-0016"
+   ]
+  },
+  {
+   "client_ref": "CL-0024",
+   "location": {
+    "lat": 52.519,
+    "lon": -1.819
+   },
+   "needs": [
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0015"
+   ],
+   "recent_carers": [
+    "CR-0002",
+    "CR-0005",
+    "CR-0015"
+   ]
+  },
+  {
+   "client_ref": "CL-0025",
+   "location": {
+    "lat": 52.488,
+    "lon": -1.943
+   },
+   "needs": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0010",
+    "CR-0016"
+   ],
+   "recent_carers": [
+    "CR-0002",
+    "CR-0010",
+    "CR-0016"
+   ]
+  },
+  {
+   "client_ref": "CL-0026",
+   "location": {
+    "lat": 52.496,
+    "lon": -1.964
+   },
+   "needs": [
+    "dementia_care",
+    "medication",
+    "personal_care",
+    "catheter_care"
+   ],
+   "preferred_carers": [
+    "CR-0002",
+    "CR-0016"
+   ],
+   "recent_carers": [
+    "CR-0002",
+    "CR-0010",
+    "CR-0016"
+   ]
+  },
+  {
+   "client_ref": "CL-0027",
+   "location": {
+    "lat": 52.446,
+    "lon": -1.931
+   },
+   "needs": [
+    "personal_care",
+    "medication",
+    "manual_handling"
+   ],
+   "preferred_carers": [
+    "CR-0006",
+    "CR-0012"
+   ],
+   "recent_carers": [
+    "CR-0006",
+    "CR-0011",
+    "CR-0012"
+   ]
+  },
+  {
+   "client_ref": "CL-0028",
+   "location": {
+    "lat": 52.499,
+    "lon": -1.886
+   },
+   "needs": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0010"
+   ],
+   "recent_carers": [
+    "CR-0010",
+    "CR-0013"
+   ]
+  },
+  {
+   "client_ref": "CL-0029",
+   "location": {
+    "lat": 52.467,
+    "lon": -1.885
+   },
+   "needs": [
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0006"
+   ],
+   "recent_carers": [
+    "CR-0006",
+    "CR-0017"
+   ]
+  },
+  {
+   "client_ref": "CL-0030",
+   "location": {
+    "lat": 52.456,
+    "lon": -1.858
+   },
+   "needs": [
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0006",
+    "CR-0014"
+   ],
+   "recent_carers": [
+    "CR-0006",
+    "CR-0014",
+    "CR-0017"
+   ]
+  },
+  {
+   "client_ref": "CL-0031",
+   "location": {
+    "lat": 52.486,
+    "lon": -1.886
+   },
+   "needs": [
+    "personal_care"
+   ],
+   "preferred_carers": [],
+   "recent_carers": [
+    "CR-0004",
+    "CR-0015"
+   ]
+  },
+  {
+   "client_ref": "CL-0032",
+   "location": {
+    "lat": 52.45,
+    "lon": -1.937
+   },
+   "needs": [
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0010",
+    "CR-0014"
+   ],
+   "recent_carers": [
+    "CR-0010",
+    "CR-0014"
+   ]
+  },
+  {
+   "client_ref": "CL-0033",
+   "location": {
+    "lat": 52.488,
+    "lon": -1.82
+   },
+   "needs": [
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0005",
+    "CR-0012"
+   ],
+   "recent_carers": [
+    "CR-0001",
+    "CR-0005",
+    "CR-0012"
+   ]
+  },
+  {
+   "client_ref": "CL-0034",
+   "location": {
+    "lat": 52.477,
+    "lon": -1.798
+   },
+   "needs": [
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0005",
+    "CR-0014"
+   ],
+   "recent_carers": [
+    "CR-0003",
+    "CR-0005",
+    "CR-0014"
+   ]
+  },
+  {
+   "client_ref": "CL-0035",
+   "location": {
+    "lat": 52.492,
+    "lon": -1.851
+   },
+   "needs": [
+    "personal_care",
+    "manual_handling"
+   ],
+   "preferred_carers": [
+    "CR-0001"
+   ],
+   "recent_carers": [
+    "CR-0001",
+    "CR-0010"
+   ]
+  },
+  {
+   "client_ref": "CL-0036",
+   "location": {
+    "lat": 52.458,
+    "lon": -1.818
+   },
+   "needs": [
+    "personal_care",
+    "manual_handling"
+   ],
+   "preferred_carers": [
+    "CR-0004",
+    "CR-0014"
+   ],
+   "recent_carers": [
+    "CR-0004",
+    "CR-0010",
+    "CR-0014"
+   ]
+  },
+  {
+   "client_ref": "CL-0037",
+   "location": {
+    "lat": 52.45,
+    "lon": -1.865
+   },
+   "needs": [
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0012"
+   ],
+   "recent_carers": [
+    "CR-0004",
+    "CR-0006",
+    "CR-0012"
+   ]
+  },
+  {
+   "client_ref": "CL-0038",
+   "location": {
+    "lat": 52.479,
+    "lon": -1.938
+   },
+   "needs": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [],
+   "recent_carers": [
+    "CR-0003",
+    "CR-0013"
+   ]
+  },
+  {
+   "client_ref": "CL-0039",
+   "location": {
+    "lat": 52.482,
+    "lon": -1.98
+   },
+   "needs": [
+    "medication",
+    "personal_care",
+    "catheter_care"
+   ],
+   "preferred_carers": [
+    "CR-0016"
+   ],
+   "recent_carers": [
+    "CR-0016"
+   ]
+  },
+  {
+   "client_ref": "CL-0040",
+   "location": {
+    "lat": 52.475,
+    "lon": -1.921
+   },
+   "needs": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "preferred_carers": [
+    "CR-0002",
+    "CR-0016"
+   ],
+   "recent_carers": [
+    "CR-0002",
+    "CR-0016"
+   ]
+  }
+ ],
+ "visits": [
+  {
+   "visit_id": "V-0047",
+   "client_ref": "CL-0017",
+   "window_start": 420,
+   "window_end": 480,
+   "duration": 60,
+   "required_skills": [
+    "personal_care",
+    "manual_handling",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0078",
+   "client_ref": "CL-0028",
+   "window_start": 420,
+   "window_end": 480,
+   "duration": 60,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0089",
+   "client_ref": "CL-0032",
+   "window_start": 420,
+   "window_end": 480,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0040",
+   "client_ref": "CL-0015",
+   "window_start": 425,
+   "window_end": 485,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0007",
+   "client_ref": "CL-0003",
+   "window_start": 430,
+   "window_end": 490,
+   "duration": 45,
+   "required_skills": [
+    "dementia_care",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0039",
+   "client_ref": "CL-0014",
+   "window_start": 430,
+   "window_end": 490,
+   "duration": 60,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0077",
+   "client_ref": "CL-0027",
+   "window_start": 430,
+   "window_end": 490,
+   "duration": 45,
+   "required_skills": [
+    "personal_care",
+    "medication",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0069",
+   "client_ref": "CL-0024",
+   "window_start": 435,
+   "window_end": 495,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0099",
+   "client_ref": "CL-0037",
+   "window_start": 440,
+   "window_end": 500,
+   "duration": 45,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0063",
+   "client_ref": "CL-0022",
+   "window_start": 450,
+   "window_end": 510,
+   "duration": 45,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0021",
+   "client_ref": "CL-0008",
+   "window_start": 455,
+   "window_end": 515,
+   "duration": 60,
+   "required_skills": [
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0081",
+   "client_ref": "CL-0029",
+   "window_start": 455,
+   "window_end": 485,
+   "duration": 45,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0018",
+   "client_ref": "CL-0007",
+   "window_start": 460,
+   "window_end": 520,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0102",
+   "client_ref": "CL-0039",
+   "window_start": 460,
+   "window_end": 520,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0058",
+   "client_ref": "CL-0020",
+   "window_start": 470,
+   "window_end": 530,
+   "duration": 45,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0096",
+   "client_ref": "CL-0035",
+   "window_start": 470,
+   "window_end": 530,
+   "duration": 30,
+   "required_skills": [
+    "personal_care",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0014",
+   "client_ref": "CL-0006",
+   "window_start": 475,
+   "window_end": 535,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0027",
+   "client_ref": "CL-0010",
+   "window_start": 475,
+   "window_end": 535,
+   "duration": 60,
+   "required_skills": [
+    "personal_care",
+    "medication",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0055",
+   "client_ref": "CL-0019",
+   "window_start": 475,
+   "window_end": 535,
+   "duration": 60,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0070",
+   "client_ref": "CL-0025",
+   "window_start": 475,
+   "window_end": 505,
+   "duration": 60,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0090",
+   "client_ref": "CL-0033",
+   "window_start": 475,
+   "window_end": 535,
+   "duration": 60,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0097",
+   "client_ref": "CL-0036",
+   "window_start": 475,
+   "window_end": 535,
+   "duration": 30,
+   "required_skills": [
+    "personal_care",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0009",
+   "client_ref": "CL-0004",
+   "window_start": 480,
+   "window_end": 540,
+   "duration": 45,
+   "required_skills": [
+    "dementia_care",
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0005",
+   "client_ref": "CL-0002",
+   "window_start": 485,
+   "window_end": 545,
+   "duration": 45,
+   "required_skills": [
+    "dementia_care",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0025",
+   "client_ref": "CL-0009",
+   "window_start": 490,
+   "window_end": 550,
+   "duration": 45,
+   "required_skills": [
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0085",
+   "client_ref": "CL-0030",
+   "window_start": 490,
+   "window_end": 550,
+   "duration": 45,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0101",
+   "client_ref": "CL-0038",
+   "window_start": 490,
+   "window_end": 550,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0074",
+   "client_ref": "CL-0026",
+   "window_start": 495,
+   "window_end": 555,
+   "duration": 45,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0032",
+   "client_ref": "CL-0012",
+   "window_start": 500,
+   "window_end": 560,
+   "duration": 60,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0001",
+   "client_ref": "CL-0001",
+   "window_start": 505,
+   "window_end": 565,
+   "duration": 30,
+   "required_skills": [
+    "personal_care",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0031",
+   "client_ref": "CL-0011",
+   "window_start": 505,
+   "window_end": 565,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0065",
+   "client_ref": "CL-0023",
+   "window_start": 505,
+   "window_end": 535,
+   "duration": 45,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0011",
+   "client_ref": "CL-0005",
+   "window_start": 510,
+   "window_end": 570,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0044",
+   "client_ref": "CL-0016",
+   "window_start": 515,
+   "window_end": 575,
+   "duration": 60,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0086",
+   "client_ref": "CL-0031",
+   "window_start": 520,
+   "window_end": 580,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0036",
+   "client_ref": "CL-0013",
+   "window_start": 530,
+   "window_end": 590,
+   "duration": 60,
+   "required_skills": [
+    "personal_care",
+    "medication",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0051",
+   "client_ref": "CL-0018",
+   "window_start": 535,
+   "window_end": 595,
+   "duration": 60,
+   "required_skills": [
+    "dementia_care",
+    "personal_care",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0061",
+   "client_ref": "CL-0021",
+   "window_start": 535,
+   "window_end": 595,
+   "duration": 60,
+   "required_skills": [
+    "personal_care",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0093",
+   "client_ref": "CL-0034",
+   "window_start": 540,
+   "window_end": 600,
+   "duration": 60,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0103",
+   "client_ref": "CL-0040",
+   "window_start": 555,
+   "window_end": 585,
+   "duration": 45,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0019",
+   "client_ref": "CL-0007",
+   "window_start": 690,
+   "window_end": 750,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0045",
+   "client_ref": "CL-0016",
+   "window_start": 690,
+   "window_end": 750,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0022",
+   "client_ref": "CL-0008",
+   "window_start": 695,
+   "window_end": 755,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0052",
+   "client_ref": "CL-0018",
+   "window_start": 695,
+   "window_end": 755,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0075",
+   "client_ref": "CL-0026",
+   "window_start": 695,
+   "window_end": 755,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0087",
+   "client_ref": "CL-0031",
+   "window_start": 695,
+   "window_end": 755,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0015",
+   "client_ref": "CL-0006",
+   "window_start": 705,
+   "window_end": 765,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0091",
+   "client_ref": "CL-0033",
+   "window_start": 710,
+   "window_end": 770,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0066",
+   "client_ref": "CL-0023",
+   "window_start": 715,
+   "window_end": 745,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0041",
+   "client_ref": "CL-0015",
+   "window_start": 720,
+   "window_end": 780,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0037",
+   "client_ref": "CL-0013",
+   "window_start": 725,
+   "window_end": 785,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0056",
+   "client_ref": "CL-0019",
+   "window_start": 725,
+   "window_end": 785,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0048",
+   "client_ref": "CL-0017",
+   "window_start": 730,
+   "window_end": 790,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0079",
+   "client_ref": "CL-0028",
+   "window_start": 730,
+   "window_end": 790,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0002",
+   "client_ref": "CL-0001",
+   "window_start": 735,
+   "window_end": 795,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0012",
+   "client_ref": "CL-0005",
+   "window_start": 735,
+   "window_end": 795,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0059",
+   "client_ref": "CL-0020",
+   "window_start": 735,
+   "window_end": 795,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0033",
+   "client_ref": "CL-0012",
+   "window_start": 740,
+   "window_end": 800,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0094",
+   "client_ref": "CL-0034",
+   "window_start": 740,
+   "window_end": 800,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0104",
+   "client_ref": "CL-0040",
+   "window_start": 745,
+   "window_end": 775,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0028",
+   "client_ref": "CL-0010",
+   "window_start": 750,
+   "window_end": 810,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0071",
+   "client_ref": "CL-0025",
+   "window_start": 750,
+   "window_end": 780,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0082",
+   "client_ref": "CL-0029",
+   "window_start": 760,
+   "window_end": 790,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0003",
+   "client_ref": "CL-0001",
+   "window_start": 960,
+   "window_end": 1020,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0034",
+   "client_ref": "CL-0012",
+   "window_start": 965,
+   "window_end": 1025,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0016",
+   "client_ref": "CL-0006",
+   "window_start": 980,
+   "window_end": 1040,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0053",
+   "client_ref": "CL-0018",
+   "window_start": 980,
+   "window_end": 1040,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0049",
+   "client_ref": "CL-0017",
+   "window_start": 985,
+   "window_end": 1045,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0029",
+   "client_ref": "CL-0010",
+   "window_start": 990,
+   "window_end": 1050,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0067",
+   "client_ref": "CL-0023",
+   "window_start": 995,
+   "window_end": 1025,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0072",
+   "client_ref": "CL-0025",
+   "window_start": 1005,
+   "window_end": 1035,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0105",
+   "client_ref": "CL-0040",
+   "window_start": 1010,
+   "window_end": 1040,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0083",
+   "client_ref": "CL-0029",
+   "window_start": 1015,
+   "window_end": 1045,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0023",
+   "client_ref": "CL-0008",
+   "window_start": 1020,
+   "window_end": 1080,
+   "duration": 30,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0042",
+   "client_ref": "CL-0015",
+   "window_start": 1020,
+   "window_end": 1080,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0004",
+   "client_ref": "CL-0001",
+   "window_start": 1145,
+   "window_end": 1205,
+   "duration": 30,
+   "required_skills": [
+    "personal_care",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0013",
+   "client_ref": "CL-0005",
+   "window_start": 1150,
+   "window_end": 1210,
+   "duration": 45,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0050",
+   "client_ref": "CL-0017",
+   "window_start": 1150,
+   "window_end": 1210,
+   "duration": 30,
+   "required_skills": [
+    "personal_care",
+    "manual_handling",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0095",
+   "client_ref": "CL-0034",
+   "window_start": 1155,
+   "window_end": 1215,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0100",
+   "client_ref": "CL-0037",
+   "window_start": 1155,
+   "window_end": 1215,
+   "duration": 45,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0020",
+   "client_ref": "CL-0007",
+   "window_start": 1160,
+   "window_end": 1220,
+   "duration": 45,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0024",
+   "client_ref": "CL-0008",
+   "window_start": 1160,
+   "window_end": 1220,
+   "duration": 30,
+   "required_skills": [
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0106",
+   "client_ref": "CL-0040",
+   "window_start": 1160,
+   "window_end": 1190,
+   "duration": 45,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0068",
+   "client_ref": "CL-0023",
+   "window_start": 1170,
+   "window_end": 1200,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0064",
+   "client_ref": "CL-0022",
+   "window_start": 1175,
+   "window_end": 1235,
+   "duration": 45,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0098",
+   "client_ref": "CL-0036",
+   "window_start": 1175,
+   "window_end": 1235,
+   "duration": 45,
+   "required_skills": [
+    "personal_care",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0088",
+   "client_ref": "CL-0031",
+   "window_start": 1180,
+   "window_end": 1240,
+   "duration": 45,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0092",
+   "client_ref": "CL-0033",
+   "window_start": 1180,
+   "window_end": 1240,
+   "duration": 45,
+   "required_skills": [
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0026",
+   "client_ref": "CL-0009",
+   "window_start": 1185,
+   "window_end": 1245,
+   "duration": 30,
+   "required_skills": [
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0035",
+   "client_ref": "CL-0012",
+   "window_start": 1185,
+   "window_end": 1245,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0062",
+   "client_ref": "CL-0021",
+   "window_start": 1190,
+   "window_end": 1250,
+   "duration": 45,
+   "required_skills": [
+    "personal_care",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0030",
+   "client_ref": "CL-0010",
+   "window_start": 1200,
+   "window_end": 1260,
+   "duration": 30,
+   "required_skills": [
+    "personal_care",
+    "medication",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0057",
+   "client_ref": "CL-0019",
+   "window_start": 1205,
+   "window_end": 1265,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0076",
+   "client_ref": "CL-0026",
+   "window_start": 1205,
+   "window_end": 1265,
+   "duration": 45,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0080",
+   "client_ref": "CL-0028",
+   "window_start": 1205,
+   "window_end": 1265,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0006",
+   "client_ref": "CL-0002",
+   "window_start": 1210,
+   "window_end": 1270,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0010",
+   "client_ref": "CL-0004",
+   "window_start": 1210,
+   "window_end": 1270,
+   "duration": 45,
+   "required_skills": [
+    "dementia_care",
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0017",
+   "client_ref": "CL-0006",
+   "window_start": 1210,
+   "window_end": 1270,
+   "duration": 45,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0084",
+   "client_ref": "CL-0029",
+   "window_start": 1220,
+   "window_end": 1250,
+   "duration": 45,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  },
+  {
+   "visit_id": "V-0008",
+   "client_ref": "CL-0003",
+   "window_start": 1225,
+   "window_end": 1285,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0038",
+   "client_ref": "CL-0013",
+   "window_start": 1225,
+   "window_end": 1285,
+   "duration": 30,
+   "required_skills": [
+    "personal_care",
+    "medication",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0060",
+   "client_ref": "CL-0020",
+   "window_start": 1225,
+   "window_end": 1285,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0043",
+   "client_ref": "CL-0015",
+   "window_start": 1230,
+   "window_end": 1290,
+   "duration": 45,
+   "required_skills": [
+    "medication",
+    "personal_care",
+    "catheter_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0046",
+   "client_ref": "CL-0016",
+   "window_start": 1230,
+   "window_end": 1290,
+   "duration": 30,
+   "required_skills": [
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0054",
+   "client_ref": "CL-0018",
+   "window_start": 1230,
+   "window_end": 1290,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "personal_care",
+    "manual_handling"
+   ],
+   "time_critical": false
+  },
+  {
+   "visit_id": "V-0073",
+   "client_ref": "CL-0025",
+   "window_start": 1240,
+   "window_end": 1270,
+   "duration": 30,
+   "required_skills": [
+    "dementia_care",
+    "medication",
+    "personal_care"
+   ],
+   "time_critical": true
+  }
+ ]
+}

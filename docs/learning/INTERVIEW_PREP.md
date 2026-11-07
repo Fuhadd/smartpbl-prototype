@@ -236,3 +236,25 @@ qwen is 2.5× faster and smaller but finds half the risks, consistently on both 
 
 **What doesn't the synthetic evaluation tell you?**
 Absolute performance (it's circular: one author for data, rules and prompts), messiness of real notes, and how humans use the queue. It does support relative comparisons, failure modes, and a ready harness.
+
+## Tier 2 — Carer matching
+
+### 2.1 Scheduling data
+
+**Hard vs soft constraints?**
+Hard constraints are those where violation is unsafe or unlawful: skills, shift, arrival window (especially time-critical medication), duration. Soft constraints are preferences such as continuity and travel. Hard ones go in as constraints, soft ones as explicit weighted costs.
+
+**Why arrival windows?**
+Care plans and call monitoring use them. In OR-Tools, the time dimension's value at a node is the arrival time, and duration is service time.
+
+**How did you make the data solvable but not trivial?**
+A validator checks that every visit's full skill combination exists on a covering shift, and the generator won't write a failing scenario. Per-skill coverage alone was shown to be insufficient. Capacity is left tight: the morning peak is about 90% loaded.
+
+**Why no split shifts or double-ups?**
+Both are real, and both need extra solver machinery (breaks, cross-vehicle synchronisation). They're documented as the first additions for PBL.
+
+**With real PBL data?**
+Postcode-centroid locations under a DPIA, travel modes (walking, bus), preferences from visit history, contractual rules, and many historical days.
+
+**Why round synthetic coordinates?**
+A random full-precision point can sit on a real front door. At ~100 m, travel times barely change. Production needs approximate locations, not addresses.

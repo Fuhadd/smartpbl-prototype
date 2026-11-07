@@ -84,3 +84,11 @@
 - **Alert fatigue**: Reviewers ignoring or rubber-stamping alerts because too many are false.
 - **Union recall**: Recall when the flags of two systems are combined.
 - **Inter-annotator agreement (Cohen's kappa)**: Agreement between two labellers corrected for chance; caps how well any model can be judged.
+- **Domiciliary care (homecare)**: Care delivered in a person's own home through scheduled visits ("calls").
+- **Arrival (time) window**: The interval in which a carer must arrive for a visit.
+- **Time-critical medication**: Medication whose timing matters clinically (e.g. Parkinson's); modelled as a narrow window.
+- **Double-up call**: A visit needing two carers at once (e.g. hoist transfers); requires synchronised arrivals.
+- **Split shift**: A working day in two parts with an unpaid gap (e.g. morning and evening).
+- **Hard / soft constraint**: A rule that must hold, versus a preference that is traded off through a cost.
+- **Skill-mix coverage**: Whether some single carer has every skill a visit needs, not just whether each skill exists somewhere on shift.
+- **Continuity of care**: Being supported by the same small group of familiar carers.

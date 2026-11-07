@@ -95,3 +95,19 @@
   - **The deployed pipeline** reviews 50% of notes, with a 7.1% escape rate and 0 high-severity escapes.
   - **The rules overfit dev,** dropping from 0.986 to 0.860 F1.
   - **llama3.1:8b stays the default. qwen2.5:3b is rejected** for now: it reaches only about 50% recall on both splits.
+
+## ADR-014: Scheduling data model and synthetic scenario simplifications (2026-11-07)
+- **Context:** Tier 2 needs a reproducible, care-shaped scheduling instance with skills, shifts, arrival windows and preferences, without any real location data.
+- **Decision:**
+  - **Time:** one day, in integer minutes from midnight.
+  - **Hard constraints are explicit fields:** skills, shift window, arrival window, duration.
+  - **Preferences are separate soft fields:** `preferred_carers`, `recent_carers`.
+  - **Generator:** seeded, with clients in three Gaussian patches inside an inner-Birmingham box, coordinates rounded to 3 decimal places, early and late continuous shifts, ±30-minute windows (±15 for time-critical medication), and preferences drawn only from carers qualified for all the client's needs.
+  - **Validation:** the generator refuses to write a scenario where a visit's skill combination has no carer on a covering shift.
+  - **Defaults chosen without asking:** everyone drives, there are no split shifts or breaks, and there are no double-up calls.
+- **Alternatives:** Solomon/Gehring–Homberger benchmarks; home-health-care literature instances; anonymised real rotas (needs a DPIA).
+- **Consequences:**
+  - 17 carers, 40 clients, 106 visits.
+  - The morning peak is about 90% loaded once travel is counted, so dropped visits are likely in 2.3.
+  - Per-skill coverage proved insufficient (skill-mix gap with 7 early carers), so validation is mandatory.
+  - Results from one synthetic day are illustrative only.

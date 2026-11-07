@@ -29,3 +29,6 @@
 - **qwen2.5:3b:** needs its own prompt tuning and evaluation before it can be a hardware fallback (test recall 0.50 with the llama prompt).
 - **Fresh held-out set:** generate a new test split with a different seed and new held-out phrases, for any future prompt or rule iteration.
 - **Real-data evaluation plan:** double annotation with kappa, a time-based split, per-category sample-size targets, fairness slices.
+- **Scheduling realism:** split shifts with breaks (OR-Tools vehicle breaks), double-up calls (synchronised arrivals), travel mode per carer (walk/bus/drive), paid-travel and working-time rules.
+- **Skill-mix-aware generator:** guarantee combination coverage directly, instead of relying on rejection by the validator.
+- **Multi-day and multi-seed scenarios** for Tier 2 results that generalise beyond one synthetic day.
