@@ -4,7 +4,7 @@
 
 `docs/DEMO_SCRIPT.md` contains:
 - a 10-minute preparation checklist (local stack with the LLM, a saved rota, a warmed-up model, window layout, a prepared note);
-- a **7-beat, 3-minute script**, where each beat has a time window, the screen, the actions, the words (about 430 in total) and what it demonstrates;
+- a **7-beat, 3-minute script**, where each beat has a time window, the screen, the actions, the words (about 330 in total) and what it demonstrates;
 - a recovery table for live failures;
 - 60-second and 90-second cut-down versions.
 
@@ -29,7 +29,7 @@ The README's documentation index links to it.
 
 ## 4. How it works
 
-**Pacing:** about 140 spoken words a minute, so 430 words take roughly 3 minutes with pauses for clicks. Each beat is 15–35 seconds, and the longest goes to the main idea (review: 35 s).
+**Pacing:** about 140 spoken words a minute, so 330 words take about 2:20, and clicks and screen changes fill the rest of the 3 minutes. Each beat is 15–35 seconds, and the longest goes to the main idea (review: 35 s).
 
 ```mermaid
 flowchart LR

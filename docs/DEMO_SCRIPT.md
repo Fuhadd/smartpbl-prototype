@@ -1,6 +1,6 @@
 # SMARTPBL: 3-minute demo script
 
-A beat-by-beat script for a screen recording, also usable live in an interview. It runs about **3:00**, with about 430 spoken words at a calm pace.
+A beat-by-beat script for a screen recording, also usable live in an interview. It runs about **3:00**: about 330 spoken words (roughly 2:20 at a calm 140 words a minute), plus pauses for clicks and screen changes.
 
 ## Before recording (10 minutes)
 
