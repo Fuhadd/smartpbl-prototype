@@ -258,3 +258,17 @@
   - GET requests write audit rows.
   - Identity is still the prototype `X-Reviewer` header until 4.1, so these endpoints are **not access-controlled yet**.
   - The audit `note_id` column is unused here (generic subject deferred to 4.2).
+
+## ADR-024: Tier 5 becomes a React coordinator dashboard plus a Flutter carer app (2026-11-07)
+- **Context:** The project plan was changed by the project owner (noticed at the Tier 3 milestone). It replaces the Flutter coordinator app with a web dashboard for coordinators and a separate carer-facing app.
+- **Decision:**
+  - **5.1–5.4:** a React coordinator dashboard (Vite + TypeScript, React Router, TanStack Query, a typed client generated from the FastAPI OpenAPI schema; react-leaflet with OSM tiles; role-aware routes).
+  - **5.5:** a live demo deployment in "demo mode" with seeded, precomputed results, because the LLM runs locally.
+  - **5.6:** a Flutter carer app (mobile + web PWA via `flutter build web --wasm`, deployed to Firebase Hosting in demo mode) for today's visits and care-note submission.
+  - **5.7:** demo links and per-role credentials in the README and on the login screen.
+- **Alternatives:** the original single Flutter coordinator app (one codebase, but coordinators work at desks, where a web dashboard fits better); a Flutter web dashboard (one language, but a weaker ecosystem for data-dense tables and charts).
+- **Consequences:**
+  - The README roadmap is updated.
+  - Tier 4's CORS and auth design must serve two browser origins.
+  - The OpenAPI schema becomes a contract: the response models from Tiers 1–3 (spans, reasons, SHAP factors, use notice) are what the clients consume.
+  - Demo mode needs seeded data and no Ollama dependency.

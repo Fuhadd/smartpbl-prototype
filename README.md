@@ -13,7 +13,8 @@ A portfolio prototype of an AI platform for domiciliary care. It has three parts
 - [x] Step 0: setup
 - [x] Tier 1: care-notes NLP (schemas, synthetic data, PII redaction, rules baseline, LLM extraction, grounding + routing, persistence + audit, API + human review, evaluation)
 - [x] Tier 2: carer matching (scheduling data, OSRM travel matrix, OR-Tools VRPTW, continuity trade-off, greedy comparison, schedule API)
-- [ ] Tiers 3–6: attrition, production layer, Flutter app, packaging
+- [x] Tier 3: attrition prediction (synthetic workforce from Tier 2 schedules, LR vs gradient boosting with nested CV, SHAP explanations checked against ground truth, age audit, model card, workforce API)
+- [ ] Tiers 4–6: production layer, coordinator dashboard and carer app, packaging
 
 ## Quick start
 
@@ -209,23 +210,104 @@ uv run python -m scripts.compare_solvers    # greedy vs OR-Tools over 5 days (~3
 - **The fair real-world baseline is PBL's actual rota,** replayed with call-monitoring data, not the greedy heuristic.
 - **Synchronous API** (up to 60 s per request) with no authentication yet (Tier 4).
 
-## Roadmap: Tiers 3–6
+## Tier 3: attrition prediction
+
+Predicts which carers are likely to leave within 12 months, so a coordinator can offer support with **working conditions the provider controls**: rota notice, unpaid gaps, regular clients, induction. The model card prohibits any adverse use.
+
+### Architecture
+
+```mermaid
+flowchart LR
+    T2[Tier 2 solves<br/>5 days, OR-Tools w=15] --> CD[85 carer-days<br/>driving · unpaid gaps · split days<br/>familiar-client share]
+    CD --> GEN[Synthetic workforce, 1,000 carers<br/>+ assumed tenure, contract,<br/>short-notice changes]
+    GT[Documented ground truth<br/>steps · hinge · interaction<br/>5 null features · hidden factor] --> GEN
+    GEN --> CV[Nested 5x5 CV<br/>LR vs HGB<br/>tuned on log loss]
+    GEN -.-> OR[Oracle: true P given features<br/>ceiling + calibration target]
+    OR -.-> CV
+    CV --> HGB[HGB, depth 2]
+    HGB --> SH[SHAP, path-dependent<br/>additivity tested]
+    SH --> API[GET /workforce/risk<br/>GET /workforce/id/explanation<br/>use notice in every response]
+    API -.-> AU[(audit_events<br/>every read: viewer,<br/>carers shown, model version)]
+    HGB --> FA[Age audit<br/>age never an input]
+```
+
+**Design principles:**
+- **Features come from the scheduler,** so rota decisions (such as the continuity weight) feed directly into retention risk.
+- **A known mechanism, stated up front.** Synthetic labels are circular, so the generator's ground truth is documented, and every result is read as "does the pipeline recover it?". This data says nothing about real carers.
+- **Probabilities are the product.** Models are tuned on log loss, checked for calibration, and class reweighting is rejected.
+- **Supportive by contract.** Factors are framed as provider levers with support actions; the label and age are never served; every view is audited.
+
+Notes 16–19 in [`docs/learning/`](docs/learning/) explain each part. The model card is [`docs/model-cards/attrition-model.md`](docs/model-cards/attrition-model.md).
+
+### Results
+
+**Data** ([data card](data/workforce/DATA_CARD.md)):
+- **1,000 carers, 29.8% leavers.** The **oracle ROC-AUC is 0.726**: the best any model can do with these features. It is 0.754 even without the hidden factor, because the outcome itself is a coin flip.
+- **The 200-carer test split is unusually easy** (97th percentile of possible splits), so cross-validation is the main estimate.
+
+**Models**, nested 5×5 repeated stratified CV on 800 training carers ([`tier3_models.md`](docs/results/tier3_models.md)):
+
+| | ROC-AUC | PR-AUC (AP) | Brier ↓ | Top-10% precision |
+|---|---|---|---|---|
+| Base rate | 0.500 | 0.297 | 0.209 | 30% |
+| Logistic regression | 0.655 | 0.483 | 0.196 | 57% |
+| LR, balanced class weights | 0.653 | 0.476 | 0.232 | 59% |
+| **Gradient boosting (HGB)** | **0.675** | **0.538** | **0.188** | **69%** |
+| Oracle (ceiling) | 0.709 | 0.556 | 0.181 | 71% |
+
+- **HGB beats LR** in 18/25 folds on ROC-AUC, 20/25 on AP and 22/25 on Brier. It captures 84% of the achievable gain over chance, and its top-of-list precision is close to the oracle's.
+- **Balanced weights:** same ranking, but mean predicted risk 48% against a true 30%.
+- **The test split can't separate the models** (LR 0.772, HGB 0.759, CIs ±0.07).
+
+![ROC and PR curves](docs/figures/tier3_roc_pr.png)
+
+**Explanations vs ground truth** ([`tier3_explain.md`](docs/results/tier3_explain.md)):
+- The global ranking matches the truth with Spearman **0.81**. Per-carer SHAP tracks true contributions for tenure, contract and short-notice changes (r ≥ 0.90).
+- **Split shifts are under-credited** (r 0.13): the correlated unpaid-gap feature carries their signal. SHAP explains the model, not the world.
+
+![SHAP vs truth](docs/figures/tier3_shap_vs_truth.png)
+
+**Age audit** (age is never a model input): flagging the top 20% selects **47% of 18–24s and 8% of over-55s** (ratio 0.17), carried by tenure, while predictions stay roughly calibrated within each band. Accurate and disparate at once, which is why the controls are on use.
+
+### Explore the workforce API
+
+```bash
+uv run uvicorn app.main:app --reload
+curl -H 'X-Reviewer: manager.alpha' 'localhost:8000/workforce/risk?limit=5'
+curl -H 'X-Reviewer: manager.alpha' localhost:8000/workforce/WF-0461/explanation
+
+# Reproduce the Tier 3 results (deterministic):
+uv run python -m scripts.calibrate_workforce  # re-solve Tier 2 days (~2 min; output committed)
+uv run python -m scripts.generate_workforce   # synthetic workforce + oracle
+uv run python -m scripts.train_attrition      # nested CV, test, calibration (~2 min)
+uv run python -m scripts.explain_attrition    # SHAP, truth check, age audit (~30 s)
+```
+
+### Tier 3 limitations
+
+- **Circular by construction.** Every metric measures recovery of a mechanism I wrote. The effect sizes are invented; only their directions follow UK care workforce reporting.
+- **Small, simple workforce.** 1,000 carers from 84 Tier 2 rounds; employment features are mostly independent draws; one snapshot with no censoring; leavers aren't split by reason.
+- **SHAP mode.** Interventional SHAP fails additivity for HistGradientBoosting in shap 0.54.1, so explanations use the path-dependent mode, which follows feature correlations.
+- **Fairness audit covers age only,** because that's all the synthetic data contains. Real deployment needs audits of every lawfully measurable characteristic, a DPIA and worker consultation.
+- **No access control yet:** the `X-Reviewer` header is not authentication (Tier 4). The model retrains on first request (~4 s).
+
+## Roadmap: Tiers 4–6
 
 | Tier | What | Builds on |
 |---|---|---|
-| **3 · Attrition prediction** | Synthetic workforce features derived from Tier 2 schedules (travel burden, continuity, hours, idle gaps, short-notice changes, tenure). Logistic regression vs HistGradientBoosting with stratified CV, ROC-AUC/PR-AUC, calibration and Brier score. SHAP global and per-carer explanations. A model card on punitive use and proxy discrimination. `GET /workforce/risk` | Idle gaps and travel from the solver become features. The circularity of synthetic labels is documented up front |
 | **4 · Production layer** | JWT auth with coordinator/manager/carer roles replacing `X-Reviewer`; unified audit middleware with a generic subject id; OWASP API Top 10 review (rate limits for `/schedule/solve`, input limits, secrets, CORS); Docker Compose for API + DB + OSRM; GitHub Actions CI | Backlog items from Tiers 1–2: DB roles for the append-only audit, async jobs, raw-text access control |
-| **5 · Flutter coordinator app** | Riverpod/GoRouter/Dio clean architecture; review queue with highlighted evidence; schedule map (`flutter_map`, OSM tiles) with routes and assignment reasons; supportive workforce-risk screen | Tier 1 and 2 APIs as built; `span_start/end` and assignment reasons are already in the responses |
-| **6 · Packaging** | Final README and architecture diagram, DPIA-style data-protection note, model cards, 3-minute demo script, interview pack | Learning notes 00–15, the ADR log, `INTERVIEW_PREP.md` |
+| **5 · Coordinator dashboard and carer app** | React (Vite, TypeScript, TanStack Query, an OpenAPI-generated client): review queue with highlighted evidence, schedule map (react-leaflet, OSM) with the trade-off chart, supportive workforce-risk screen. A Flutter carer app (mobile + PWA): today's visits and care-note submission. Demo deployments with seeded results (ADR-024) | Tier 1–3 APIs as built; spans, assignment reasons, SHAP factors and the use notice are already in the responses |
+| **6 · Packaging** | Final README and architecture diagram, DPIA-style data-protection note, model cards, 3-minute demo script, interview pack | Learning notes 00–19, the ADR log, `INTERVIEW_PREP.md`, the attrition model card |
 
 ## Layout
 
 ```
 app/        core (config, db) · nlp (schemas, redact, baseline, extract, ground, route, review, evaluation)
-            matching (data, travel, solver, check, bounds, continuity, greedy, explain, service) · audit · api
+            matching (data, travel, solver, check, bounds, continuity, greedy, explain, service)
+            workforce (data, features, models, explain, service) · audit · api
 prompts/    versioned prompt templates          data/      synthetic notes, data card, cached predictions
 scripts/    data generation, extraction, eval   migrations/ Alembic
-tests/      unit + Postgres integration tests   docs/      learning notes, results, figures
+tests/      unit + Postgres integration tests   docs/      learning notes, results, figures, model cards
 ```
 
 ## Limitations
