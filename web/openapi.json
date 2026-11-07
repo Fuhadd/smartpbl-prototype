@@ -1,6 +1,40 @@
 {
   "components": {
     "schemas": {
+      "Actor": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "system",
+              "user",
+              "anonymous"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Role"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "kind",
+          "name",
+          "role"
+        ],
+        "title": "Actor",
+        "type": "object"
+      },
       "AssignmentOut": {
         "properties": {
           "carer_ref": {
@@ -55,6 +89,136 @@
           "reasons"
         ],
         "title": "AssignmentOut",
+        "type": "object"
+      },
+      "AttentionNote": {
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RiskCategory"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "client_ref": {
+            "title": "Client Ref",
+            "type": "string"
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence"
+          },
+          "note_id": {
+            "format": "uuid",
+            "title": "Note Id",
+            "type": "string"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/Severity"
+          },
+          "visit_time": {
+            "format": "date-time",
+            "title": "Visit Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "note_id",
+          "client_ref",
+          "visit_time",
+          "severity",
+          "category",
+          "evidence"
+        ],
+        "title": "AttentionNote",
+        "type": "object"
+      },
+      "AuditEntry": {
+        "properties": {
+          "actor": {
+            "$ref": "#/components/schemas/Actor"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/Detail"
+            },
+            "title": "Details",
+            "type": "array"
+          },
+          "event_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Event Ids",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/EntryKind"
+          },
+          "note_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note Id"
+          },
+          "occurred_at": {
+            "format": "date-time",
+            "title": "Occurred At",
+            "type": "string"
+          },
+          "result": {
+            "title": "Result",
+            "type": "string"
+          },
+          "subject": {
+            "title": "Subject",
+            "type": "string"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          }
+        },
+        "required": [
+          "id",
+          "event_ids",
+          "occurred_at",
+          "kind",
+          "actor",
+          "subject",
+          "note_id",
+          "version",
+          "result",
+          "details"
+        ],
+        "title": "AuditEntry",
         "type": "object"
       },
       "AuditEventOut": {
@@ -204,6 +368,95 @@
           "request_id"
         ],
         "title": "AuditEventOut",
+        "type": "object"
+      },
+      "AuditPage": {
+        "properties": {
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/AuditEntry"
+            },
+            "title": "Entries",
+            "type": "array"
+          },
+          "next_before": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Before"
+          }
+        },
+        "required": [
+          "entries",
+          "next_before"
+        ],
+        "title": "AuditPage",
+        "type": "object"
+      },
+      "AuditSummary": {
+        "properties": {
+          "access_denied": {
+            "title": "Access Denied",
+            "type": "integer"
+          },
+          "day": {
+            "title": "Day",
+            "type": "string"
+          },
+          "entries_today": {
+            "title": "Entries Today",
+            "type": "integer"
+          },
+          "high_flags_reviewed": {
+            "title": "High Flags Reviewed",
+            "type": "integer"
+          },
+          "high_flags_today": {
+            "title": "High Flags Today",
+            "type": "integer"
+          },
+          "human_overrides": {
+            "title": "Human Overrides",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "day",
+          "entries_today",
+          "high_flags_today",
+          "high_flags_reviewed",
+          "human_overrides",
+          "access_denied"
+        ],
+        "title": "AuditSummary",
+        "type": "object"
+      },
+      "Baseline": {
+        "properties": {
+          "familiar_pct": {
+            "title": "Familiar Pct",
+            "type": "number"
+          },
+          "solver": {
+            "title": "Solver",
+            "type": "string"
+          },
+          "travel_h": {
+            "title": "Travel H",
+            "type": "number"
+          }
+        },
+        "required": [
+          "solver",
+          "travel_h",
+          "familiar_pct"
+        ],
+        "title": "Baseline",
         "type": "object"
       },
       "Body_login_auth_token_post": {
@@ -380,6 +633,46 @@
         "title": "CarerRoute",
         "type": "object"
       },
+      "CategoryCount": {
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/RiskCategory"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "category",
+          "count"
+        ],
+        "title": "CategoryCount",
+        "type": "object"
+      },
+      "CheckIn": {
+        "properties": {
+          "carer_ref": {
+            "title": "Carer Ref",
+            "type": "string"
+          },
+          "factor_label": {
+            "title": "Factor Label",
+            "type": "string"
+          },
+          "factor_value": {
+            "title": "Factor Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "carer_ref",
+          "factor_label",
+          "factor_value"
+        ],
+        "title": "CheckIn",
+        "type": "object"
+      },
       "Client": {
         "additionalProperties": false,
         "properties": {
@@ -424,6 +717,65 @@
         "title": "Client",
         "type": "object"
       },
+      "Detail": {
+        "description": "One tile of an expanded row: a label, a bold value and an optional second line.",
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "mono": {
+            "default": false,
+            "title": "Mono",
+            "type": "boolean"
+          },
+          "secondary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Secondary"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ],
+        "title": "Detail",
+        "type": "object"
+      },
+      "EntryFilter": {
+        "description": "The filter pills on Audit.dc.html.",
+        "enum": [
+          "all",
+          "ai_output",
+          "human_decision",
+          "schedule_run",
+          "access"
+        ],
+        "title": "EntryFilter",
+        "type": "string"
+      },
+      "EntryKind": {
+        "enum": [
+          "note_submitted",
+          "ai_output",
+          "human_decision",
+          "schedule_run",
+          "access_denied",
+          "security_alert"
+        ],
+        "title": "EntryKind",
+        "type": "string"
+      },
       "EventType": {
         "enum": [
           "note_ingested",
@@ -449,6 +801,9 @@
           "average_risk": {
             "title": "Average Risk",
             "type": "number"
+          },
+          "band": {
+            "$ref": "#/components/schemas/RiskBand"
           },
           "baseline_risk": {
             "title": "Baseline Risk",
@@ -513,6 +868,7 @@
           "baseline_risk",
           "average_risk",
           "support_priority",
+          "band",
           "factors",
           "suggested_support",
           "caveats"
@@ -827,6 +1183,27 @@
         "title": "FlagOut",
         "type": "object"
       },
+      "FlagsByCategory": {
+        "properties": {
+          "counts": {
+            "items": {
+              "$ref": "#/components/schemas/CategoryCount"
+            },
+            "title": "Counts",
+            "type": "array"
+          },
+          "window_days": {
+            "title": "Window Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "window_days",
+          "counts"
+        ],
+        "title": "FlagsByCategory",
+        "type": "object"
+      },
       "GroundingStatus": {
         "enum": [
           "exact",
@@ -1088,6 +1465,54 @@
         "title": "NoteReviewOut",
         "type": "object"
       },
+      "OverviewOut": {
+        "properties": {
+          "flags_by_category": {
+            "$ref": "#/components/schemas/FlagsByCategory"
+          },
+          "generated_at": {
+            "format": "date-time",
+            "title": "Generated At",
+            "type": "string"
+          },
+          "pipeline": {
+            "$ref": "#/components/schemas/PipelineHealth"
+          },
+          "review": {
+            "$ref": "#/components/schemas/ReviewSummary"
+          },
+          "schedule": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScheduleSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "workforce": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WorkforceSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "generated_at",
+          "review",
+          "flags_by_category",
+          "pipeline",
+          "schedule",
+          "workforce"
+        ],
+        "title": "OverviewOut",
+        "type": "object"
+      },
       "Permission": {
         "enum": [
           "note.create",
@@ -1100,6 +1525,82 @@
           "workforce.read"
         ],
         "title": "Permission",
+        "type": "string"
+      },
+      "PipelineHealth": {
+        "properties": {
+          "extractions": {
+            "title": "Extractions",
+            "type": "integer"
+          },
+          "grounded_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grounded Rate"
+          },
+          "median_latency_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Latency Ms"
+          },
+          "model_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Name"
+          },
+          "schema_valid_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schema Valid Rate"
+          },
+          "window_days": {
+            "title": "Window Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "window_days",
+          "extractions",
+          "schema_valid_rate",
+          "grounded_rate",
+          "median_latency_ms",
+          "model_name"
+        ],
+        "title": "PipelineHealth",
+        "type": "object"
+      },
+      "Preset": {
+        "enum": [
+          "travel",
+          "balanced",
+          "continuity",
+          "custom"
+        ],
+        "title": "Preset",
         "type": "string"
       },
       "QueueItem": {
@@ -1271,6 +1772,47 @@
         "title": "ReviewStatus",
         "type": "string"
       },
+      "ReviewSummary": {
+        "properties": {
+          "attention": {
+            "items": {
+              "$ref": "#/components/schemas/AttentionNote"
+            },
+            "title": "Attention",
+            "type": "array"
+          },
+          "awaiting_flags": {
+            "title": "Awaiting Flags",
+            "type": "integer"
+          },
+          "awaiting_high": {
+            "title": "Awaiting High",
+            "type": "integer"
+          },
+          "notes_waiting": {
+            "title": "Notes Waiting",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "awaiting_flags",
+          "awaiting_high",
+          "notes_waiting",
+          "attention"
+        ],
+        "title": "ReviewSummary",
+        "type": "object"
+      },
+      "RiskBand": {
+        "description": "Display bands (ADR-032). Relative, not absolute: scores come from a model trained on\nsynthetic data, so a fixed probability cut-off would carry false precision.",
+        "enum": [
+          "elevated",
+          "moderate",
+          "low"
+        ],
+        "title": "RiskBand",
+        "type": "string"
+      },
       "RiskCategory": {
         "enum": [
           "falls",
@@ -1286,6 +1828,9 @@
       },
       "RiskItem": {
         "properties": {
+          "band": {
+            "$ref": "#/components/schemas/RiskBand"
+          },
           "carer_ref": {
             "title": "Carer Ref",
             "type": "string"
@@ -1315,6 +1860,7 @@
           "rank",
           "risk",
           "support_priority",
+          "band",
           "top_factors"
         ],
         "title": "RiskItem",
@@ -1518,6 +2064,87 @@
         "title": "ScheduleOut",
         "type": "object"
       },
+      "ScheduleSummary": {
+        "properties": {
+          "baseline": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Baseline"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "carers_on_shift": {
+            "title": "Carers On Shift",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "familiar_pct": {
+            "title": "Familiar Pct",
+            "type": "number"
+          },
+          "first_unassigned": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UnassignedVisit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "preset": {
+            "$ref": "#/components/schemas/Preset"
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "scenario_name": {
+            "title": "Scenario Name",
+            "type": "string"
+          },
+          "served": {
+            "title": "Served",
+            "type": "integer"
+          },
+          "travel_h": {
+            "title": "Travel H",
+            "type": "number"
+          },
+          "unassigned": {
+            "title": "Unassigned",
+            "type": "integer"
+          },
+          "visits": {
+            "title": "Visits",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "run_id",
+          "created_at",
+          "scenario_name",
+          "preset",
+          "visits",
+          "served",
+          "unassigned",
+          "carers_on_shift",
+          "travel_h",
+          "familiar_pct",
+          "baseline",
+          "first_unassigned"
+        ],
+        "title": "ScheduleSummary",
+        "type": "object"
+      },
       "Severity": {
         "description": "Ordinal severity. Three levels keep LLM labels consistent and map to clear actions.",
         "enum": [
@@ -1615,6 +2242,29 @@
         "title": "TokenOut",
         "type": "object"
       },
+      "UnassignedVisit": {
+        "properties": {
+          "client_ref": {
+            "title": "Client Ref",
+            "type": "string"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "visit_id": {
+            "title": "Visit Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "visit_id",
+          "client_ref",
+          "detail"
+        ],
+        "title": "UnassignedVisit",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -1709,6 +2359,35 @@
         ],
         "title": "Visit",
         "type": "object"
+      },
+      "WorkforceSummary": {
+        "properties": {
+          "check_in": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CheckIn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "elevated": {
+            "title": "Elevated",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "elevated",
+          "total",
+          "check_in"
+        ],
+        "title": "WorkforceSummary",
+        "type": "object"
       }
     },
     "securitySchemes": {
@@ -1729,6 +2408,184 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/audit": {
+      "get": {
+        "description": "Newest first, one entry per meaningful event, each listing the raw rows behind it.\nPage with `before=<next_before>`.",
+        "operationId": "audit_timeline_audit_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/EntryFilter",
+              "default": "all"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "before",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Before"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Audit Timeline",
+        "tags": [
+          "audit"
+        ]
+      }
+    },
+    "/audit/export": {
+      "get": {
+        "description": "The filtered timeline as CSV (newest first, at most 5000 entries).",
+        "operationId": "audit_export_audit_export_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/EntryFilter",
+              "default": "all"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Audit Export",
+        "tags": [
+          "audit"
+        ]
+      }
+    },
+    "/audit/summary": {
+      "get": {
+        "operationId": "audit_summary_audit_summary_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Audit Summary",
+        "tags": [
+          "audit"
+        ]
+      }
+    },
     "/audit/{note_id}": {
       "get": {
         "description": "Everything the log knows about one note, in insertion order (by id, not timestamp:\nevents in one transaction share now()):\n\n- the note's own events (ingestion, extraction, routing, review decisions);\n- the API requests that caused them, joined by request id (so: who submitted it);\n- every direct access to the note (`/notes/{id}`, `/audit/{id}`), by subject;\n- review-queue views that displayed it.\n\nWorks even if the note itself has since been deleted (no foreign key, by design).",
@@ -2048,6 +2905,32 @@
         ]
       }
     },
+    "/overview": {
+      "get": {
+        "operationId": "overview_overview_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverviewOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Overview",
+        "tags": [
+          "overview"
+        ]
+      }
+    },
     "/review/notes/{note_id}": {
       "post": {
         "description": "Approve, edit or reject every pending flag of a note, atomically, and optionally\nescalate it to a care manager. One `review_decision` audit event per flag, plus a\n`review_escalated` event.",
@@ -2109,7 +2992,7 @@
     },
     "/review/queue": {
       "get": {
-        "description": "Notes needing a human decision: highest pending severity first, then oldest first.\n\nSorted in Python over all notes needing review: fine at prototype volumes; at scale,\nstore a priority column and sort and page in SQL.",
+        "description": "Notes needing a human decision: highest pending severity first, then oldest first.",
         "operationId": "review_queue_review_queue_get",
         "parameters": [
           {

@@ -18,6 +18,7 @@ from app.matching.check import check_solution
 from app.matching.continuity import continuity_stats
 from app.matching.data import Scenario
 from app.matching.explain import explain
+from app.matching.greedy import solve_greedy
 from app.matching.models import ScheduleAssignment, ScheduleRun
 from app.matching.solver import SolverParams, solve
 from app.matching.travel import (
@@ -70,6 +71,10 @@ def run_schedule(
         raise RuntimeError(f"solver returned an invalid schedule: {problems[:3]}")
     assigned, dropped = explain(scenario, matrix, solution)
     stats = continuity_stats(scenario, solution)
+    # The comparison point shown on the overview ("-3.1 h vs greedy baseline"): what a
+    # nearest-available-carer rota would do on the same day and matrix (Step 2.5).
+    greedy = solve_greedy(scenario, matrix)
+    greedy_stats = continuity_stats(scenario, greedy)
 
     run_params = {
         "time_limit_s": time_limit_s,
@@ -99,6 +104,13 @@ def run_schedule(
             "familiar_pct": round(stats.familiar_pct, 4),
             "preferred_pct": round(stats.preferred_pct, 4),
             "distinct_carers_per_client": round(stats.distinct_carers_per_client, 3),
+            "carers_used": sum(1 for r in solution.routes if r.stops),
+            "baseline": {
+                "solver": "greedy",
+                "travel_s": greedy.travel_s,
+                "served": greedy.served,
+                "familiar_pct": round(greedy_stats.familiar_pct, 4),
+            },
         },
         dropped=[
             {

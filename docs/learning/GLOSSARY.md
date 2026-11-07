@@ -252,3 +252,11 @@
 - **Optimistic UI vs server-confirmed UI**: Updating the screen before the server confirms vs after; the review screen waits for confirmation, because decisions are audited actions.
 - **Cache invalidation (TanStack Query)**: Marking cached server data stale after a change so it is refetched (the queue after a decision).
 - **WCAG 1.4.1 Use of Color**: Information must not be conveyed by colour alone; severity is always also a word.
+- **Projection (read model)**: A view derived from a log of events at read time; it can be rebuilt or corrected without changing the events.
+- **Anchor row**: In the audit timeline, the raw event that starts an entry (e.g. `note_ingested`); its companions complete the entry.
+- **Keyset (seek) pagination**: Paging by "rows after the last key I saw" (`id < :before`) instead of OFFSET; stable while rows are added, and fast at any depth.
+- **CSV (formula) injection**: Spreadsheet cells beginning with `=`, `+`, `-` or `@` run as formulas when opened; exports neutralise them with a leading apostrophe.
+- **Disclosure pattern**: A button with `aria-expanded` (and optionally `aria-controls`) that shows or hides related content; the accessible basis of expandable rows.
+- **Ordered-set aggregate**: A SQL aggregate over sorted input, such as `percentile_cont(0.5) WITHIN GROUP (ORDER BY x)` for a median.
+- **Relative risk band**: A label defined by rank or comparison with the group (top 20 %, above average), not by a fixed probability; avoids claiming calibration the model lacks.
+- **Debounce**: Waiting until input pauses (here 300 ms) before acting, so search sends one request instead of one per keystroke.

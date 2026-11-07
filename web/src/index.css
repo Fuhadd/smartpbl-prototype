@@ -60,6 +60,11 @@
   --note-text: #27272a;
   --low-border: #b2ddff;
 
+  /* Overview and audit (Main.dc.html, Audit.dc.html): bar track, schedule-run chip. */
+  --track: #f0f0ee;
+  --schedule-text: #0f766e;
+  --schedule-bg: #e6f6f4;
+
   --skeleton-strong: #efefed;
   --skeleton: #f4f4f2;
 
@@ -123,6 +128,9 @@
   --color-note-text: var(--note-text);
   --color-low-border: var(--low-border);
   --color-skeleton: var(--skeleton);
+  --color-track: var(--track);
+  --color-schedule: var(--schedule-text);
+  --color-schedule-bg: var(--schedule-bg);
   --color-skeleton-strong: var(--skeleton-strong);
 
   --color-background: var(--background);

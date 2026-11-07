@@ -384,3 +384,20 @@
   - The design's per-category protocol text exists only as the falls placeholder.
   - Four category colours were chosen outside the design.
   - The confidence threshold is mirrored as a frontend constant.
+
+## ADR-032: Overview summary endpoint, audit timeline projection, greedy comparison and relative risk bands (2026-11-07)
+- **Context:** Step 5.2b builds `Main.dc.html` and `Audit.dc.html`. The overview needs data from four tables and the workforce model. The audit screen shows one line per meaningful event, while the log stores fine-grained rows. Two design elements had no backing data: "vs manual" (there is no manual rota) and "Carers at elevated risk" (no band definition).
+- **Decision (defaults confirmed by the project owner, 2026-11-07):**
+  - **`GET /overview`** (`review.queue.read`): one snapshot for all panels, reusing `queue_items()`. Sections the role can't read are null. Quoted note evidence and the named carer are audited like the queue and the risk list.
+  - **Schedule comparison:** "vs greedy baseline". Every solve also runs the Step 2.5 greedy heuristic on the same day and matrix and stores `metrics.baseline`. Older runs show no comparison. Presets: Travel 0, Balanced 15, Continuity 45, otherwise Custom.
+  - **Risk bands:** elevated = support-priority group (top 20 %), moderate = above the team average, low = the rest. Returned as `band` on workforce responses.
+  - **Audit timeline:** a read-time projection (`app/audit/timeline.py`). Anchor and companion event types are grouped by request id and note id, each entry lists its raw row ids, pagination is keyset over anchor ids, and the copy is built server-side so screen and CSV agree. Successful requests, "viewed" rows and the rules baseline aren't shown (still in the log and in `GET /audit/{note_id}`). 403 refusals and token-reuse alerts are shown.
+  - **`GET /audit/summary`** (today in Europe/London) and **`GET /audit/export`** (CSV, at most 5000 entries, formula cells neutralised per OWASP).
+  - **Frontend deviations:** a WAI-ARIA disclosure row instead of shadcn Collapsible (a `<div>` can't wrap table rows), CSS bars instead of Recharts, an `hmac-sha256:` fingerprint prefix (the design says `sha256:`; the stored hash is keyed), and `CL-`/`WF-` refs instead of the design's names.
+- **Alternatives:** panels calling existing endpoints; a materialised summary table; writing display rows into the log; OFFSET pagination; "vs manual" with an invented figure; fixed probability cut-offs for bands.
+- **Consequences:**
+  - Solves take a few milliseconds longer (greedy).
+  - The first overview after start-up waits about 5 s for the workforce model to train.
+  - "Today's schedule" is the latest saved run, not one dated today.
+  - Search runs `ILIKE` with sub-selects (no index), fine at prototype volume.
+  - The design's "Workforce risk scores · 31 carers scored" row has no event (scoring isn't audited as an AI output yet; backlog).

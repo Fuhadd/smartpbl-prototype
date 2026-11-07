@@ -90,6 +90,9 @@ def test_solve_persists_run_with_reasons_and_audit(api, db_session) -> None:
         "familiar_pct": 0.5,
         "preferred_pct": 0.5,
         "distinct_carers_per_client": 0.0,
+        "carers_used": 2,
+        # Greedy on the same day: no look-ahead, so the clash costs it a second visit.
+        "baseline": {"solver": "greedy", "travel_s": 140, "served": 1, "familiar_pct": 0.0},
     }
     assert {d["reason"] for d in out["dropped"]} == {
         "no_eligible_carer",

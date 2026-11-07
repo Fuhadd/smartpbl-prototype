@@ -68,13 +68,8 @@ def _queue_item(note: CareNoteRecord) -> QueueItem:
     )
 
 
-@router.get("/queue")
-def review_queue(
-    viewer: Annotated[User, Depends(require(Permission.REVIEW_QUEUE_READ))],
-    session: SessionDep,
-    limit: Annotated[int, Query(ge=1, le=200)] = 50,
-) -> list[QueueItem]:
-    """Notes needing a human decision: highest pending severity first, then oldest first.
+def queue_items(session: Session) -> list[QueueItem]:
+    """Every note needing a human decision, in queue order (also used by the overview).
 
     Sorted in Python over all notes needing review: fine at prototype volumes; at scale,
     store a priority column and sort and page in SQL.
@@ -84,8 +79,17 @@ def review_queue(
         .where(CareNoteRecord.review_required.is_(True))
         .options(selectinload(CareNoteRecord.flags), selectinload(CareNoteRecord.extractions))
     ).all()
-    items = sorted(map(_queue_item, notes), key=lambda q: (-_RANK[q.priority], q.created_at))
-    page = items[:limit]
+    return sorted(map(_queue_item, notes), key=lambda q: (-_RANK[q.priority], q.created_at))
+
+
+@router.get("/queue")
+def review_queue(
+    viewer: Annotated[User, Depends(require(Permission.REVIEW_QUEUE_READ))],
+    session: SessionDep,
+    limit: Annotated[int, Query(ge=1, le=200)] = 50,
+) -> list[QueueItem]:
+    """Notes needing a human decision: highest pending severity first, then oldest first."""
+    page = queue_items(session)[:limit]
     # The queue discloses redacted note text: record exactly which notes were shown.
     record(session, EventType.REVIEW_QUEUE_VIEWED, actor=f"user:{viewer.username}",
            output={"note_ids": [str(q.note_id) for q in page], "limit": limit})  # fmt: skip

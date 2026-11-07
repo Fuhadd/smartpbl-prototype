@@ -90,7 +90,7 @@
 - **Containerised Ollama on GPU hosts:** official Ollama image plus the NVIDIA container toolkit on a Linux GPU node, in the same private network as the API.
 - **Dependabot for actions and uv:** automated PRs that bump SHA-pinned actions and locked dependencies, reviewed and tested by CI.
 - **Training out of the API image:** a separate job that trains the attrition model and publishes a signed artefact, so the API starts faster and needs fewer dependencies.
-- **Dashboard stand-ins (Tier 5):** overview panels (5.2b), audit (5.2b), schedule (5.3) and workforce (5.4) render labelled placeholders until built; remove `PendingStep`/`PendingPage` when the last lands.
+- **Dashboard stand-ins (Tier 5):** schedule (5.3) and workforce (5.4) render labelled placeholders until built; remove `PendingStep`/`PendingPage` when the last lands.
 - **Search and notifications:** the header controls from the design render but do nothing yet; decide scope (client/carer/note search, flag notifications) with the design owner.
 - **Design gaps to confirm:** sign-in error and rate-limit messages, and the sign-out menu on the user chip, were added without a design.
 - **Dev-only duplicate probes:** StrictMode runs the access-denied probe twice in development (two audit rows); consider a ref guard if it confuses demos.
@@ -102,3 +102,9 @@
 - **Display names for clients and carers:** resolve pseudonymous refs to names server-side, under access control, for the queue and note header.
 - **Auto-accepted flags in review:** they show in the extraction panel but can't be edited in the note decision; allow overriding them in the same atomic request.
 - **Visit end time:** the design shows "08:15–08:45"; notes only carry the visit start.
+- **Audit scale:** an `entry_kind` column (or an index on `(event_type, id)` plus the JSON status) for the timeline's anchor filter; trigram or full-text search instead of `ILIKE`; monthly partitions with retention agreed in the DPIA.
+- **Workforce scoring as an audited AI output:** record a `workforce_scored` event (model version, carers scored) when the model is (re)trained, for the design's "31 carers scored" row.
+- **Today's rota by date:** store the planned date on schedule runs, so the overview shows the run for today rather than the latest saved.
+- **Fair schedule comparison:** compare travel per visit served (greedy can serve fewer visits), and against PBL's historical rotas once available.
+- **Workforce model warm-up:** train or load the model at start-up so the first overview doesn't wait about 5 s.
+- **Export audit for regulators:** a signed, raw-row export (with hashes and prompt versions) for inspections, separate from the human-readable CSV.

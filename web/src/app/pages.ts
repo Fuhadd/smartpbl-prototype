@@ -38,7 +38,7 @@ export const PAGES: readonly PageDef[] = [
     icon: LayoutGrid,
     permission: 'review.queue.read',
     deniedSubject: 'The overview is visible to coordinators and care managers.',
-    probe: () => api.GET('/review/queue', { params: { query: { limit: 1 } } }),
+    probe: () => api.GET('/overview'),
   },
   {
     key: 'review',
@@ -78,7 +78,7 @@ export const PAGES: readonly PageDef[] = [
     icon: ClipboardList,
     permission: 'audit.read',
     deniedSubject: 'The audit log is visible to coordinators and care managers.',
-    probe: () => api.GET('/audit/{note_id}', { params: { path: { note_id: NIL } } }),
+    probe: () => api.GET('/audit/summary'),
   },
 ]
 

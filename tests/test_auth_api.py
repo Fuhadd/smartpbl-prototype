@@ -2,6 +2,7 @@
 route x role permission matrix. Real routers, test Postgres."""
 
 from collections.abc import Iterator
+from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
@@ -30,6 +31,10 @@ MATRIX: list[tuple[str, str, str, dict, set[Role]]] = [
     ("POST", "/review/{flag_id}", f"/review/{uuid4()}", {"json": {}}, {C}),
     ("POST", "/review/notes/{note_id}", f"/review/notes/{uuid4()}", {"json": {}}, {C}),
     ("GET", "/audit/{note_id}", f"/audit/{uuid4()}", {}, {C, M}),
+    ("GET", "/audit", "/audit", {"params": {"limit": 0}}, {C, M}),
+    ("GET", "/audit/summary", "/audit/summary", {}, {C, M}),
+    ("GET", "/audit/export", "/audit/export", {"params": {"kind": "nope"}}, {C, M}),
+    ("GET", "/overview", "/overview", {}, {C, M}),
     ("POST", "/schedule/solve", "/schedule/solve", {"json": {"time_limit_s": -1}}, {C}),
     ("GET", "/schedule/{run_id}", f"/schedule/{uuid4()}", {}, {C, M}),
     ("GET", "/workforce/risk", "/workforce/risk", {"params": {"limit": 0}}, {C, M}),
@@ -198,7 +203,10 @@ def test_matrix_covers_every_route() -> None:
 @pytest.mark.parametrize(("method", "template", "url", "kwargs", "allowed"), MATRIX,
                          ids=[f"{m} {t}" for m, t, *_ in MATRIX])  # fmt: skip
 def test_role_permission_matrix(api, auth_headers, role, method, template, url, kwargs, allowed):
-    app.dependency_overrides[get_workforce] = lambda: None  # never train the model here
+    # Never train the model here: an empty stand-in scored workforce.
+    app.dependency_overrides[get_workforce] = lambda: SimpleNamespace(
+        ranked=lambda: [], version="stub", carers={}
+    )
     r = api.request(method, url, headers=auth_headers(role), **kwargs)
     if role in allowed:
         assert r.status_code not in (401, 403), (role, template, r.text)

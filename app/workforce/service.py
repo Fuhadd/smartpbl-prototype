@@ -13,6 +13,7 @@ sample. The label and the protected attribute are never part of a response.
 import hashlib
 import json
 from dataclasses import dataclass
+from enum import StrEnum
 from functools import lru_cache
 from pathlib import Path
 
@@ -36,12 +37,28 @@ MODEL_NAME = "attrition-hgb"
 SUPPORT_SHARE = 0.2  # top 20% by risk are suggested for a supportive check-in (model card)
 
 
+class RiskBand(StrEnum):
+    """Display bands (ADR-032). Relative, not absolute: scores come from a model trained on
+    synthetic data, so a fixed probability cut-off would carry false precision."""
+
+    ELEVATED = "elevated"  # the support-priority group: top SUPPORT_SHARE by rank
+    MODERATE = "moderate"  # above the team's average predicted risk
+    LOW = "low"
+
+
+def risk_band(support_priority: bool, risk: float, average_risk: float) -> RiskBand:
+    if support_priority:
+        return RiskBand.ELEVATED
+    return RiskBand.MODERATE if risk > average_risk else RiskBand.LOW
+
+
 @dataclass(frozen=True)
 class ScoredCarer:
     carer_ref: str
     rank: int  # 1 = highest risk
     risk: float
     support_priority: bool
+    band: RiskBand
     explanation: CarerExplanation
 
 
@@ -53,6 +70,7 @@ class WorkforceRisk:
         risk = self.model.predict_proba(xy(current)[0])[:, 1]
         order = np.argsort(-risk, kind="stable")
         n_priority = round(len(current) * SUPPORT_SHARE)
+        self.average_risk = round(float(risk.mean()), 3)
         self.carers: dict[str, ScoredCarer] = {}
         for rank, i in enumerate(order, 1):
             row = current.iloc[i]
@@ -61,9 +79,9 @@ class WorkforceRisk:
                 rank=rank,
                 risk=round(float(risk[i]), 3),
                 support_priority=rank <= n_priority,
+                band=risk_band(rank <= n_priority, round(float(risk[i]), 3), self.average_risk),
                 explanation=explain_carer(sv, int(i), row, top=len(sv.feature_names)),
             )
-        self.average_risk = round(float(risk.mean()), 3)
 
     def ranked(self) -> list[ScoredCarer]:
         return sorted(self.carers.values(), key=lambda c: c.rank)

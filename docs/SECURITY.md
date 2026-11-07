@@ -77,6 +77,12 @@ The sensitive flows are bulk reading of workforce risk (profiling employees), ma
 
 **Gap:** no anomaly alerting yet (e.g. one manager opening every carer's explanation); see BACKLOG.
 
+**Step 5.2b additions:**
+- **`GET /overview`** audits what it discloses, as the queue and the risk list do: the notes whose evidence it quotes (`review_queue_viewed`) and the carer it names (`workforce_risk_viewed`).
+- **The audit timeline, summary and export** (`audit.read`, coordinators and managers) are reads of the log and are themselves recorded by the middleware.
+- **The CSV export** is bounded (5000 entries) and neutralises formula cells. Cells starting with `=` `+` `-` `@`, tab, CR or LF, or their full-width forms, get a leading apostrophe ([OWASP CSV Injection](https://community.owasp.org/attacks/CSV_Injection)).
+- **Search input** is capped at 100 characters, and `%`, `_` and `\` are escaped before `ILIKE`, so a query can't become a wildcard scan.
+
 ### API7: Server Side Request Forgery
 The API makes two kinds of outbound request: to Ollama (`SMARTPBL_OLLAMA_BASE_URL`) and to OSRM (`SMARTPBL_OSRM_BASE_URL`). Both are server configuration, never request input. Scenario coordinates are numbers bounded to valid latitude and longitude, and the OSRM request URL is built from them, not from strings. Keep it this way: any future "fetch this URL" feature needs an allowlist.
 

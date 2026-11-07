@@ -4,6 +4,64 @@
  */
 
 export interface paths {
+    "/audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Audit Timeline
+         * @description Newest first, one entry per meaningful event, each listing the raw rows behind it.
+         *     Page with `before=<next_before>`.
+         */
+        get: operations["audit_timeline_audit_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audit/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Audit Export
+         * @description The filtered timeline as CSV (newest first, at most 5000 entries).
+         */
+        get: operations["audit_export_audit_export_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audit/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Audit Summary */
+        get: operations["audit_summary_audit_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/audit/{note_id}": {
         parameters: {
             query?: never;
@@ -170,6 +228,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Overview */
+        get: operations["overview_overview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/review/notes/{note_id}": {
         parameters: {
             query?: never;
@@ -202,9 +277,6 @@ export interface paths {
         /**
          * Review Queue
          * @description Notes needing a human decision: highest pending severity first, then oldest first.
-         *
-         *     Sorted in Python over all notes needing review: fine at prototype volumes; at scale,
-         *     store a priority column and sort and page in SQL.
          */
         get: operations["review_queue_review_queue_get"];
         put?: never;
@@ -315,6 +387,17 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Actor */
+        Actor: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "system" | "user" | "anonymous";
+            /** Name */
+            name: string;
+            role: components["schemas"]["Role"] | null;
+        };
         /** AssignmentOut */
         AssignmentOut: {
             /** Carer Ref */
@@ -335,6 +418,49 @@ export interface components {
             travel_s: number;
             /** Visit Id */
             visit_id: string;
+        };
+        /** AttentionNote */
+        AttentionNote: {
+            category: components["schemas"]["RiskCategory"] | null;
+            /** Client Ref */
+            client_ref: string;
+            /** Evidence */
+            evidence: string | null;
+            /**
+             * Note Id
+             * Format: uuid
+             */
+            note_id: string;
+            severity: components["schemas"]["Severity"];
+            /**
+             * Visit Time
+             * Format: date-time
+             */
+            visit_time: string;
+        };
+        /** AuditEntry */
+        AuditEntry: {
+            actor: components["schemas"]["Actor"];
+            /** Details */
+            details: components["schemas"]["Detail"][];
+            /** Event Ids */
+            event_ids: number[];
+            /** Id */
+            id: number;
+            kind: components["schemas"]["EntryKind"];
+            /** Note Id */
+            note_id: string | null;
+            /**
+             * Occurred At
+             * Format: date-time
+             */
+            occurred_at: string;
+            /** Result */
+            result: string;
+            /** Subject */
+            subject: string;
+            /** Version */
+            version: string | null;
         };
         /** AuditEventOut */
         AuditEventOut: {
@@ -369,6 +495,37 @@ export interface components {
             /** Subject Id */
             subject_id: string | null;
             subject_type: components["schemas"]["SubjectType"] | null;
+        };
+        /** AuditPage */
+        AuditPage: {
+            /** Entries */
+            entries: components["schemas"]["AuditEntry"][];
+            /** Next Before */
+            next_before: number | null;
+        };
+        /** AuditSummary */
+        AuditSummary: {
+            /** Access Denied */
+            access_denied: number;
+            /** Day */
+            day: string;
+            /** Entries Today */
+            entries_today: number;
+            /** High Flags Reviewed */
+            high_flags_reviewed: number;
+            /** High Flags Today */
+            high_flags_today: number;
+            /** Human Overrides */
+            human_overrides: number;
+        };
+        /** Baseline */
+        Baseline: {
+            /** Familiar Pct */
+            familiar_pct: number;
+            /** Solver */
+            solver: string;
+            /** Travel H */
+            travel_h: number;
         };
         /** Body_login_auth_token_post */
         Body_login_auth_token_post: {
@@ -441,6 +598,21 @@ export interface components {
             /** Visits */
             visits: components["schemas"]["AssignmentOut"][];
         };
+        /** CategoryCount */
+        CategoryCount: {
+            category: components["schemas"]["RiskCategory"];
+            /** Count */
+            count: number;
+        };
+        /** CheckIn */
+        CheckIn: {
+            /** Carer Ref */
+            carer_ref: string;
+            /** Factor Label */
+            factor_label: string;
+            /** Factor Value */
+            factor_value: string;
+        };
         /** Client */
         Client: {
             /** Client Ref */
@@ -460,6 +632,34 @@ export interface components {
             recent_carers: string[];
         };
         /**
+         * Detail
+         * @description One tile of an expanded row: a label, a bold value and an optional second line.
+         */
+        Detail: {
+            /** Label */
+            label: string;
+            /**
+             * Mono
+             * @default false
+             */
+            mono: boolean;
+            /** Secondary */
+            secondary?: string | null;
+            /** Value */
+            value: string;
+        };
+        /**
+         * EntryFilter
+         * @description The filter pills on Audit.dc.html.
+         * @enum {string}
+         */
+        EntryFilter: "all" | "ai_output" | "human_decision" | "schedule_run" | "access";
+        /**
+         * EntryKind
+         * @enum {string}
+         */
+        EntryKind: "note_submitted" | "ai_output" | "human_decision" | "schedule_run" | "access_denied" | "security_alert";
+        /**
          * EventType
          * @enum {string}
          */
@@ -468,6 +668,7 @@ export interface components {
         ExplanationOut: {
             /** Average Risk */
             average_risk: number;
+            band: components["schemas"]["RiskBand"];
             /** Baseline Risk */
             baseline_risk: number;
             /** Carer Ref */
@@ -583,6 +784,13 @@ export interface components {
             /** Span Start */
             span_start: number | null;
         };
+        /** FlagsByCategory */
+        FlagsByCategory: {
+            /** Counts */
+            counts: components["schemas"]["CategoryCount"][];
+            /** Window Days */
+            window_days: number;
+        };
         /**
          * GroundingStatus
          * @enum {string}
@@ -684,11 +892,44 @@ export interface components {
             escalated: boolean;
             note: components["schemas"]["NoteOut"];
         };
+        /** OverviewOut */
+        OverviewOut: {
+            flags_by_category: components["schemas"]["FlagsByCategory"];
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+            pipeline: components["schemas"]["PipelineHealth"];
+            review: components["schemas"]["ReviewSummary"];
+            schedule: components["schemas"]["ScheduleSummary"] | null;
+            workforce: components["schemas"]["WorkforceSummary"] | null;
+        };
         /**
          * Permission
          * @enum {string}
          */
         Permission: "note.create" | "note.read" | "review.queue.read" | "review.decide" | "audit.read" | "schedule.solve" | "schedule.read" | "workforce.read";
+        /** PipelineHealth */
+        PipelineHealth: {
+            /** Extractions */
+            extractions: number;
+            /** Grounded Rate */
+            grounded_rate: number | null;
+            /** Median Latency Ms */
+            median_latency_ms: number | null;
+            /** Model Name */
+            model_name: string | null;
+            /** Schema Valid Rate */
+            schema_valid_rate: number | null;
+            /** Window Days */
+            window_days: number;
+        };
+        /**
+         * Preset
+         * @enum {string}
+         */
+        Preset: "travel" | "balanced" | "continuity" | "custom";
         /** QueueItem */
         QueueItem: {
             /** Carer Ref */
@@ -757,6 +998,24 @@ export interface components {
          * @enum {string}
          */
         ReviewStatus: "auto_accepted" | "pending" | "approved" | "edited" | "rejected";
+        /** ReviewSummary */
+        ReviewSummary: {
+            /** Attention */
+            attention: components["schemas"]["AttentionNote"][];
+            /** Awaiting Flags */
+            awaiting_flags: number;
+            /** Awaiting High */
+            awaiting_high: number;
+            /** Notes Waiting */
+            notes_waiting: number;
+        };
+        /**
+         * RiskBand
+         * @description Display bands (ADR-032). Relative, not absolute: scores come from a model trained on
+         *     synthetic data, so a fixed probability cut-off would carry false precision.
+         * @enum {string}
+         */
+        RiskBand: "elevated" | "moderate" | "low";
         /**
          * RiskCategory
          * @enum {string}
@@ -764,6 +1023,7 @@ export interface components {
         RiskCategory: "falls" | "medication" | "nutrition_hydration" | "skin_integrity" | "mood_behaviour" | "safeguarding" | "missed_late_visit";
         /** RiskItem */
         RiskItem: {
+            band: components["schemas"]["RiskBand"];
             /** Carer Ref */
             carer_ref: string;
             /** Rank */
@@ -854,6 +1114,36 @@ export interface components {
             /** Wall S */
             wall_s: number;
         };
+        /** ScheduleSummary */
+        ScheduleSummary: {
+            baseline: components["schemas"]["Baseline"] | null;
+            /** Carers On Shift */
+            carers_on_shift: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Familiar Pct */
+            familiar_pct: number;
+            first_unassigned: components["schemas"]["UnassignedVisit"] | null;
+            preset: components["schemas"]["Preset"];
+            /**
+             * Run Id
+             * Format: uuid
+             */
+            run_id: string;
+            /** Scenario Name */
+            scenario_name: string;
+            /** Served */
+            served: number;
+            /** Travel H */
+            travel_h: number;
+            /** Unassigned */
+            unassigned: number;
+            /** Visits */
+            visits: number;
+        };
         /**
          * Severity
          * @description Ordinal severity. Three levels keep LLM labels consistent and map to clear actions.
@@ -901,6 +1191,15 @@ export interface components {
              */
             token_type: string;
         };
+        /** UnassignedVisit */
+        UnassignedVisit: {
+            /** Client Ref */
+            client_ref: string;
+            /** Detail */
+            detail: string;
+            /** Visit Id */
+            visit_id: string;
+        };
         /** ValidationError */
         ValidationError: {
             /** Context */
@@ -934,6 +1233,14 @@ export interface components {
             /** Window Start */
             window_start: number;
         };
+        /** WorkforceSummary */
+        WorkforceSummary: {
+            check_in: components["schemas"]["CheckIn"] | null;
+            /** Elevated */
+            elevated: number;
+            /** Total */
+            total: number;
+        };
     };
     responses: never;
     parameters: never;
@@ -943,6 +1250,90 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    audit_timeline_audit_get: {
+        parameters: {
+            query?: {
+                kind?: components["schemas"]["EntryFilter"];
+                q?: string | null;
+                before?: number | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    audit_export_audit_export_get: {
+        parameters: {
+            query?: {
+                kind?: components["schemas"]["EntryFilter"];
+                q?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    audit_summary_audit_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditSummary"];
+                };
+            };
+        };
+    };
     audit_trail_audit__note_id__get: {
         parameters: {
             query?: never;
@@ -1173,6 +1564,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    overview_overview_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverviewOut"];
                 };
             };
         };

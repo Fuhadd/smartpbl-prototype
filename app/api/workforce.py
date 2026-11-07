@@ -18,7 +18,13 @@ from app.auth.models import User
 from app.auth.permissions import Permission
 from app.core.db import get_session
 from app.workforce.explain import Reason
-from app.workforce.service import MODEL_NAME, SUPPORT_SHARE, ScoredCarer, WorkforceRisk
+from app.workforce.service import (
+    MODEL_NAME,
+    SUPPORT_SHARE,
+    RiskBand,
+    ScoredCarer,
+    WorkforceRisk,
+)
 
 router = APIRouter(
     prefix="/workforce", tags=["workforce"], dependencies=[Depends(get_current_user)]
@@ -64,6 +70,7 @@ class RiskItem(BaseModel):
     rank: int
     risk: float
     support_priority: bool
+    band: RiskBand
     top_factors: list[FactorOut]
 
 
@@ -86,6 +93,7 @@ class ExplanationOut(BaseModel):
     baseline_risk: float  # where the explanation starts (SHAP base value as a probability)
     average_risk: float  # mean predicted risk over the current workforce
     support_priority: bool
+    band: RiskBand
     factors: list[FactorOut]
     suggested_support: list[str]
     caveats: list[str]
@@ -150,6 +158,7 @@ def list_risk(
                 rank=c.rank,
                 risk=c.risk,
                 support_priority=c.support_priority,
+                band=c.band,
                 top_factors=[_factor(r) for r in c.explanation.reasons[:3]],
             )
             for c in page
@@ -189,6 +198,7 @@ def explain(
         baseline_risk=c.explanation.baseline_risk,
         average_risk=w.average_risk,
         support_priority=c.support_priority,
+        band=c.band,
         factors=[_factor(r) for r in reasons],
         suggested_support=support,
         caveats=list(CAVEATS),

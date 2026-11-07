@@ -618,3 +618,29 @@ In real testing it was three lines with a raw `<PERSON>` token. A deterministic 
 
 **With real data?**
 A care-manager sign-off queue, PBL's real protocols, server-resolved display names under access control, routing policy exposed by the API, user testing of the edit flow.
+
+### 5.2b Overview panels and audit log
+
+**Walk me through it.**
+`GET /overview` gives one snapshot for every overview panel: review counts plus "needs attention" from the queue's own sort, flags by category and pipeline health over 7 days, the latest rota against a greedy baseline, and the elevated-risk count. The audit screen is a projection of the append-only log: raw rows grouped into note submitted / AI output / human decision / schedule run / access denied, each listing its source row ids, keyset-paged, filterable, searchable and exportable to CSV.
+
+**Why a projection, not display rows?**
+One source of truth. Display rows could disagree with the evidence and couldn't be corrected in an append-only table. A projection writes nothing, and fixing it fixes every past entry. Row ids keep it traceable.
+
+**Why keyset pagination?**
+The log only grows, so `id < cursor` gives pages that never shift. OFFSET would repeat or skip rows as new events arrive, and gets slower with depth. Paging over anchors means a group can't be split.
+
+**"vs manual" became "vs greedy baseline". Why?**
+There is no manual rota, and an invented figure would be dishonest. Greedy is the documented stand-in, run on the same day and matrix. Caveat: it can serve fewer visits, so with PBL data I'd compare travel per visit served against historical rotas.
+
+**Why audit the overview?**
+It quotes note evidence and names a carer from a profiling model. Every disclosure is recorded whichever screen shows it, or the overview becomes the untraced path.
+
+**CSV injection?**
+Exported cells starting with `=` `+` `-` `@` (or control and full-width lookalike characters) would run as formulas in Excel. They get a leading apostrophe, following OWASP.
+
+**Relative risk bands?**
+Elevated = top 20 % (support capacity from the model card), moderate = above the team average. No calibration claim on synthetic data. The trade-off is that someone is always "elevated", so the wording stays supportive.
+
+**With real data and scale?**
+An index or `entry_kind` column for anchors, trigram or full-text search, monthly partitions and retention from the DPIA, patch-scoped access, today's actual rota, and validated thresholds.
