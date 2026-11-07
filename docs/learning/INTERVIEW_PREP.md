@@ -553,3 +553,23 @@ FastAPI's default includes `input` (note text = health data). A custom handler r
 
 **Next with real data?**
 Patch scoping, Redis limits, TLS and proxy headers, a vault for secrets with key ids, `raw_text` encryption, scheduled scans, a pen test, a DPIA.
+
+### 4.4 Containers and CI
+
+**Container setup?**
+Two-stage uv build; the runtime has only the venv and source, a non-root user and a healthcheck. Compose: db healthy → migrate exits 0 → api, read-only, no capabilities, bound to localhost. Ollama on the host for the GPU.
+
+**Why a separate migration job?**
+Replicas would race on `alembic upgrade`; serving shouldn't mix with schema changes. The API starts only after the job succeeds; a failure halts the rollout.
+
+**What does CI guarantee?**
+Lint, the full suite on real Postgres (a missing DB fails), a vulnerability scan, and an image build, all on locked versions with a read-only token and SHA-pinned actions. Not the real LLM: those tests are opt-in.
+
+**Why SHA-pin actions?**
+Tags are movable; a compromised action repo can retarget them. SHAs are immutable (GitHub's secure-use guidance).
+
+**2.3 GB image?**
+The ML stack and the spaCy `lg` model. Shrink by: the `md` model (re-check recall), training out of the API, then distroless.
+
+**With real data?**
+A private registry with signed, scanned images; vault secrets; TLS at the proxy with `FORWARDED_ALLOW_IPS`; managed UK-region Postgres; Ollama on a private GPU node; staged rollouts gated on migrations; readiness probes.

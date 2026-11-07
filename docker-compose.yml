@@ -1,5 +1,51 @@
-# Local infrastructure. Ollama runs on the host (Metal GPU access), not in Docker.
+# SMARTPBL stack: Postgres, a one-shot migration job, the API, and (opt-in) OSRM.
+# Ollama runs on the host, not in Docker: it needs the Mac's Metal GPU, which containers
+# can't use. The API reaches it at host.docker.internal.
+#
+#   docker compose up -d --build              # db -> migrate -> api on 127.0.0.1:8000
+#   docker compose --profile osrm up -d osrm  # optional road travel times
+#
+# Secrets: the api and migrate services read SMARTPBL_* from .env (copy .env.example).
+# With SMARTPBL_ENVIRONMENT other than "local", the API refuses the dev-default secrets.
+
+x-api: &api
+  build: .
+  image: smartpbl-api:local
+  env_file:
+    - path: .env
+      required: false
+  environment:
+    # Container-internal addresses override the host-oriented values in .env.
+    SMARTPBL_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-smartpbl}:${POSTGRES_PASSWORD:-smartpbl}@db:5432/${POSTGRES_DB:-smartpbl}
+    SMARTPBL_OLLAMA_BASE_URL: http://host.docker.internal:11434
+  extra_hosts:
+    - "host.docker.internal:host-gateway"  # Linux; Docker Desktop provides it already
+  # Hardening: immutable filesystem, no Linux capabilities, no privilege escalation.
+  read_only: true
+  tmpfs:
+    - /tmp
+  cap_drop: [ALL]
+  security_opt:
+    - no-new-privileges:true
+
 services:
+  migrate:
+    <<: *api
+    command: ["alembic", "upgrade", "head"]
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    <<: *api
+    ports:
+      - "127.0.0.1:${API_HOST_PORT:-8000}:8000"  # loopback only; a reverse proxy fronts it
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
   db:
     image: postgres:16-alpine
     environment:

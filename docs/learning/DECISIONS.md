@@ -328,3 +328,17 @@
   - An attacker can lock a known username out of login for a minute at a time.
   - Unauthenticated bodies up to 1 MB are read before auth.
   - TLS, `--no-server-header` and proxy-header configuration are deferred to Step 4.4.
+
+## ADR-028: Multi-stage uv image, Compose with a migration job, and four-job CI (2026-11-07)
+- **Context:** Tier 4.4 needs the API, database and OSRM runnable as one stack, with Ollama documented as a host service, and lint plus tests on every push.
+- **Decision:**
+  - **Image:** two stages. uv 0.11.16 builds `/app/.venv` with `--locked --no-dev --no-install-project` in a lockfile-keyed layer; the `python:3.12.13-slim` runtime holds only the venv and source. It runs as uid 10001, with a `HEALTHCHECK` on `/health`, and uvicorn with `--no-server-header --proxy-headers` (`FORWARDED_ALLOW_IPS`).
+  - **Compose:** `db` (healthy) → `migrate` (one-shot `alembic upgrade head`) → `api` (`service_completed_successfully`). The API has a read-only root filesystem with tmpfs `/tmp`, `cap_drop: [ALL]`, `no-new-privileges`, and is bound to 127.0.0.1. Secrets come from `.env` (optional `env_file`), with container addresses overriding host ones.
+  - **Ollama:** stays on the host (macOS containers can't use Metal), reached at `host.docker.internal` (`host-gateway` for Linux).
+  - **CI (GitHub Actions):** four parallel jobs, `lint` (dev group only), `test` (Postgres 16 service, `SMARTPBL_REQUIRE_DB=1`), `audit` (pip-audit 2.10.1) and `docker` (build, gha cache, no push). `permissions: contents: read`, `persist-credentials: false`, `UV_LOCKED=1`, actions pinned to commit SHAs verified via the GitHub API.
+- **Alternatives:** a single-stage image; distroless or Chainguard bases; migrations at API start-up; containerised Ollama (CPU-only on macOS); tag-pinned actions; one serial CI job.
+- **Consequences:**
+  - The image is 2.3 GB, mostly ML dependencies and the spaCy `lg` model.
+  - CI never exercises the real LLM (`-m ollama` stays opt-in).
+  - The amd64 Linux test run is rehearsed locally under emulation, but CI itself first runs on push.
+  - No registry push, signing or image scanning yet (backlog).

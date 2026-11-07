@@ -1,0 +1,23 @@
+# Build context allowlist by exclusion: only what the runtime image needs.
+.git
+.github
+.venv
+**/__pycache__
+**/*.py[cod]
+.pytest_cache
+.ruff_cache
+.coverage
+htmlcov
+# Secrets and local-only files never enter an image.
+.env
+*.md
+!README.md
+# Large or irrelevant to the API runtime.
+osrm
+*.osm.pbf
+docs
+tests
+mobile
+.idea
+.vscode
+.DS_Store

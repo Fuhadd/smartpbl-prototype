@@ -1,5 +1,7 @@
 # SMARTPBL Prototype
 
+[![CI](https://github.com/Fuhadd/smartpbl-prototype/actions/workflows/ci.yml/badge.svg)](https://github.com/Fuhadd/smartpbl-prototype/actions/workflows/ci.yml)
+
 A portfolio prototype of an AI platform for domiciliary care. It has three parts:
 
 1. **Care-notes NLP**: a local LLM turns free-text notes into evidence-grounded risk flags, with human review and an audit trail.
@@ -14,7 +16,7 @@ A portfolio prototype of an AI platform for domiciliary care. It has three parts
 - [x] Tier 1: care-notes NLP (schemas, synthetic data, PII redaction, rules baseline, LLM extraction, grounding + routing, persistence + audit, API + human review, evaluation)
 - [x] Tier 2: carer matching (scheduling data, OSRM travel matrix, OR-Tools VRPTW, continuity trade-off, greedy comparison, schedule API)
 - [x] Tier 3: attrition prediction (synthetic workforce from Tier 2 schedules, LR vs gradient boosting with nested CV, SHAP explanations checked against ground truth, age audit, model card, workforce API)
-- [ ] Tier 4: production layer. Done: 4.1 JWT auth with refresh rotation and role-based permissions; 4.2 unified audit (middleware access log, request-id correlation, fail-closed reads); 4.3 OWASP API Top 10 review ([`docs/SECURITY.md`](docs/SECURITY.md)): rate limits, size limits, secure defaults, CORS
+- [ ] Tier 4: production layer. Done: 4.1 JWT auth with refresh rotation and role-based permissions; 4.2 unified audit (middleware access log, request-id correlation, fail-closed reads); 4.3 OWASP API Top 10 review ([`docs/SECURITY.md`](docs/SECURITY.md)): rate limits, size limits, secure defaults, CORS; 4.4 Docker image, Compose stack and GitHub Actions CI
 - [ ] Tiers 5–6: coordinator dashboard and carer app, packaging
 
 ## Quick start
@@ -36,6 +38,11 @@ uv run uvicorn app.main:app --reload      # API at http://localhost:8000/docs
 TOKEN=$(curl -s -X POST localhost:8000/auth/token -d 'username=coord.demo&password=<yours>' \
   | python -c 'import sys, json; print(json.load(sys.stdin)["access_token"])')
 AUTH="Authorization: Bearer $TOKEN"       # used by the curl examples below
+
+# Or run the whole stack in containers (Step 4.4): db -> migrate -> api on 127.0.0.1:8000.
+# Ollama stays on the host (Metal GPU); the API reaches it at host.docker.internal.
+docker compose up -d --build
+docker compose exec api python -m scripts.create_user coord.demo coordinator
 
 # Optional, Tier 2: road travel times (the committed matrix works without it)
 scripts/prepare_osrm.sh                   # download West Midlands OSM + preprocess (~1 min)

@@ -222,3 +222,15 @@
 - **SIGABRT (native abort)**: A C/C++ library terminating the whole process; Python can't catch it, so inputs must be validated before the native call.
 - **pip-audit**: A PyPA tool that checks installed or locked Python packages against known-vulnerability databases.
 - **flake8-bandit (ruff `S` rules)**: Static checks for common security mistakes in Python (hard-coded secrets, unsafe subprocess, weak randomness).
+- **Multi-stage build**: A Dockerfile with several `FROM` stages; later stages copy only the artefacts they need from earlier ones, leaving build tools behind.
+- **Image layer / layer cache**: Each Dockerfile instruction produces a layer; unchanged instructions with unchanged inputs are reused, so ordering (dependencies before code) decides rebuild time.
+- **Build context and `.dockerignore`**: The files sent to the builder; `.dockerignore` keeps secrets and bulk out of it.
+- **One-shot (init) job**: A container that runs a task (here, migrations) to completion before dependents start.
+- **Read-only root filesystem**: The container can't write anywhere except explicitly mounted volumes or tmpfs.
+- **Linux capabilities / `cap_drop: ALL`**: Root's privileges split into units (e.g. binding low ports); dropping all removes them from the process.
+- **`no-new-privileges`**: A kernel flag stopping a process from gaining privileges (e.g. via setuid binaries) after start.
+- **`host.docker.internal`**: A hostname for the host machine from inside a container (`host-gateway` maps it on Linux).
+- **Service container (CI)**: A Docker container (here Postgres) that GitHub Actions starts alongside a job.
+- **SHA pinning (actions)**: Referencing a third-party action by full commit hash rather than a movable tag.
+- **`GITHUB_TOKEN` permissions**: The scopes granted to a workflow's automatic token; least privilege is `contents: read`.
+- **actionlint**: A static checker for GitHub Actions workflow files.
