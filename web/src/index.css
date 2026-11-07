@@ -48,6 +48,9 @@
   --success-border: #abefc6;
   --elevated-text: #c4320a;
   --elevated-bg: #fff4ed;
+  --elevated-strong: #9a3412; /* the risk tile's figure (Workforce.dc.html) */
+  --shap-up: #ea580c; /* raises risk */
+  --shap-down: #2563eb; /* lowers risk */
 
   /* Review screen (Review.dc.html): queue priority dots, AI panel border. */
   --dot-high: #d92d20;
@@ -118,6 +121,9 @@
   --color-success-border: var(--success-border);
   --color-elevated: var(--elevated-text);
   --color-elevated-bg: var(--elevated-bg);
+  --color-elevated-strong: var(--elevated-strong);
+  --color-shap-up: var(--shap-up);
+  --color-shap-down: var(--shap-down);
   --color-dot-high: var(--dot-high);
   --color-dot-medium: var(--dot-medium);
   --color-dot-low: var(--dot-low);

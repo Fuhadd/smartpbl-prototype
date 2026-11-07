@@ -267,3 +267,8 @@
 - **Code splitting (lazy route)**: Loading a screen's JavaScript only when it's first opened, keeping the initial bundle small.
 - **Keyed remount**: Giving a React component a `key` so that a new key discards its state and starts fresh, instead of resetting state in an effect.
 - **Transaction timestamp**: Postgres `now()` returns the start time of the current transaction, so rows written in one transaction share it; `clock_timestamp()` is wall-clock.
+- **Percentage-point contribution (rescaled SHAP)**: A factor's share of the gap between the baseline probability and the score, split in proportion to its log-odds SHAP value so the rows add up exactly.
+- **Link function (logit / sigmoid)**: The curve mapping log-odds to probability; because it is non-linear, contributions additive in log-odds are not additive in probability.
+- **Diverging bar chart**: Bars extending left or right from a zero line, used for contributions that lower or raise a score.
+- **Disclosure pattern**: The WAI-ARIA show/hide pattern: a button with `aria-expanded` (and optionally `aria-controls`) toggling a region.
+- **Team median comparison**: Showing a carer's value next to the median across the current workforce, as a stand-in for trend data the snapshot lacks.

@@ -24,9 +24,11 @@ import sklearn
 from sklearn.ensemble import HistGradientBoostingClassifier
 
 from app.workforce.explain import (
+    FEATURE_INFO,
     CarerExplanation,
     explain_carer,
     fit_final_model,
+    format_value,
     make_explainer,
     shap_values,
 )
@@ -83,8 +85,23 @@ class WorkforceRisk:
                 explanation=explain_carer(sv, int(i), row, top=len(sv.feature_names)),
             )
 
+        self.team_values = team_values(current)
+
     def ranked(self) -> list[ScoredCarer]:
         return sorted(self.carers.values(), key=lambda c: c.rank)
+
+
+def team_values(current: pd.DataFrame) -> dict[str, str]:
+    """Team comparison per feature: the median, or for yes/no features the share saying yes.
+    A median, not a mean, so a few very long rounds don't set what "typical" looks like."""
+    out = {}
+    for name in FEATURE_INFO:
+        col = current[name]
+        if col.dtype == bool:
+            out[name] = f"{col.mean():.0%} of team"
+        else:
+            out[name] = format_value(name, float(col.median()))
+    return out
 
 
 def model_version(train_csv: Path) -> str:

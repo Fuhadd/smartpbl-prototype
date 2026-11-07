@@ -90,7 +90,6 @@
 - **Containerised Ollama on GPU hosts:** official Ollama image plus the NVIDIA container toolkit on a Linux GPU node, in the same private network as the API.
 - **Dependabot for actions and uv:** automated PRs that bump SHA-pinned actions and locked dependencies, reviewed and tested by CI.
 - **Training out of the API image:** a separate job that trains the attrition model and publishes a signed artefact, so the API starts faster and needs fewer dependencies.
-- **Dashboard stand-ins (Tier 5):** workforce (5.4) renders a labelled placeholder until built; remove `PendingStep`/`PendingPage` when it lands.
 - **Search and notifications:** the header controls from the design render but do nothing yet; decide scope (client/carer/note search, flag notifications) with the design owner.
 - **Design gaps to confirm:** sign-in error and rate-limit messages, and the sign-out menu on the user chip, were added without a design.
 - **Dev-only duplicate probes:** StrictMode runs the access-denied probe twice in development (two audit rows); consider a ref guard if it confuses demos.
@@ -114,3 +113,7 @@
 - **Nightly sweep per patch** at the API's solver settings, so the trade-off preview reflects the real day.
 - **Map tiles for production:** self-hosted or contracted tiles (OSM policy forbids heavy use; the tile server sees which areas are viewed). For the 5.5 demo, keep a Referer (no `no-referrer` policy) as the OSM policy requires.
 - **Day switcher:** store the planned date on runs; enable previous/next day.
+- **Workforce trends:** store weekly feature snapshots so signal tiles can show the design's "+18% over 4 weeks" next to the team median.
+- **Support planning:** the design's "Plan" buttons: record a planned supportive action (owner, due date, outcome) with its own audit events, instead of a button that does nothing.
+- **Workforce list scale:** page and filter the risk list by band and patch instead of loading all carers (also shrinks each view's audit event).
+- **Rota-specific actions:** turn "Open in schedule" into a pre-filtered schedule view (that carer pinned) and quantify the saving, as in the design's "saves about 2.1 h a week".

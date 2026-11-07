@@ -127,7 +127,9 @@ describe('role-aware shell', () => {
       .map((a) => a.getAttribute('aria-label'))
     expect(labels).toEqual(['Overview', 'Review queue', 'Schedule', 'Workforce', 'Audit log'])
     expect(within(nav).getByRole('link', { name: 'Workforce' })).toHaveAttribute('aria-current', 'page')
-    expect(screen.getByText('HK')).toBeInTheDocument()
+    // The workforce design has its own breadcrumb header; the user chip is on the shared one.
+    await userEvent.click(within(nav).getByRole('link', { name: 'Overview' }))
+    expect(await screen.findByText('HK')).toBeInTheDocument()
   })
 
   it("denies a carer the workforce page in the design's words, after the server refused", async () => {

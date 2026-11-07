@@ -418,3 +418,19 @@
   - The preview uses 30 s-per-point sweep results, while the API solves at 10 s, so applied runs can sit off the curve.
   - Public OSM tiles are fine for a demo, not production (usage policy; the viewed area is visible to the tile server).
   - The OSM policy asks web clients not to set a restrictive Referrer-Policy, which constrains the 5.5 hosting headers.
+
+## ADR-034: Workforce screen: SHAP in percentage points, team-median comparisons, actions only from support levers (2026-11-07)
+- **Context:** Step 5.4 builds `Workforce.dc.html`. The design shows percentage-point SHAP bars ("Team baseline 43% → Joy 68%"), 4-week trends on signal tiles, carer names, and "Plan" buttons. The model is explained in log-odds (ADR-022), the synthetic workforce is one snapshot with no names, and no planning backend exists.
+- **Decision:**
+  - **Points:** the server converts log-odds SHAP to percentage points by proportional rescaling, ppⱼ = 100·(p − p₀)·φⱼ/Σφ (local slope p₀(1 − p₀) if Σφ ≈ 0). The rows add up exactly to the score, keep signs and ranking, and are exposed as `FactorOut.points`.
+  - **Team comparison:** `FactorOut.team_value` is the team median, or the share answering yes for yes/no features. Signal tiles show it in place of trends.
+  - **Chart:** the top 6 factors plus one "N other factors" row, so the chart still adds up. It's a custom grid, no library, with screen-reader text per row.
+  - **Actions:** cards come only from `suggested_support`, the API's levers adding ≥ 0.1 log-odds. The check-in card appears only for the Elevated band. "Open in schedule" shows for rota-set factors and only with `schedule.read`. No "Plan" buttons.
+  - **Identity:** carers are shown by ref with an icon avatar (as on the schedule screen). The header line comes from tenure, contract and shifts.
+  - **Model card:** a disclosure panel fed by the API (name, version, notice, caveats).
+  - **Routing and bundles:** `/workforce` redirects to rank 1. The screen is lazy-loaded (`LazyPages.tsx`), keeping the initial bundle at 492 kB.
+- **Alternatives:** raw log-odds; per-factor σ(base + φ) − σ(base) (doesn't add up); sequential attribution (order-dependent); SHAP on probability (interventional mode broken for HGB, ADR-022); invented trends; a Recharts bar chart.
+- **Consequences:**
+  - The percentage split is a convention, which the footnote and note 28 state; exact log-odds stay in the API.
+  - Trend, planning and per-carer access features are deferred (backlog).
+  - The list loads all 200 carers, so one view's audit event lists 200 refs.

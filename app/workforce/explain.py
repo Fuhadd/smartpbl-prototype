@@ -90,6 +90,7 @@ class Reason:
     label: str
     value: str
     log_odds: float  # SHAP contribution
+    points: float  # share of (risk - baseline_risk), in percentage points; see percentage_points
     direction: str  # "raises" / "lowers"
     lever: bool
     support: str | None  # only for levers that raise risk
@@ -108,24 +109,47 @@ def _sigmoid(x: float) -> float:
     return float(1 / (1 + np.exp(-x)))
 
 
+def format_value(feature: str, v: object) -> str:
+    """A carer's raw feature value as people read it ("45 min", "62%", "yes")."""
+    if isinstance(v, bool | np.bool_):
+        return "yes" if v else "no"
+    return FEATURE_INFO[feature].fmt.format(v)
+
+
+def percentage_points(values: np.ndarray, base: float) -> np.ndarray:
+    """Split the probability gap sigmoid(base + sum) - sigmoid(base) across features in
+    proportion to their SHAP log-odds, in percentage points.
+
+    SHAP is additive in log-odds, not in probability, so converting each value on its own
+    (sigmoid(base + v) - sigmoid(base)) would not add up to the score. Proportional
+    rescaling keeps each value's sign and ranking and sums exactly to the gap. When the
+    contributions cancel (sum near 0) it falls back to the local slope p(1 - p).
+    """
+    total = float(values.sum())
+    p0, p = _sigmoid(base), _sigmoid(base + total)
+    if abs(total) < 1e-9:
+        return 100 * p0 * (1 - p0) * values
+    return 100 * (p - p0) * values / total
+
+
 def explain_carer(sv: shap.Explanation, i: int, raw: pd.Series, top: int = 5) -> CarerExplanation:
     """Top contributions for row i of `sv`, with readable values and support actions."""
     values = sv.values[i]
     base = float(np.broadcast_to(sv.base_values, (len(sv.values),))[i])
     order = np.argsort(-np.abs(values), kind="stable")[:top]
+    points = percentage_points(values, base)
     reasons = []
     for j in order:
         name = sv.feature_names[j]
         info = FEATURE_INFO[name]
-        v = raw[name]
-        shown = ("yes" if v else "no") if isinstance(v, bool | np.bool_) else info.fmt.format(v)
         raises = values[j] > 0
         reasons.append(
             Reason(
                 feature=name,
                 label=info.label,
-                value=shown,
+                value=format_value(name, raw[name]),
                 log_odds=round(float(values[j]), 3),
+                points=round(float(points[j]), 2),
                 direction="raises" if raises else "lowers",
                 lever=info.lever,
                 support=info.support if raises else None,

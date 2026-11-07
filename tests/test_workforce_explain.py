@@ -12,6 +12,7 @@ from app.workforce.explain import (
     global_importance,
     group_audit,
     make_explainer,
+    percentage_points,
     shap_values,
 )
 from app.workforce.models import xy
@@ -96,3 +97,15 @@ def test_true_shapley_is_efficient_and_zero_for_null_features(data) -> None:
     bg_mean = np.mean([logit_observed(r) for r in bg.to_dict("records")])
     assert np.allclose(phi.sum(axis=1), truth - bg_mean)
     assert (phi[list(NULL_FEATURES)] == 0).all().all()
+
+
+@pytest.mark.parametrize(
+    ("values", "base"),
+    [([1.2, -0.4, 0.3], -0.8), ([-0.5, -0.2], 0.4), ([0.6, -0.6], -1.0), ([0.0, 0.0], 0.2)],
+)
+def test_percentage_points_add_up_to_the_probability_gap_and_keep_signs(values, base) -> None:
+    v = np.array(values)
+    pp = percentage_points(v, base)
+    gap = 100 * (1 / (1 + np.exp(-(base + v.sum()))) - 1 / (1 + np.exp(-base)))
+    assert pp.sum() == pytest.approx(gap, abs=1e-9)
+    assert all(np.sign(pp) == np.sign(v))

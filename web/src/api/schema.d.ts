@@ -820,10 +820,14 @@ export interface components {
             label: string;
             /** Log Odds */
             log_odds: number;
+            /** Points */
+            points: number;
             /** Provider Can Change */
             provider_can_change: boolean;
             /** Support */
             support: string | null;
+            /** Team Value */
+            team_value: string;
             /** Value */
             value: string;
         };

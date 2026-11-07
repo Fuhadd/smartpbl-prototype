@@ -71,6 +71,17 @@ def test_explanation_adds_up_and_offers_support_only_for_raising_levers(api) -> 
     assert body["baseline_risk"] < body["average_risk"]  # sigmoid(mean) < mean(sigmoid)
 
 
+def test_explanation_points_add_up_to_the_score_and_compare_with_team(api) -> None:
+    body = api.get("/workforce/WF-0461/explanation").json()
+    points = [f["points"] for f in body["factors"]]
+    gap = 100 * (body["risk"] - body["baseline_risk"])
+    assert sum(points) == pytest.approx(gap, abs=0.3)  # 3 dp rounding of the two risks
+    assert all((p > 0) == (f["log_odds"] > 0) for p, f in zip(points, body["factors"], strict=True))
+    team = {f["feature"]: f["team_value"] for f in body["factors"]}
+    assert team["drive_min_per_shift"].endswith(" min")
+    assert team["zero_hours"].endswith("% of team")
+
+
 def test_responses_never_include_label_or_protected_attribute(api) -> None:
     texts = [
         api.get("/workforce/risk", params={"limit": 200}).text,

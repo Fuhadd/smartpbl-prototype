@@ -1071,6 +1071,10 @@
             "title": "Log Odds",
             "type": "number"
           },
+          "points": {
+            "title": "Points",
+            "type": "number"
+          },
           "provider_can_change": {
             "title": "Provider Can Change",
             "type": "boolean"
@@ -1086,6 +1090,10 @@
             ],
             "title": "Support"
           },
+          "team_value": {
+            "title": "Team Value",
+            "type": "string"
+          },
           "value": {
             "title": "Value",
             "type": "string"
@@ -1096,6 +1104,8 @@
           "label",
           "value",
           "log_odds",
+          "points",
+          "team_value",
           "direction",
           "provider_can_change",
           "support"

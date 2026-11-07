@@ -60,6 +60,8 @@ class FactorOut(BaseModel):
     label: str
     value: str
     log_odds: float
+    points: float  # percentage points of (risk - baseline_risk); rows add up to that gap
+    team_value: str  # team median (or share for yes/no factors), for comparison
     direction: str
     provider_can_change: bool
     support: str | None
@@ -99,12 +101,14 @@ class ExplanationOut(BaseModel):
     caveats: list[str]
 
 
-def _factor(r: Reason) -> FactorOut:
+def _factor(r: Reason, w: WorkforceRisk) -> FactorOut:
     return FactorOut(
         feature=r.feature,
         label=r.label,
         value=r.value,
         log_odds=r.log_odds,
+        points=r.points,
+        team_value=w.team_values[r.feature],
         direction=r.direction,
         provider_can_change=r.lever,
         support=r.support,
@@ -159,7 +163,7 @@ def list_risk(
                 risk=c.risk,
                 support_priority=c.support_priority,
                 band=c.band,
-                top_factors=[_factor(r) for r in c.explanation.reasons[:3]],
+                top_factors=[_factor(r, w) for r in c.explanation.reasons[:3]],
             )
             for c in page
         ],
@@ -199,7 +203,7 @@ def explain(
         average_risk=w.average_risk,
         support_priority=c.support_priority,
         band=c.band,
-        factors=[_factor(r) for r in reasons],
+        factors=[_factor(r, w) for r in reasons],
         suggested_support=support,
         caveats=list(CAVEATS),
     )

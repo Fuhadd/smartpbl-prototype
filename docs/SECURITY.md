@@ -87,6 +87,10 @@ The sensitive flows are bulk reading of workforce risk (profiling employees), ma
 - **`GET /schedule/{run_id}/map`** serves locations only for runs whose input HMAC matches the committed synthetic sample. Runs still store no locations.
 - **The dashboard loads map tiles from `tile.openstreetmap.org`,** a third party that sees which map areas are viewed. That is acceptable for synthetic demo data; production needs self-hosted or contracted tiles. The 5.5 CSP must allow this `img-src`.
 
+**Step 5.4 additions:**
+- **Workforce responses add only derived, non-identifying fields:** `points` and `team_value`. The team value is a median across 200 carers, which reveals no individual. The label and age band are still never sent (an existing test still checks this).
+- **The workforce list loads the whole current workforce (200)** in one audited read, so the `workforce_risk_viewed` event lists every ref shown. Paging by patch is in the backlog, for least privilege at real scale.
+
 ### API7: Server Side Request Forgery
 The API makes two kinds of outbound request: to Ollama (`SMARTPBL_OLLAMA_BASE_URL`) and to OSRM (`SMARTPBL_OSRM_BASE_URL`). Both are server configuration, never request input. Scenario coordinates are numbers bounded to valid latitude and longitude, and the OSRM request URL is built from them, not from strings. Keep it this way: any future "fetch this URL" feature needs an allowlist.
 

@@ -670,3 +670,33 @@ Postgres `now()` is transaction-scoped; two runs tied, and "latest" was arbitrar
 
 **With real data and scale?**
 Patch-scoped access, real names and addresses, self-hosted tiles, OSRM road geometry, dated runs with a real day switcher, a solve job queue, nightly sweeps per patch.
+
+### 5.4 Workforce risk screen
+
+**Walk me through it.**
+- A risk list with bands.
+- A carer header: score, band, rank.
+- Four signal tiles compared with the team median.
+- A diverging SHAP bar chart in percentage points that adds up from the baseline to the score.
+- Supportive action cards, the use notice, and a model-card panel fed by the API.
+
+**SHAP is log-odds: how are the bars in percentage points?**
+Split the probability gap p − p₀ in proportion to each feature's log-odds. The rows add up exactly and keep signs and ranking. It's a convention (the sigmoid is non-linear), stated in the footnote; the exact log-odds stay in the API.
+
+**Why team median instead of trends?**
+The data is a snapshot; inventing trends on a screen about people's jobs is wrong. With real data, store weekly snapshots and show both.
+
+**How is punitive use designed out?**
+- Actions come only from levers the provider can change that add at least 2 points.
+- A check-in is offered only to the top 20%, worded as support.
+- The use notice is on every page.
+- The label and age are never sent, and every view is audited.
+- Policy and training still matter.
+
+**Why a hand-built chart?**
+It's twelve bars: a grid of list items gives screen-reader text per row and text alongside every colour, with no library weight.
+
+**Real data and scale?**
+- Names behind patch-scoped access, plus carer self-access.
+- Feature history; a DPIA and staff consultation (ICO monitoring-workers guidance).
+- Paging by band and patch.
