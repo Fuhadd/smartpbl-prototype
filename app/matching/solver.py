@@ -79,7 +79,7 @@ class Solution:
     objective: int
     status: str
     wall_s: float
-    params: SolverParams
+    params: SolverParams | None  # None for non-OR-Tools solvers (greedy)
     matrix_backend: str
     stats: dict[str, float] = field(default_factory=dict)
 

@@ -46,3 +46,6 @@
 - **Week-level continuity:** same carer, same weekday; plan a week rather than a day.
 - **Large-w search quality:** more time or a different metaheuristic for w > 30 min, where tabu search degrades.
 - **Deterministic solver budget:** time-limited search is not reproducible (3 of 10 sweep points changed on an identical rerun). Use `solution_limit` or fixed-iteration budgets for experiments, or repeat runs and report spread.
+- **Same-day re-optimisation:** fast greedy or locked-assignment OR-Tools runs for "who can cover this call now?".
+- **Workforce design levers:** split shifts and staggered start times to lift the ~50–55% utilisation that peak demand imposes.
+- **Historical-rota evaluation** with real call-monitoring data (KTP proper).

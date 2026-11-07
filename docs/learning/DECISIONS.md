@@ -158,3 +158,22 @@
   - The first 7 points cost only 7 min a day; the middle of the curve costs about 6.5 min per extra familiar visit.
   - At w > 30 the search degrades. Weights are best chosen per client group and checked on more days.
   - `solve()` gains an `initial=` warm start.
+
+## ADR-018: Greedy baseline and a multi-day evaluation protocol for scheduling (2026-11-07)
+- **Context:** The optimiser has to beat what a coordinator would do by hand, on days it wasn't tuned on.
+- **Decision:**
+  - **Greedy:** take visits in window order (time-critical first on ties) and give each to the nearest eligible carer who can arrive in time. It returns the same `Solution` type, checked by the same checker.
+  - **Comparison:** greedy vs OR-Tools w=0 vs OR-Tools w=15 two-phase (warm-started from w=0), on the first 5 seeds from 42 upwards that pass validation (45–47 were rejected), using OSRM matrices.
+  - **Metrics:** unassigned, time-critical unassigned, driving, familiar carer %, utilisation, runtime.
+  - `Solution.params` is now optional.
+- **Alternatives:** greedy with a continuity tie-break; regret insertion; the historical rota (needs real data).
+- **Consequences:**
+
+  | | Unassigned | Time-critical unassigned | Driving | Familiar carer |
+  |---|---|---|---|---|
+  | Greedy | 25.2 | 5.4/day | 663 min | 22% |
+  | OR-Tools w=0 | 17.8 | 0 | 596 min | 29% |
+  | OR-Tools w=15 two-phase | 17.0 | 0 | 687 min | 56% |
+
+  - **Utilisation** is about 50–55% for every method, because peaks bind.
+  - **The generator rejected 3 of 8 seeds,** so the valid days are a filtered sample.

@@ -333,3 +333,23 @@ Familiarity from visit history (recency-weighted), week-level planning, weights 
 
 **Higher weights got worse?**
 A rugged landscape for local search, so it's a search artefact. The front is computed from all points; cap w at about 30 min or give it more time.
+
+### 2.5 Greedy baseline and evaluation
+
+**Optimiser vs simple heuristic?**
+Over 5 days: unassigned 17.8 vs 25.2, 10% less driving, 0 vs about 5 time-critical drops a day. w=15 two-phase gives 56% familiar for +15% driving with no coverage loss. All solutions checked.
+
+**Why does greedy fail time-critical visits?**
+Time-ordered and never revisits choices, so qualified carers get used up on routine visits. OR-Tools prices critical drops ×2 and rearranges routes. Fixing greedy needs look-ahead, which means writing an optimiser.
+
+**When would you use greedy?**
+Live same-day re-assignment (milliseconds), as a fallback, and for transparency. OR-Tools for the overnight plan.
+
+**Why five days?**
+Choices were tuned on seed 42; evaluating there is like testing on training data. The ranking held on all days. Rejected seeds are reported.
+
+**Why is utilisation about 50–55%?**
+Peaks bind, not total hours. Continuous shifts mean waiting through troughs. Levers: split shifts, staggered starts, moving flexible calls.
+
+**With real data?**
+Replay historical days against the actual rota using call-monitoring data, a shadow-mode pilot (measure acceptance and overrides), client outcomes (missed medication, complaints, continuity) and carer outcomes (idle time, mileage).

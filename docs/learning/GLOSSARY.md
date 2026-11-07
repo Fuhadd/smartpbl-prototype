@@ -117,3 +117,8 @@
 - **Lexicographic optimisation**: Optimise objectives in priority order, fixing each before the next (here: coverage, then the travel/continuity trade-off).
 - **Warm start**: Starting a solver from an existing solution; with an improving search the result is never worse than the start.
 - **Knee point**: Where the marginal cost of improving one objective rises sharply.
+- **Greedy heuristic**: Builds a solution by making the locally best choice at each step, never revisiting it.
+- **Myopia (heuristics)**: Failing to account for how a choice now constrains later choices.
+- **Regret insertion**: Insert first the visit whose best and second-best options differ most (the one you'd regret postponing).
+- **Utilisation**: Share of paid shift time spent on visits and driving.
+- **Shadow mode**: Running a new system alongside the current process, without acting on its outputs, to compare decisions.
