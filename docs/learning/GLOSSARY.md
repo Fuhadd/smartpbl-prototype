@@ -126,3 +126,19 @@
 - **Counterfactual explanation**: What would change if a different choice were made ("CR-0007 would add 14 minutes").
 - **Canonical serialisation**: A single, deterministic encoding of equal data (e.g. sorted sets), so hashes are stable.
 - **Finaliser (OR-Tools)**: A secondary preference applied after the search, used to pick exact values (such as times) within a fixed solution.
+- **Attrition (turnover)**: Staff leaving an employer; here, a carer leaving within 12 months of a snapshot date.
+- **Snapshot date / label window**: Features use data from before the snapshot only; the label covers a fixed period after it.
+- **Known-mechanism (ground-truth) generator**: Synthetic data whose label is produced by a documented rule, so you can check what a model recovers.
+- **Circularity (synthetic evaluation)**: A model trained and tested on generated data learns the generator; good scores show the pipeline works, not that the world works that way.
+- **Oracle (Bayes-optimal) probability**: The best possible prediction from the observed features, P(y | x), averaging over unobserved factors; it sets the ceiling for AUC and the target for calibration.
+- **Latent (unobserved) factor**: A cause of the outcome that no feature records; it lowers the achievable accuracy.
+- **Irreducible (aleatoric) noise**: Randomness in the outcome itself; a 40%-risk carer may or may not leave, whatever the model.
+- **Gauss–Hermite quadrature**: Computing an average over a normal distribution exactly enough with a weighted sum at a few fixed points.
+- **Null feature**: A feature with no true effect, included to test whether models and explanations wrongly assign it importance.
+- **Interaction effect**: One feature's effect depends on another's value (short-notice changes hurt more on zero-hours contracts).
+- **Hinge (piecewise-linear) effect**: Zero below a threshold, linear above it, e.g. max(0, changes − 2).
+- **Stratified split**: A train/test split that keeps the class proportions the same in both parts.
+- **Protected characteristic**: An attribute protected by the Equality Act 2010 (e.g. age, sex, race); kept here for auditing only.
+- **Proxy discrimination (indirect discrimination)**: Disadvantaging a protected group through features correlated with membership, even when the attribute itself is excluded.
+- **Censoring**: Not seeing the outcome for some people because the observation period ended (e.g. recent hires); survival analysis handles it.
+- **Data card / datasheet**: Documentation of how a dataset was made, what it contains, and its known biases and intended uses.

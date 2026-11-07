@@ -373,3 +373,31 @@ Async jobs (202 plus status), auth and roles, counterfactual "why not X?", a gen
 
 **Arrival timing change?**
 Latest-departure finalisers put visits at the end of their windows, which is brittle. Now earliest service and latest departure; same routes and objective, slack where it protects clients.
+
+## Tier 3 — Attrition prediction
+
+### 3.1 Synthetic workforce data
+
+**What can a model on synthetic data tell you?**
+Only that the pipeline works: it recovers planted effects, ranks null features near zero, and is calibrated against a known truth. Nothing about why real carers leave; every effect was put there by me.
+
+**What is the oracle?**
+P(leave | observed features), averaging over the unobserved factor. It gives a ceiling (AUC 0.726), a calibration target, and a leakage alarm (beating it on held-out data means leakage).
+
+**Why derive features from Tier 2?**
+It makes it one platform: driving, unpaid gaps, split days and continuity come from real routes, so scheduling choices feed retention risk. Real data would also come from rota and call-monitoring systems.
+
+**Age band in the data?**
+For auditing only, excluded from features by a test. 18–24s leave at 47% vs 23% for 55+ through tenure and contract alone, which is proxy discrimination in waiting. The use decides acceptability: mentoring yes, hiring or shift allocation no.
+
+**Why keep an easy test split?**
+The split rule was fixed in advance. Re-drawing it would be selecting the test set by its results. The oracle's test AUC spans 0.65–0.80 across splits with 60 leavers, so CV is the main estimate and test scores are quoted next to the oracle.
+
+**Classification vs survival analysis?**
+Classification is simpler to explain and calibrate, but loses timing and ignores censoring. With real data: a fixed label window with full follow-up, then survival models (Cox, boosted survival).
+
+**With real PBL data?**
+Snapshot features with no post-snapshot leakage, a time-based split, leaver reasons separated, a DPIA and worker consultation (this is employee profiling), and modest AUC expectations.
+
+**Why null features?**
+To catch explanation errors. The correlated pair (gaps and split shifts, r = 0.82) tests shared or swapped attribution.

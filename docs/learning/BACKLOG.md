@@ -53,3 +53,7 @@
 - **Counterfactual explanations:** "why not carer X?" by re-solving with X forced or forbidden.
 - **Generic audit subject:** add `subject_type`/`subject_id` to audit events (Tier 4.2) instead of note-specific `note_id`.
 - **Locked assignments:** pin coordinator-chosen assignments and re-solve around them.
+- **Workforce realism:** entangle employment features (zero-hours carers offered fewer and more volatile shifts), weekends and seasons, and leaver reasons (voluntary, dismissal, retirement).
+- **Survival framing:** a time-to-leaving generator with censoring, and Cox / gradient-boosted survival models.
+- **Longitudinal snapshots:** multiple snapshot dates per carer with a time-based split, to rehearse leakage-safe feature building.
+- **Primary-source anchors:** check the turnover and zero-hours figures against the Skills for Care report itself (the data card currently uses secondary reporting).

@@ -192,3 +192,21 @@
   - Live on the sample day: w=0 drops 12 with 30.9% familiar at 629 min; w=15 drops 11 with 47.4% familiar at 700 min.
   - Requests block for up to 2 × the time limit, so a queue plus rate limiting are needed in Tier 4.
   - The audit table's `note_id` is note-specific; a generic subject id is deferred to 4.2.
+
+## ADR-020: Synthetic workforce from Tier 2 carer-days with a known attrition mechanism (2026-11-07)
+- **Context:** Tier 3 needs attrition data. No real HR data exists, and the brief asks for features derived from Tier 2. A synthetic label risks circular "findings".
+- **Decision:**
+  - **Calibration:** `scripts/calibrate_workforce.py` solves the 5 Tier 2 evaluation days (OSRM, w=15 two-phase) once and commits 85 carer-days. This keeps solver noise out of the generator.
+  - **Working conditions:** per carer, a home round (p=0.6) or another same-rota day for each of 13 weeks of shifts. Driving, unpaid gaps, split-day share (single gap ≥ 90 min), visits and familiarity are averages over those shifts.
+  - **Employment features** are stated assumptions: age band, tenure, zero-hours (about 37%), shifts per week, short-notice changes.
+  - **Label:** an explicit ground-truth logistic model (steps, hinge, an interaction, 4 null features) plus an unobserved factor U ~ N(0,1). The intercept is solved to give a 30% leaver rate (an assumption between sector-wide ~25% and older domiciliary ~39% figures).
+  - **Oracle:** `p_oracle = E_U[sigmoid(·)]` by Gauss–Hermite quadrature, kept in a separate file that is never a model input.
+  - **Protected attribute:** `age_band` is stored for auditing only, excluded from `FEATURES` (enforced by a test), with no direct effect.
+  - **Size and split:** n = 1,000, stratified 80/20 split with `random_state=42`, fixed before looking.
+  - **Dependencies:** adds scikit-learn and pandas.
+- **Alternatives:** independent random features; a public HR dataset (IBM sample: fictional, not care-sector); a survival-time generator with censoring.
+- **Consequences:**
+  - 29.8% leavers. Oracle AUC is 0.726 overall; 0.754 even with no U, because of Bernoulli noise.
+  - **The test split is easy:** the oracle reaches 0.795 on it, the 97th percentile of 200 random splits (95% range 0.645–0.795). It was kept; Step 3.2 uses CV as the main estimate and reports test scores next to the oracle on the same rows.
+  - Leaver rates differ by age (47% for 18–24 vs 23% for 55+) through tenure and contract alone, which sets up the proxy-discrimination audit in 3.3.
+  - Results show the pipeline recovers a known mechanism, nothing about real carers.
