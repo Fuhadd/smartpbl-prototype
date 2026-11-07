@@ -12,4 +12,3 @@ htmlcov/
 # Large local artefacts
 osrm/
 *.osm.pbf
-data/predictions/

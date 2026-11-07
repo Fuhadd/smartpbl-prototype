@@ -1,0 +1,635 @@
+{
+  "split": "dev",
+  "seed": 42,
+  "systems": [
+    {
+      "system": "llama3.1:8b@v2",
+      "n_notes": 80,
+      "n_gold_flags": 109,
+      "micro": {
+        "tp": 98,
+        "fp": 2,
+        "fn": 11,
+        "precision": 0.98,
+        "recall": 0.8990825688073395,
+        "f1": 0.937799043062201
+      },
+      "macro_f1": 0.9290601649568276,
+      "ci95": {
+        "precision": [
+          0.9489795918367347,
+          1.0
+        ],
+        "recall": [
+          0.8461538461538461,
+          0.9459459459459459
+        ],
+        "f1": [
+          0.9023255813953488,
+          0.9696969696969696
+        ]
+      },
+      "per_category": {
+        "falls": {
+          "tp": 15,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "medication": {
+          "tp": 14,
+          "fp": 0,
+          "fn": 2,
+          "f1": 0.9333333333333333
+        },
+        "nutrition_hydration": {
+          "tp": 15,
+          "fp": 0,
+          "fn": 1,
+          "f1": 0.967741935483871
+        },
+        "skin_integrity": {
+          "tp": 16,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "mood_behaviour": {
+          "tp": 14,
+          "fp": 0,
+          "fn": 1,
+          "f1": 0.9655172413793104
+        },
+        "safeguarding": {
+          "tp": 16,
+          "fp": 2,
+          "fn": 0,
+          "f1": 0.9411764705882353
+        },
+        "missed_late_visit": {
+          "tp": 8,
+          "fp": 0,
+          "fn": 7,
+          "f1": 0.6956521739130436
+        }
+      },
+      "severity_agreement": 0.826530612244898,
+      "valid_first_try": 80,
+      "valid_final": 80,
+      "grounding": {
+        "exact": 94,
+        "fuzzy": 6
+      },
+      "latency_ms": {
+        "p50": 5671.6,
+        "p95": 10208.07
+      },
+      "negated_false_positives": 1,
+      "subset_recall": {
+        "hard": [
+          48,
+          56
+        ],
+        "lowercase": [
+          17,
+          18
+        ],
+        "multi": [
+          68,
+          76
+        ],
+        "negation": [
+          42,
+          45
+        ],
+        "no_risk": [
+          0,
+          0
+        ],
+        "noisy": [
+          76,
+          84
+        ],
+        "pii": [
+          65,
+          74
+        ],
+        "single": [
+          30,
+          33
+        ]
+      },
+      "confusion": {
+        "missed_late_visit": {
+          "not_found": 6,
+          "missed_late_visit": 8,
+          "safeguarding": 1
+        },
+        "medication": {
+          "medication": 14,
+          "not_found": 2
+        },
+        "safeguarding": {
+          "safeguarding": 16
+        },
+        "nutrition_hydration": {
+          "nutrition_hydration": 15,
+          "not_found": 1
+        },
+        "falls": {
+          "falls": 15
+        },
+        "skin_integrity": {
+          "skin_integrity": 16
+        },
+        "mood_behaviour": {
+          "mood_behaviour": 14,
+          "safeguarding": 1
+        }
+      },
+      "routing": {
+        "notes_reviewed": 51,
+        "gold_flags": 109,
+        "escaped": 0,
+        "high_escaped": 0,
+        "high_total": 51,
+        "auto_accepted": 37,
+        "auto_accepted_false_positive": 0
+      }
+    },
+    {
+      "system": "llama3.1:8b@v1",
+      "n_notes": 80,
+      "n_gold_flags": 109,
+      "micro": {
+        "tp": 95,
+        "fp": 13,
+        "fn": 14,
+        "precision": 0.8796296296296297,
+        "recall": 0.8715596330275229,
+        "f1": 0.8755760368663594
+      },
+      "macro_f1": 0.8665595488255587,
+      "ci95": {
+        "precision": [
+          0.8108108108108109,
+          0.9393939393939394
+        ],
+        "recall": [
+          0.8070175438596491,
+          0.9285714285714286
+        ],
+        "f1": [
+          0.8246445497630333,
+          0.918918918918919
+        ]
+      },
+      "per_category": {
+        "falls": {
+          "tp": 14,
+          "fp": 0,
+          "fn": 1,
+          "f1": 0.9655172413793104
+        },
+        "medication": {
+          "tp": 15,
+          "fp": 8,
+          "fn": 1,
+          "f1": 0.7692307692307693
+        },
+        "nutrition_hydration": {
+          "tp": 15,
+          "fp": 4,
+          "fn": 1,
+          "f1": 0.8571428571428572
+        },
+        "skin_integrity": {
+          "tp": 16,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "mood_behaviour": {
+          "tp": 13,
+          "fp": 0,
+          "fn": 2,
+          "f1": 0.9285714285714286
+        },
+        "safeguarding": {
+          "tp": 16,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "missed_late_visit": {
+          "tp": 6,
+          "fp": 1,
+          "fn": 9,
+          "f1": 0.5454545454545455
+        }
+      },
+      "severity_agreement": 0.5578947368421052,
+      "valid_first_try": 80,
+      "valid_final": 80,
+      "grounding": {
+        "exact": 104,
+        "fuzzy": 3,
+        "normalised": 1
+      },
+      "latency_ms": {
+        "p50": 5502.05,
+        "p95": 9975.435
+      },
+      "negated_false_positives": 2,
+      "subset_recall": {
+        "hard": [
+          47,
+          56
+        ],
+        "lowercase": [
+          16,
+          18
+        ],
+        "multi": [
+          64,
+          76
+        ],
+        "negation": [
+          41,
+          45
+        ],
+        "no_risk": [
+          0,
+          0
+        ],
+        "noisy": [
+          72,
+          84
+        ],
+        "pii": [
+          63,
+          74
+        ],
+        "single": [
+          31,
+          33
+        ]
+      },
+      "confusion": {
+        "missed_late_visit": {
+          "not_found": 9,
+          "missed_late_visit": 6
+        },
+        "medication": {
+          "medication": 15,
+          "not_found": 1
+        },
+        "safeguarding": {
+          "safeguarding": 16
+        },
+        "nutrition_hydration": {
+          "nutrition_hydration": 15,
+          "not_found": 1
+        },
+        "falls": {
+          "falls": 14,
+          "not_found": 1
+        },
+        "skin_integrity": {
+          "skin_integrity": 16
+        },
+        "mood_behaviour": {
+          "mood_behaviour": 13,
+          "nutrition_hydration": 1,
+          "not_found": 1
+        },
+        "no_gold_flag": {
+          "medication": 8,
+          "nutrition_hydration": 3,
+          "missed_late_visit": 1
+        }
+      },
+      "routing": {
+        "notes_reviewed": 40,
+        "gold_flags": 109,
+        "escaped": 1,
+        "high_escaped": 1,
+        "high_total": 51,
+        "auto_accepted": 66,
+        "auto_accepted_false_positive": 12
+      }
+    },
+    {
+      "system": "qwen2.5:3b@v2",
+      "n_notes": 80,
+      "n_gold_flags": 109,
+      "micro": {
+        "tp": 50,
+        "fp": 7,
+        "fn": 59,
+        "precision": 0.8771929824561403,
+        "recall": 0.45871559633027525,
+        "f1": 0.6024096385542169
+      },
+      "macro_f1": 0.5848690646827291,
+      "ci95": {
+        "precision": [
+          0.7758620689655172,
+          0.9791666666666666
+        ],
+        "recall": [
+          0.3877551020408163,
+          0.5283018867924528
+        ],
+        "f1": [
+          0.5306122448979592,
+          0.6706586826347305
+        ]
+      },
+      "per_category": {
+        "falls": {
+          "tp": 11,
+          "fp": 0,
+          "fn": 4,
+          "f1": 0.846153846153846
+        },
+        "medication": {
+          "tp": 5,
+          "fp": 0,
+          "fn": 11,
+          "f1": 0.47619047619047616
+        },
+        "nutrition_hydration": {
+          "tp": 5,
+          "fp": 1,
+          "fn": 11,
+          "f1": 0.45454545454545453
+        },
+        "skin_integrity": {
+          "tp": 6,
+          "fp": 1,
+          "fn": 10,
+          "f1": 0.5217391304347825
+        },
+        "mood_behaviour": {
+          "tp": 12,
+          "fp": 5,
+          "fn": 3,
+          "f1": 0.7500000000000001
+        },
+        "safeguarding": {
+          "tp": 6,
+          "fp": 0,
+          "fn": 10,
+          "f1": 0.5454545454545454
+        },
+        "missed_late_visit": {
+          "tp": 5,
+          "fp": 0,
+          "fn": 10,
+          "f1": 0.5
+        }
+      },
+      "severity_agreement": 0.64,
+      "valid_first_try": 80,
+      "valid_final": 80,
+      "grounding": {
+        "exact": 51,
+        "fuzzy": 4,
+        "ungrounded": 1,
+        "normalised": 1
+      },
+      "latency_ms": {
+        "p50": 2266.3,
+        "p95": 3491.015
+      },
+      "negated_false_positives": 1,
+      "subset_recall": {
+        "hard": [
+          24,
+          56
+        ],
+        "lowercase": [
+          8,
+          18
+        ],
+        "multi": [
+          34,
+          76
+        ],
+        "negation": [
+          17,
+          45
+        ],
+        "no_risk": [
+          0,
+          0
+        ],
+        "noisy": [
+          41,
+          84
+        ],
+        "pii": [
+          32,
+          74
+        ],
+        "single": [
+          16,
+          33
+        ]
+      },
+      "confusion": {
+        "missed_late_visit": {
+          "not_found": 10,
+          "missed_late_visit": 5
+        },
+        "medication": {
+          "medication": 5,
+          "not_found": 10,
+          "mood_behaviour": 1
+        },
+        "safeguarding": {
+          "not_found": 9,
+          "safeguarding": 6,
+          "mood_behaviour": 1,
+          "skin_integrity": 1
+        },
+        "nutrition_hydration": {
+          "nutrition_hydration": 5,
+          "not_found": 11
+        },
+        "falls": {
+          "falls": 11,
+          "not_found": 3,
+          "mood_behaviour": 1
+        },
+        "skin_integrity": {
+          "not_found": 9,
+          "skin_integrity": 6,
+          "mood_behaviour": 1
+        },
+        "mood_behaviour": {
+          "mood_behaviour": 12,
+          "not_found": 3
+        },
+        "no_gold_flag": {
+          "nutrition_hydration": 1,
+          "mood_behaviour": 1
+        }
+      },
+      "routing": {
+        "notes_reviewed": 65,
+        "gold_flags": 109,
+        "escaped": 0,
+        "high_escaped": 0,
+        "high_total": 51,
+        "auto_accepted": 6,
+        "auto_accepted_false_positive": 0
+      }
+    },
+    {
+      "system": "rules-v1",
+      "n_notes": 80,
+      "n_gold_flags": 109,
+      "micro": {
+        "tp": 106,
+        "fp": 0,
+        "fn": 3,
+        "precision": 1.0,
+        "recall": 0.9724770642201835,
+        "f1": 0.986046511627907
+      },
+      "macro_f1": 0.985539488320356,
+      "ci95": {
+        "precision": [
+          1.0,
+          1.0
+        ],
+        "recall": [
+          0.9396551724137931,
+          1.0
+        ],
+        "f1": [
+          0.9688888888888889,
+          1.0
+        ]
+      },
+      "per_category": {
+        "falls": {
+          "tp": 14,
+          "fp": 0,
+          "fn": 1,
+          "f1": 0.9655172413793104
+        },
+        "medication": {
+          "tp": 15,
+          "fp": 0,
+          "fn": 1,
+          "f1": 0.967741935483871
+        },
+        "nutrition_hydration": {
+          "tp": 16,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "skin_integrity": {
+          "tp": 16,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "mood_behaviour": {
+          "tp": 14,
+          "fp": 0,
+          "fn": 1,
+          "f1": 0.9655172413793104
+        },
+        "safeguarding": {
+          "tp": 16,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "missed_late_visit": {
+          "tp": 15,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        }
+      },
+      "severity_agreement": 0.9528301886792453,
+      "valid_first_try": 80,
+      "valid_final": 80,
+      "grounding": {
+        "exact": 106
+      },
+      "latency_ms": {
+        "p50": 0.3375625019543804,
+        "p95": 0.46144854568410665
+      },
+      "negated_false_positives": 0,
+      "subset_recall": {
+        "hard": [
+          55,
+          56
+        ],
+        "lowercase": [
+          17,
+          18
+        ],
+        "multi": [
+          73,
+          76
+        ],
+        "negation": [
+          45,
+          45
+        ],
+        "no_risk": [
+          0,
+          0
+        ],
+        "noisy": [
+          81,
+          84
+        ],
+        "pii": [
+          72,
+          74
+        ],
+        "single": [
+          33,
+          33
+        ]
+      },
+      "confusion": {
+        "missed_late_visit": {
+          "missed_late_visit": 15
+        },
+        "medication": {
+          "medication": 15,
+          "not_found": 1
+        },
+        "safeguarding": {
+          "safeguarding": 16
+        },
+        "nutrition_hydration": {
+          "nutrition_hydration": 16
+        },
+        "falls": {
+          "falls": 14,
+          "not_found": 1
+        },
+        "skin_integrity": {
+          "skin_integrity": 16
+        },
+        "mood_behaviour": {
+          "mood_behaviour": 14,
+          "not_found": 1
+        }
+      },
+      "routing": null
+    }
+  ]
+}

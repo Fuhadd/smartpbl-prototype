@@ -25,3 +25,7 @@
 - **Queue at scale:** store a priority column, then sort and page in SQL instead of in Python.
 - **Raw-text access:** return `raw_text` only to authorised roles, and audit every read (Tier 4.1/4.2).
 - **Reviewer analytics:** edit/reject rate per category and per prompt version from `review_decisions`, as a quality and drift signal.
+- **Indirect-phrasing failures (from the test evaluation; not tuned on test):** concealed medication ("pills hidden in a tissue"), subtle mood change, shortened visits. Address with new examples drawn from a fresh dev set, then evaluate on a new held-out set. The current test set is spent.
+- **qwen2.5:3b:** needs its own prompt tuning and evaluation before it can be a hardware fallback (test recall 0.50 with the llama prompt).
+- **Fresh held-out set:** generate a new test split with a different seed and new held-out phrases, for any future prompt or rule iteration.
+- **Real-data evaluation plan:** double annotation with kappa, a time-based split, per-category sample-size targets, fairness slices.

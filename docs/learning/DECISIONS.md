@@ -74,3 +74,24 @@
   - Lost updates are prevented. This is tested by asserting the lock appears in the emitted SQL.
   - Reviewer corrections become queryable labels.
   - Gaps: notes whose LLM extraction failed and the baseline found nothing stay in the queue with no flag to act on, because there is no note-level sign-off yet. Reviewers can't add a flag the system missed. Decisions can't be corrected. The queue is sorted in Python.
+
+## ADR-012: Build cadence: steps run back-to-back, with a review at each tier milestone (2026-11-07)
+- **Context:** Before this, every step stopped for explicit approval. With the 15 Nov deadline for Tiers 1–2, waiting between steps cost more time than it saved.
+- **Decision:** Steps run consecutively. Each step still meets the full definition of done (code, tests, lint, learning note, ADR/glossary/interview updates, commit). Work pauses only at tier milestones, when a decision is genuinely the learner's, or when blocked. Default choices are recorded here.
+- **Alternatives:** keep stopping after every step; batch several steps into one commit.
+- **Consequences:** Faster progress. Review moves to tier boundaries, so each tier summary must list every learning note to read. Per-step commits keep the history reviewable.
+
+## ADR-013: Evaluation protocol, and keeping llama3.1:8b as the extraction model (2026-11-07)
+- **Context:** Tier 1 needs an honest comparison of the LLM and the rules on data neither was tuned on, small enough to run on a laptop.
+- **Decision:**
+  - **Scoring:** per-note, per-category matching. Failed extractions count as no flags.
+  - **Reported:** micro and macro P/R/F1 with 1000-resample bootstrap CIs, a 2000-resample paired bootstrap against the rules, and union recall. Also schema validity, grounding, severity agreement, latency, robustness slices, confusion by evidence overlap, and deployed-pipeline escape and workload.
+  - **Test split opened once** (`--final`), with no tuning afterwards.
+  - **Prediction files committed** for reproducibility.
+- **Alternatives:** span-level matching; scikit-learn multilabel metrics; LLM-as-judge; regenerating a larger synthetic test set.
+- **Consequences:**
+  - **Results (test, n = 40):** llama F1 0.906 / recall 0.857; rules 0.860 / 0.768; qwen 0.651 / 0.500.
+  - **The difference is not significant:** the paired bootstrap gives llama vs rules F1 +0.046 (−0.034 to +0.141).
+  - **The deployed pipeline** reviews 50% of notes, with a 7.1% escape rate and 0 high-severity escapes.
+  - **The rules overfit dev,** dropping from 0.986 to 0.860 F1.
+  - **llama3.1:8b stays the default. qwen2.5:3b is rejected** for now: it reaches only about 50% recall on both splits.

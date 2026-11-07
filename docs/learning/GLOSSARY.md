@@ -75,3 +75,12 @@
 - **HTTP 409 Conflict**: The request conflicts with the resource's current state (e.g. the flag was already reviewed, or the note ID already exists).
 - **HTTP 422 Unprocessable Content**: The request is well-formed but its content fails validation.
 - **Idempotency key**: A client-supplied ID that lets a server recognise retries of the same request and apply it only once.
+- **Micro average**: Pool TP/FP/FN across categories, then compute the metric; frequent categories dominate.
+- **Macro average**: Compute the metric per category, then take the unweighted mean; every category counts equally.
+- **F-beta (F2)**: A weighted harmonic mean of precision and recall; β = 2 weights recall four times as heavily as precision.
+- **Bootstrap confidence interval**: An interval from recomputing a metric on many resamples (with replacement) of the test set.
+- **Paired bootstrap**: Resampling the same items for two systems and recording the difference, so per-item difficulty cancels out.
+- **Escape rate**: Share of true risks that no part of the pipeline flags, so no human will be prompted to see them.
+- **Alert fatigue**: Reviewers ignoring or rubber-stamping alerts because too many are false.
+- **Union recall**: Recall when the flags of two systems are combined.
+- **Inter-annotator agreement (Cohen's kappa)**: Agreement between two labellers corrected for chance; caps how well any model can be judged.

@@ -206,3 +206,33 @@ Policy decided the first, so a human override is the system working. Human decis
 - ETags for long-lived review screens.
 - A priority column with SQL paging.
 - Reviewer decisions as the labelled dataset, with edit rate monitored as a drift signal.
+
+### 1.9 Evaluation
+
+**Which metric matters most for safety flags?**
+Recall, because a miss can mean harm and a false positive costs a minute. Precision still matters (alert fatigue), so report F1 too. The deployed headline is the escape rate: 7.1%, with 0/19 high-severity escapes, at 50% review workload. As a single number, F2.
+
+**Is the LLM better than the rules (0.906 vs 0.860 F1)?**
+Not provably at n = 40. Paired bootstrap: +0.046 (−0.034 to +0.141), p ≈ 0.14. What is robust: the rules drop 20 points of recall on held-out phrasing, and union recall is 0.929.
+
+**Why did the rules drop from 0.986 to 0.860?**
+Hand-tuning on dev phrasings is overfitting. On test-only phrasings recall was 0.59 for the rules vs 0.81 for the LLM. That is why the test split stayed locked until the end.
+
+**llama 8B vs qwen 3B?**
+qwen is 2.5× faster and smaller but finds half the risks, consistently on both splits. Triage is async, so latency is irrelevant and misses are not.
+
+**How do you know the evaluation code is right?**
+- It reproduces earlier, independently measured dev numbers.
+- 13 unit tests with known answers.
+- One wrong test expectation was caught: a paired p-value can't be exactly 0.
+- Predictions are committed, so the results can be re-run.
+
+**With real PBL data?**
+- Double-annotated notes with kappa.
+- A time-based split.
+- Hundreds of examples per rare category.
+- Fairness slices.
+- Reviewer edit and reject rates as a live quality signal.
+
+**What doesn't the synthetic evaluation tell you?**
+Absolute performance (it's circular: one author for data, rules and prompts), messiness of real notes, and how humans use the queue. It does support relative comparisons, failure modes, and a ready harness.
