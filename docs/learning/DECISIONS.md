@@ -389,7 +389,7 @@
 - **Context:** Step 5.2b builds `Main.dc.html` and `Audit.dc.html`. The overview needs data from four tables and the workforce model. The audit screen shows one line per meaningful event, while the log stores fine-grained rows. Two design elements had no backing data: "vs manual" (there is no manual rota) and "Carers at elevated risk" (no band definition).
 - **Decision (defaults confirmed by the project owner, 2026-11-07):**
   - **`GET /overview`** (`review.queue.read`): one snapshot for all panels, reusing `queue_items()`. Sections the role can't read are null. Quoted note evidence and the named carer are audited like the queue and the risk list.
-  - **Schedule comparison:** "vs greedy baseline". Every solve also runs the Step 2.5 greedy heuristic on the same day and matrix and stores `metrics.baseline`. Older runs show no comparison. Presets: Travel 0, Balanced 15, Continuity 45, otherwise Custom.
+  - **Schedule comparison:** "vs greedy baseline". Every solve also runs the Step 2.5 greedy heuristic on the same day and matrix and stores `metrics.baseline`. Older runs show no comparison. Presets: Travel 0, Balanced 15, Continuity 45, otherwise Custom (Continuity changed to 30 by ADR-033).
   - **Risk bands:** elevated = support-priority group (top 20 %), moderate = above the team average, low = the rest. Returned as `band` on workforce responses.
   - **Audit timeline:** a read-time projection (`app/audit/timeline.py`). Anchor and companion event types are grouped by request id and note id, each entry lists its raw row ids, pagination is keyset over anchor ids, and the copy is built server-side so screen and CSV agree. Successful requests, "viewed" rows and the rules baseline aren't shown (still in the log and in `GET /audit/{note_id}`). 403 refusals and token-reuse alerts are shown.
   - **`GET /audit/summary`** (today in Europe/London) and **`GET /audit/export`** (CSV, at most 5000 entries, formula cells neutralised per OWASP).
@@ -401,3 +401,20 @@
   - "Today's schedule" is the latest saved run, not one dated today.
   - Search runs `ILIKE` with sub-selects (no index), fine at prototype volume.
   - The design's "Workforce risk scores · 31 carers scored" row has no event (scoring isn't audited as an AI output yet; backlog).
+
+## ADR-033: Schedule screen: hash-gated map, sweep preview, next-best counterfactual, Continuity = 30 (2026-11-07)
+- **Context:** Step 5.3 builds `Schedule.dc.html`: a route map, a timeline, "why this carer" with "Next best", and an "Optimise for" trade-off panel. Runs don't store locations (Step 2.6). There was no "next best" data and no machine-readable sweep. ADR-032's Continuity preset (45) turned out to be dominated in the published sweep.
+- **Decision:**
+  - **Map:** `GET /schedule/{run_id}/map` serves locations only when the run's input HMAC matches the committed synthetic sample; any other run gets 404 with an explanation. Locations are not added to runs.
+  - **Next best:** computed at solve time by `next_best()` (the closest other qualified carer, placed where their own route has them) and stored as `schedule_assignments.alternative` (migration 0009). It is labelled in the UI as before any re-planning.
+  - **Trade-off:** `GET /schedule/tradeoff` serves `data/scheduling/tradeoff.json` (taken from the published Step 2.4 table; future sweeps write it directly). Choosing a preset previews the sweep point and Apply runs one solve.
+  - **Presets:** Travel 0, Balanced 15, **Continuity 30** (supersedes 45 in ADR-032). A test asserts every preset is on the Pareto front.
+  - **`GET /schedule/latest`**; runs stamped with wall-clock `created_at` (the `now()` default is transaction-scoped and tied).
+  - **Frontend:** react-leaflet 5 with OSM tiles, Recharts 3, three pinned route colours with least-recently-chosen replacement, timeline view of all carers, code-split route. The design's day arrows are disabled (one synthetic day), and "Carer home" became "Carer start".
+  - **Overview:** the greedy baseline also reports `served`, and the panel says "Serves N more visits than the greedy baseline".
+- **Alternatives:** store scenarios with runs; exact counterfactual by forced re-solve; a live solve per preview; road geometry from OSRM `route`; keep 45.
+- **Consequences:**
+  - Only the sample day is mappable.
+  - The preview uses 30 s-per-point sweep results, while the API solves at 10 s, so applied runs can sit off the curve.
+  - Public OSM tiles are fine for a demo, not production (usage policy; the viewed area is visible to the tile server).
+  - The OSM policy asks web clients not to set a restrictive Referrer-Policy, which constrains the 5.5 hosting headers.

@@ -304,6 +304,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/schedule/latest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Latest Schedule
+         * @description The most recently saved rota (the prototype plans one synthetic day).
+         */
+        get: operations["latest_schedule_schedule_latest_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/schedule/solve": {
         parameters: {
             query?: never;
@@ -325,6 +345,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/schedule/tradeoff": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tradeoff */
+        get: operations["tradeoff_schedule_tradeoff_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/schedule/{run_id}": {
         parameters: {
             query?: never;
@@ -334,6 +371,30 @@ export interface paths {
         };
         /** Get Schedule */
         get: operations["get_schedule_schedule__run_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/schedule/{run_id}/map": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Schedule Map
+         * @description Where the run's carers start and its visits are, for the map.
+         *
+         *     Runs don't store locations (data minimisation, Step 2.6), so a map is only available
+         *     when the run's input hash matches the committed synthetic sample day. A real deployment
+         *     would read locations from the client record under its own access control.
+         */
+        get: operations["schedule_map_schedule__run_id__map_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -398,8 +459,21 @@ export interface components {
             name: string;
             role: components["schemas"]["Role"] | null;
         };
+        /**
+         * Alternative
+         * @description The closest other qualified carer (a one-swap counterfactual, app/matching/explain.py).
+         */
+        Alternative: {
+            /** Carer Ref */
+            carer_ref: string;
+            /** Extra Travel Min */
+            extra_travel_min: number;
+            /** Familiarity */
+            familiarity: string;
+        };
         /** AssignmentOut */
         AssignmentOut: {
+            alternative?: components["schemas"]["Alternative"] | null;
             /** Carer Ref */
             carer_ref: string;
             /** Client Ref */
@@ -522,6 +596,8 @@ export interface components {
         Baseline: {
             /** Familiar Pct */
             familiar_pct: number;
+            /** Served */
+            served: number;
             /** Solver */
             solver: string;
             /** Travel H */
@@ -588,6 +664,18 @@ export interface components {
             /** Skills */
             skills: components["schemas"]["Skill"][];
             start: components["schemas"]["Location"];
+        };
+        /** CarerPlace */
+        CarerPlace: {
+            /** Carer Ref */
+            carer_ref: string;
+            /** Shift End Min */
+            shift_end_min: number;
+            /** Shift Start Min */
+            shift_start_min: number;
+            start: components["schemas"]["Place"];
+            /** Starts From Home */
+            starts_from_home: boolean;
         };
         /** CarerRoute */
         CarerRoute: {
@@ -925,6 +1013,13 @@ export interface components {
             /** Window Days */
             window_days: number;
         };
+        /** Place */
+        Place: {
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
+        };
         /**
          * Preset
          * @enum {string}
@@ -1054,6 +1149,15 @@ export interface components {
          * @enum {string}
          */
         Role: "coordinator" | "manager" | "carer";
+        /** RunMap */
+        RunMap: {
+            /** Carers */
+            carers: components["schemas"]["CarerPlace"][];
+            /** Scenario Name */
+            scenario_name: string;
+            /** Visits */
+            visits: components["schemas"]["VisitPlace"][];
+        };
         /** Scenario */
         Scenario: {
             /** Carers */
@@ -1191,6 +1295,41 @@ export interface components {
              */
             token_type: string;
         };
+        /**
+         * TradeoffOut
+         * @description The Step 2.4 continuity sweep on the sample day, for the trade-off panel.
+         */
+        TradeoffOut: {
+            /** Matrix Backend */
+            matrix_backend: string;
+            /** Points */
+            points: components["schemas"]["TradeoffPoint"][];
+            /** Presets */
+            presets: {
+                [key: string]: number;
+            };
+            /** Scenario Name */
+            scenario_name: string;
+            /** Time Limit S */
+            time_limit_s: number;
+            /** Visits */
+            visits: number;
+        };
+        /** TradeoffPoint */
+        TradeoffPoint: {
+            /** Drive Min */
+            drive_min: number;
+            /** Dropped */
+            dropped: number;
+            /** Familiar Pct */
+            familiar_pct: number;
+            /** Pareto */
+            pareto: boolean;
+            /** Preferred Pct */
+            preferred_pct: number;
+            /** Weight Min */
+            weight_min: number;
+        };
         /** UnassignedVisit */
         UnassignedVisit: {
             /** Client Ref */
@@ -1232,6 +1371,24 @@ export interface components {
             window_end: number;
             /** Window Start */
             window_start: number;
+        };
+        /** VisitPlace */
+        VisitPlace: {
+            /** Client Ref */
+            client_ref: string;
+            /** Duration Min */
+            duration_min: number;
+            location: components["schemas"]["Place"];
+            /** Required Skills */
+            required_skills: string[];
+            /** Time Critical */
+            time_critical: boolean;
+            /** Visit Id */
+            visit_id: string;
+            /** Window End Min */
+            window_end_min: number;
+            /** Window Start Min */
+            window_start_min: number;
         };
         /** WorkforceSummary */
         WorkforceSummary: {
@@ -1689,6 +1846,26 @@ export interface operations {
             };
         };
     };
+    latest_schedule_schedule_latest_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScheduleOut"];
+                };
+            };
+        };
+    };
     solve_schedule_schedule_solve_post: {
         parameters: {
             query?: never;
@@ -1722,6 +1899,26 @@ export interface operations {
             };
         };
     };
+    tradeoff_schedule_tradeoff_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TradeoffOut"];
+                };
+            };
+        };
+    };
     get_schedule_schedule__run_id__get: {
         parameters: {
             query?: never;
@@ -1740,6 +1937,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ScheduleOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    schedule_map_schedule__run_id__map_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunMap"];
                 };
             };
             /** @description Validation Error */

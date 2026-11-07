@@ -75,6 +75,7 @@ class Baseline(BaseModel):
     solver: str
     travel_h: float
     familiar_pct: float
+    served: int  # greedy can serve fewer visits, which flatters its travel figure
 
 
 class UnassignedVisit(BaseModel):
@@ -207,6 +208,7 @@ def _schedule(session: Session) -> ScheduleSummary | None:
             solver=base["solver"],
             travel_h=round(base["travel_s"] / 3600, 1),
             familiar_pct=base["familiar_pct"],
+            served=base["served"],
         )
         if base
         else None,

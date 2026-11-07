@@ -107,12 +107,15 @@ export function ErrorState({
   message = "The optimiser didn't respond in time. Your last saved rota is still in place, so nothing has changed for carers.",
   onRetry,
   secondary = { label: 'View saved rota', to: '/schedule' },
+  onSecondary,
   reference,
 }: {
   title?: string
   message?: string
   onRetry?: () => void
   secondary?: Action
+  /** Makes the secondary action a button (e.g. dismiss the error and show the saved rota). */
+  onSecondary?: () => void
   /** Server request reference ("req_8f2c41"), from the X-Request-ID response header. */
   reference?: string | null
 }) {
@@ -129,7 +132,13 @@ export function ErrorState({
             Try again
           </Button>
         )}
-        <ActionLink action={secondary} />
+        {onSecondary ? (
+          <Button type="button" size="pill" variant="outline" onClick={onSecondary} className="mt-1 cursor-pointer">
+            {secondary.label}
+          </Button>
+        ) : (
+          <ActionLink action={secondary} />
+        )}
       </div>
       {reference && <span className="font-mono text-xs text-muted-foreground">Reference: {reference}</span>}
     </StateCard>

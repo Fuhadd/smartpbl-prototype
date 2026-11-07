@@ -12,7 +12,7 @@ class Preset(StrEnum):
     CUSTOM = "custom"  # a weight set through the API that matches no named preset
 
 
-PRESET_WEIGHTS: dict[Preset, int] = {Preset.TRAVEL: 0, Preset.BALANCED: 15, Preset.CONTINUITY: 45}
+PRESET_WEIGHTS: dict[Preset, int] = {Preset.TRAVEL: 0, Preset.BALANCED: 15, Preset.CONTINUITY: 30}
 
 
 def preset_for(continuity_weight_min: int) -> Preset:

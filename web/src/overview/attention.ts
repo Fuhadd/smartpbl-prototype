@@ -89,3 +89,10 @@ export function delta(value: number, baseline: number | undefined, unit: 'h' | '
 
 export const percent = (rate: number | null | undefined): string =>
   rate === null || rate === undefined ? '—' : `${Math.round(rate * 100)}%`
+
+/** "Serves 8 more visits than the greedy baseline." */
+export function servedVsBaseline(served: number, baseline: number): string {
+  const d = served - baseline
+  const n = Math.abs(d)
+  return `Serves ${n} ${d > 0 ? 'more' : 'fewer'} visit${n === 1 ? '' : 's'} than the greedy baseline.`
+}

@@ -48,7 +48,7 @@ export function overviewFixture(over: Record<string, unknown> = {}) {
     schedule: {
       run_id: 'r1', created_at: '2026-11-07T06:00:00Z', scenario_name: 'birmingham-day', preset: 'balanced',
       visits: 148, served: 145, unassigned: 3, carers_on_shift: 31, travel_h: 41.2, familiar_pct: 0.78,
-      baseline: { solver: 'greedy', travel_h: 44.3, familiar_pct: 0.72 },
+      baseline: { solver: 'greedy', travel_h: 44.3, familiar_pct: 0.72, served: 140 },
       first_unassigned: { visit_id: 'V-0208', client_ref: 'CL-0208', detail: 'No carer on shift at 12:30-13:00 has: medication' },
     },
     workforce: { elevated: 4, total: 31, check_in: { carer_ref: 'WF-0461', factor_label: 'Weekly travel', factor_value: '6.2 h' } },

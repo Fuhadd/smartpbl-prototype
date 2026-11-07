@@ -52,5 +52,7 @@ class ScheduleAssignment(Base):
     travel_s: Mapped[int]
     familiarity: Mapped[str] = mapped_column(String(20))
     reasons: Mapped[list[str]] = mapped_column(JSONB)
+    # Step 5.3: the closest other qualified carer {carer_ref, extra_travel_min, familiarity}.
+    alternative: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
 
     run: Mapped[ScheduleRun] = relationship(back_populates="assignments")

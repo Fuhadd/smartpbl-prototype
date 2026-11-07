@@ -4,6 +4,7 @@ All solver work happens before any database write (as in the Tier 1 pipeline), s
 10-20 s solve never holds a transaction open. The caller commits.
 """
 
+from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
@@ -87,6 +88,9 @@ def run_schedule(
     scenario_json = scenario.model_dump_json()
     run = ScheduleRun(
         id=uuid4(),  # known before insert, so the audit event can reference it
+        # Wall-clock time, not the column default now() (transaction start): two runs saved
+        # in one transaction must still order correctly for "latest".
+        created_at=datetime.now(UTC),
         scenario_name=scenario.name,
         scenario_seed=scenario.seed,
         scenario_hash=input_hash(scenario_json),  # keyed HMAC; the scenario isn't stored
@@ -136,6 +140,7 @@ def run_schedule(
             travel_s=a.travel_s,
             familiarity=a.familiarity.value,
             reasons=a.reasons,
+            alternative=a.alternative,
         )
         for a in assigned
     ]

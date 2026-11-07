@@ -19,7 +19,7 @@ import type { Category } from '@/review/categories'
 import { cn } from '@/lib/utils'
 
 import type { Overview } from './api'
-import { attentionRows, delta, percent, type AttentionIcon, type AttentionTone } from './attention'
+import { attentionRows, delta, percent, servedVsBaseline, type AttentionIcon, type AttentionTone } from './attention'
 
 function PanelTitle({ id, children }: { id: string; children: ReactNode }) {
   return (
@@ -239,6 +239,10 @@ export function TodaysSchedule({ data }: { data: Overview }) {
         </div>
       ) : (
         <p className="m-0 text-sm text-muted-foreground">No rota saved yet. Run the optimiser from the schedule screen.</p>
+      )}
+      {s?.baseline && s.baseline.served !== s.served && (
+        // Greedy can drive less only because it serves fewer visits: say so next to the figure.
+        <p className="m-0 text-xs text-muted-foreground">{servedVsBaseline(s.served, s.baseline.served)}</p>
       )}
       <Link
         to="/schedule"

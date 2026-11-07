@@ -75,6 +75,7 @@ def test_schedule_summary_compares_with_the_greedy_baseline(api) -> None:
     assert s["preset"] == "balanced"
     assert (s["visits"], s["served"], s["unassigned"], s["carers_on_shift"]) == (4, 2, 2, 2)
     assert s["baseline"]["solver"] == "greedy"
+    assert s["baseline"]["served"] == 1  # greedy serves one fewer visit here
     assert s["first_unassigned"]["visit_id"].startswith("V-")
 
 
@@ -103,7 +104,8 @@ def test_attention_notes_are_audited_as_a_queue_view(api, llm, db_session) -> No
 PRESET_CASES = [
     (0, Preset.TRAVEL),
     (15, Preset.BALANCED),
-    (45, Preset.CONTINUITY),
+    (30, Preset.CONTINUITY),
+    (45, Preset.CUSTOM),  # dominated in the sweep (ADR-033)
     (20, Preset.CUSTOM),
 ]
 

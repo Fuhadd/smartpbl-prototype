@@ -36,6 +36,7 @@ class AssignmentExplanation:
     familiarity: Familiarity
     other_eligible: int  # eligible carers besides the one assigned
     reasons: list[str]
+    alternative: dict[str, object] | None  # see next_best()
 
 
 @dataclass(frozen=True)
@@ -55,6 +56,48 @@ def _hhmm(seconds_or_minutes: int, *, seconds: bool = True) -> str:
 
 def _extra_skills(v: Visit) -> list[str]:
     return sorted(s.value for s in v.required_skills - {Skill.PERSONAL_CARE})
+
+
+def next_best(
+    scenario: Scenario,
+    matrix: TravelMatrix,
+    solution: Solution,
+    visit: Visit,
+    assigned_to: str,
+    arrival_s: int,
+    travel_s: int,
+) -> dict[str, object] | None:
+    """The closest other qualified carer, as a counterfactual: "Next best: CR-0003, +22 min
+    travel, new to this client".
+
+    Each candidate is placed where their own route has them just before this visit (the
+    last visit they finish before our carer arrives, else their start point), and the drive
+    from there is compared with the assigned drive. It is a one-swap view: it ignores the
+    knock-on effects on both carers' later visits, so it explains the choice rather than
+    proving that the swap would be feasible.
+    """
+    visits = {v.visit_id: v for v in scenario.visits}
+    where = scenario.client(visit.client_ref).location
+    routes = {r.carer_ref: r for r in solution.routes}
+    best: tuple[int, str] | None = None
+    for c in scenario.carers:
+        if c.carer_ref == assigned_to or not can_serve(c, visit):
+            continue
+        at = c.start
+        for stop in routes[c.carer_ref].stops if c.carer_ref in routes else ():
+            if stop.end_s <= arrival_s:
+                at = scenario.client(visits[stop.visit_id].client_ref).location
+        drive = matrix.seconds(at, where)
+        if best is None or (drive, c.carer_ref) < best:
+            best = (drive, c.carer_ref)
+    if best is None:
+        return None
+    drive, ref = best
+    return {
+        "carer_ref": ref,
+        "extra_travel_min": round((drive - travel_s) / 60),
+        "familiarity": familiarity(scenario.client(visit.client_ref), ref).value,
+    }
 
 
 def explain(
@@ -105,6 +148,15 @@ def explain(
                     familiarity=fam,
                     other_eligible=len(eligible) - 1,
                     reasons=reasons,
+                    alternative=next_best(
+                        scenario,
+                        matrix,
+                        solution,
+                        v,
+                        route.carer_ref,
+                        stop.start_s,
+                        stop.travel_s,
+                    ),
                 )
             )
             prev = v.client_ref

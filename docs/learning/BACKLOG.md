@@ -90,7 +90,7 @@
 - **Containerised Ollama on GPU hosts:** official Ollama image plus the NVIDIA container toolkit on a Linux GPU node, in the same private network as the API.
 - **Dependabot for actions and uv:** automated PRs that bump SHA-pinned actions and locked dependencies, reviewed and tested by CI.
 - **Training out of the API image:** a separate job that trains the attrition model and publishes a signed artefact, so the API starts faster and needs fewer dependencies.
-- **Dashboard stand-ins (Tier 5):** schedule (5.3) and workforce (5.4) render labelled placeholders until built; remove `PendingStep`/`PendingPage` when the last lands.
+- **Dashboard stand-ins (Tier 5):** workforce (5.4) renders a labelled placeholder until built; remove `PendingStep`/`PendingPage` when it lands.
 - **Search and notifications:** the header controls from the design render but do nothing yet; decide scope (client/carer/note search, flag notifications) with the design owner.
 - **Design gaps to confirm:** sign-in error and rate-limit messages, and the sign-out menu on the user chip, were added without a design.
 - **Dev-only duplicate probes:** StrictMode runs the access-denied probe twice in development (two audit rows); consider a ref guard if it confuses demos.
@@ -108,3 +108,9 @@
 - **Fair schedule comparison:** compare travel per visit served (greedy can serve fewer visits), and against PBL's historical rotas once available.
 - **Workforce model warm-up:** train or load the model at start-up so the first overview doesn't wait about 5 s.
 - **Export audit for regulators:** a signed, raw-row export (with hashes and prompt versions) for inspections, separate from the human-readable CSV.
+- **Road geometry on the map:** draw OSRM `route` geometry per leg instead of straight lines between stops (cache per run).
+- **Exact "what if" for a visit:** a button that re-solves with the visit forced to the next-best carer and shows the real cost, including knock-on effects.
+- **Solve as a background job:** queue, progress, cancel; no 20 s HTTP request.
+- **Nightly sweep per patch** at the API's solver settings, so the trade-off preview reflects the real day.
+- **Map tiles for production:** self-hosted or contracted tiles (OSM policy forbids heavy use; the tile server sees which areas are viewed). For the 5.5 demo, keep a Referer (no `no-referrer` policy) as the OSM policy requires.
+- **Day switcher:** store the planned date on runs; enable previous/next day.

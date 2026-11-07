@@ -35,8 +35,42 @@
         "title": "Actor",
         "type": "object"
       },
+      "Alternative": {
+        "description": "The closest other qualified carer (a one-swap counterfactual, app/matching/explain.py).",
+        "properties": {
+          "carer_ref": {
+            "title": "Carer Ref",
+            "type": "string"
+          },
+          "extra_travel_min": {
+            "title": "Extra Travel Min",
+            "type": "integer"
+          },
+          "familiarity": {
+            "title": "Familiarity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "carer_ref",
+          "extra_travel_min",
+          "familiarity"
+        ],
+        "title": "Alternative",
+        "type": "object"
+      },
       "AssignmentOut": {
         "properties": {
+          "alternative": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Alternative"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "carer_ref": {
             "title": "Carer Ref",
             "type": "string"
@@ -442,6 +476,10 @@
             "title": "Familiar Pct",
             "type": "number"
           },
+          "served": {
+            "title": "Served",
+            "type": "integer"
+          },
           "solver": {
             "title": "Solver",
             "type": "string"
@@ -454,7 +492,8 @@
         "required": [
           "solver",
           "travel_h",
-          "familiar_pct"
+          "familiar_pct",
+          "served"
         ],
         "title": "Baseline",
         "type": "object"
@@ -605,6 +644,38 @@
           "start"
         ],
         "title": "Carer",
+        "type": "object"
+      },
+      "CarerPlace": {
+        "properties": {
+          "carer_ref": {
+            "title": "Carer Ref",
+            "type": "string"
+          },
+          "shift_end_min": {
+            "title": "Shift End Min",
+            "type": "integer"
+          },
+          "shift_start_min": {
+            "title": "Shift Start Min",
+            "type": "integer"
+          },
+          "start": {
+            "$ref": "#/components/schemas/Place"
+          },
+          "starts_from_home": {
+            "title": "Starts From Home",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "carer_ref",
+          "start",
+          "starts_from_home",
+          "shift_start_min",
+          "shift_end_min"
+        ],
+        "title": "CarerPlace",
         "type": "object"
       },
       "CarerRoute": {
@@ -1593,6 +1664,24 @@
         "title": "PipelineHealth",
         "type": "object"
       },
+      "Place": {
+        "properties": {
+          "lat": {
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "title": "Lon",
+            "type": "number"
+          }
+        },
+        "required": [
+          "lat",
+          "lon"
+        ],
+        "title": "Place",
+        "type": "object"
+      },
       "Preset": {
         "enum": [
           "travel",
@@ -1914,6 +2003,35 @@
         ],
         "title": "Role",
         "type": "string"
+      },
+      "RunMap": {
+        "properties": {
+          "carers": {
+            "items": {
+              "$ref": "#/components/schemas/CarerPlace"
+            },
+            "title": "Carers",
+            "type": "array"
+          },
+          "scenario_name": {
+            "title": "Scenario Name",
+            "type": "string"
+          },
+          "visits": {
+            "items": {
+              "$ref": "#/components/schemas/VisitPlace"
+            },
+            "title": "Visits",
+            "type": "array"
+          }
+        },
+        "required": [
+          "scenario_name",
+          "carers",
+          "visits"
+        ],
+        "title": "RunMap",
+        "type": "object"
       },
       "Scenario": {
         "additionalProperties": false,
@@ -2242,6 +2360,92 @@
         "title": "TokenOut",
         "type": "object"
       },
+      "TradeoffOut": {
+        "description": "The Step 2.4 continuity sweep on the sample day, for the trade-off panel.",
+        "properties": {
+          "matrix_backend": {
+            "title": "Matrix Backend",
+            "type": "string"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/TradeoffPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          },
+          "presets": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/Preset"
+            },
+            "title": "Presets",
+            "type": "object"
+          },
+          "scenario_name": {
+            "title": "Scenario Name",
+            "type": "string"
+          },
+          "time_limit_s": {
+            "title": "Time Limit S",
+            "type": "number"
+          },
+          "visits": {
+            "title": "Visits",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "scenario_name",
+          "matrix_backend",
+          "time_limit_s",
+          "visits",
+          "points",
+          "presets"
+        ],
+        "title": "TradeoffOut",
+        "type": "object"
+      },
+      "TradeoffPoint": {
+        "properties": {
+          "drive_min": {
+            "title": "Drive Min",
+            "type": "integer"
+          },
+          "dropped": {
+            "title": "Dropped",
+            "type": "integer"
+          },
+          "familiar_pct": {
+            "title": "Familiar Pct",
+            "type": "number"
+          },
+          "pareto": {
+            "title": "Pareto",
+            "type": "boolean"
+          },
+          "preferred_pct": {
+            "title": "Preferred Pct",
+            "type": "number"
+          },
+          "weight_min": {
+            "title": "Weight Min",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "weight_min",
+          "drive_min",
+          "familiar_pct",
+          "preferred_pct",
+          "dropped",
+          "pareto"
+        ],
+        "title": "TradeoffPoint",
+        "type": "object"
+      },
       "UnassignedVisit": {
         "properties": {
           "client_ref": {
@@ -2358,6 +2562,56 @@
           "required_skills"
         ],
         "title": "Visit",
+        "type": "object"
+      },
+      "VisitPlace": {
+        "properties": {
+          "client_ref": {
+            "title": "Client Ref",
+            "type": "string"
+          },
+          "duration_min": {
+            "title": "Duration Min",
+            "type": "integer"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Place"
+          },
+          "required_skills": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Required Skills",
+            "type": "array"
+          },
+          "time_critical": {
+            "title": "Time Critical",
+            "type": "boolean"
+          },
+          "visit_id": {
+            "title": "Visit Id",
+            "type": "string"
+          },
+          "window_end_min": {
+            "title": "Window End Min",
+            "type": "integer"
+          },
+          "window_start_min": {
+            "title": "Window Start Min",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "visit_id",
+          "client_ref",
+          "location",
+          "window_start_min",
+          "window_end_min",
+          "duration_min",
+          "time_critical",
+          "required_skills"
+        ],
+        "title": "VisitPlace",
         "type": "object"
       },
       "WorkforceSummary": {
@@ -3103,6 +3357,33 @@
         ]
       }
     },
+    "/schedule/latest": {
+      "get": {
+        "description": "The most recently saved rota (the prototype plans one synthetic day).",
+        "operationId": "latest_schedule_schedule_latest_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Latest Schedule",
+        "tags": [
+          "schedule"
+        ]
+      }
+    },
     "/schedule/solve": {
       "post": {
         "description": "Plan one day: OR-Tools VRPTW (+ two-phase continuity if the weight is > 0), with\nreasons for every assignment and every unassigned visit. Synchronous (10-60 s).",
@@ -3145,6 +3426,32 @@
           }
         ],
         "summary": "Solve Schedule",
+        "tags": [
+          "schedule"
+        ]
+      }
+    },
+    "/schedule/tradeoff": {
+      "get": {
+        "operationId": "tradeoff_schedule_tradeoff_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TradeoffOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Tradeoff",
         "tags": [
           "schedule"
         ]
@@ -3193,6 +3500,55 @@
           }
         ],
         "summary": "Get Schedule",
+        "tags": [
+          "schedule"
+        ]
+      }
+    },
+    "/schedule/{run_id}/map": {
+      "get": {
+        "description": "Where the run's carers start and its visits are, for the map.\n\nRuns don't store locations (data minimisation, Step 2.6), so a map is only available\nwhen the run's input hash matches the committed synthetic sample day. A real deployment\nwould read locations from the client record under its own access control.",
+        "operationId": "schedule_map_schedule__run_id__map_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunMap"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Schedule Map",
         "tags": [
           "schedule"
         ]

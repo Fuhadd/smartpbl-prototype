@@ -83,6 +83,10 @@ The sensitive flows are bulk reading of workforce risk (profiling employees), ma
 - **The CSV export** is bounded (5000 entries) and neutralises formula cells. Cells starting with `=` `+` `-` `@`, tab, CR or LF, or their full-width forms, get a leading apostrophe ([OWASP CSV Injection](https://community.owasp.org/attacks/CSV_Injection)).
 - **Search input** is capped at 100 characters, and `%`, `_` and `\` are escaped before `ILIKE`, so a query can't become a wildcard scan.
 
+**Step 5.3 additions:**
+- **`GET /schedule/{run_id}/map`** serves locations only for runs whose input HMAC matches the committed synthetic sample. Runs still store no locations.
+- **The dashboard loads map tiles from `tile.openstreetmap.org`,** a third party that sees which map areas are viewed. That is acceptable for synthetic demo data; production needs self-hosted or contracted tiles. The 5.5 CSP must allow this `img-src`.
+
 ### API7: Server Side Request Forgery
 The API makes two kinds of outbound request: to Ollama (`SMARTPBL_OLLAMA_BASE_URL`) and to OSRM (`SMARTPBL_OSRM_BASE_URL`). Both are server configuration, never request input. Scenario coordinates are numbers bounded to valid latitude and longitude, and the OSRM request URL is built from them, not from strings. Keep it this way: any future "fetch this URL" feature needs an allowlist.
 

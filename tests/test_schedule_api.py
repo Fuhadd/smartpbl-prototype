@@ -143,3 +143,56 @@ def test_sample_scenario_uses_cached_osrm_matrix(api) -> None:
     assert out["matrix_backend"].startswith("osrm:car:")
     assert out["metrics"]["visits"] == 106
     assert out["params"]["two_phase"] is False
+
+
+# --- Step 5.3: next best carer, latest run, map and trade-off -----------------------------
+
+
+def test_next_best_names_the_closest_other_qualified_carer() -> None:
+    s = small_scenario()
+    m = resolve_matrix(s)
+    sol = solve(s, m, SolverParams(time_limit_s=1.0, continuity_weight_s=1800))
+    assigned, _ = explain(s, m, sol)
+    v1 = next(a for a in assigned if a.visit_id == "V-0001")
+    # Continuity won: the preferred (far) carer got it, so the alternative is the nearer,
+    # unfamiliar one, and its travel difference is negative.
+    assert v1.alternative is not None
+    assert v1.alternative["carer_ref"] == "CR-0001"
+    assert v1.alternative["familiarity"] == "new"
+    assert v1.alternative["extra_travel_min"] < 0
+    # Nobody else can do a medication visit CR-0001 got (CR-0002 lacks the skill).
+    v3 = next(a for a in assigned if a.visit_id in ("V-0003", "V-0004"))
+    assert v3.alternative is None
+
+
+def test_latest_returns_the_newest_run(api) -> None:
+    assert api.get("/schedule/latest").status_code == 404
+    first = post(api, small_scenario()).json()
+    second = post(api, small_scenario(), continuity_weight_min=0).json()
+    latest = api.get("/schedule/latest").json()
+    assert latest["id"] == second["id"] != first["id"]
+    v1 = next(a for r in latest["routes"] for a in r["visits"] if a["visit_id"] == "V-0001")
+    assert set(v1["alternative"]) == {"carer_ref", "extra_travel_min", "familiarity"}
+
+
+def test_map_is_only_served_for_the_sample_scenario(api) -> None:
+    custom = post(api, small_scenario()).json()
+    r = api.get(f"/schedule/{custom['id']}/map")
+    assert r.status_code == 404 and "sample scenario" in r.json()["detail"]
+    sample = post(api, None, time_limit_s=1.0).json()
+    body = api.get(f"/schedule/{sample['id']}/map").json()
+    assert body["scenario_name"] == "birmingham-day-seed42"
+    assert len(body["carers"]) == 17 and len(body["visits"]) == 106
+    lat, lon = body["visits"][0]["location"].values()
+    assert 52.3 < lat < 52.6 and -2.1 < lon < -1.7  # the Birmingham bounding box
+    served = {a["visit_id"] for r in sample["routes"] for a in r["visits"]}
+    assert served <= {v["visit_id"] for v in body["visits"]}
+
+
+def test_tradeoff_presets_sit_on_the_pareto_front(api) -> None:
+    body = api.get("/schedule/tradeoff").json()
+    assert body["presets"] == {"travel": 0, "balanced": 15, "continuity": 30}
+    by_w = {p["weight_min"]: p for p in body["points"]}
+    assert all(by_w[w]["pareto"] for w in body["presets"].values())
+    assert by_w[45]["pareto"] is False  # why Continuity is 30, not 45 (ADR-033)
+    assert by_w[30]["familiar_pct"] > by_w[15]["familiar_pct"] > by_w[0]["familiar_pct"]

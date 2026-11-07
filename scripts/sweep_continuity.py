@@ -10,6 +10,7 @@ Continuity is reported two ways:
 """
 
 import argparse
+import json
 from dataclasses import dataclass
 from itertools import pairwise
 from pathlib import Path
@@ -28,6 +29,7 @@ from scripts.solve_baseline import load
 WEIGHTS_MIN = [0, 1, 2, 5, 10, 15, 20, 30, 45, 60]
 RESULTS = Path("docs/results/tier2_continuity.md")
 FIGURE = Path("docs/figures/tier2_pareto.png")
+TRADEOFF = Path("data/scheduling/tradeoff.json")  # served by GET /schedule/tradeoff
 INK, MUTED, GRID, SURFACE, BLUE, ORANGE = (
     "#0b0b0b", "#52514e", "#e1e0d9", "#fcfcfb", "#2a78d6", "#eb6834",
 )  # fmt: skip
@@ -106,6 +108,30 @@ def chart(points: list[Point], front: list[Point], ceiling: float) -> None:
     plt.close(fig)
 
 
+def write_tradeoff(
+    points: list[Point], front_w: set[int], name: str, backend: str, limit: float, n: int
+) -> None:
+    """The sweep as data, for the schedule screen's trade-off panel."""
+    data = {
+        "scenario_name": name,
+        "matrix_backend": backend,
+        "time_limit_s": limit,
+        "visits": n,
+        "points": [
+            {
+                "weight_min": p.weight_min,
+                "drive_min": round(p.drive_min),
+                "familiar_pct": round(p.stats.familiar_pct, 3),
+                "preferred_pct": round(p.stats.preferred_pct, 3),
+                "dropped": p.dropped,
+                "pareto": p.weight_min in front_w,
+            }
+            for p in points
+        ],
+    }
+    TRADEOFF.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--time-limit", type=float, default=30.0)
@@ -180,6 +206,7 @@ def main() -> None:
             f"| {b.dropped - a.dropped:+d} | {rate} |"
         )
     out += ["", "![Travel vs continuity](../figures/tier2_pareto.png)", ""]
+    write_tradeoff(points, front_w, full.name, m.backend, limit, n)
     RESULTS.parent.mkdir(parents=True, exist_ok=True)
     RESULTS.write_text("\n".join(out), encoding="utf-8")
     print(RESULTS.read_text(encoding="utf-8"))

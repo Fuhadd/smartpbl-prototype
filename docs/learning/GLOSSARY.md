@@ -260,3 +260,10 @@
 - **Ordered-set aggregate**: A SQL aggregate over sorted input, such as `percentile_cont(0.5) WITHIN GROUP (ORDER BY x)` for a median.
 - **Relative risk band**: A label defined by rank or comparison with the group (top 20 %, above average), not by a fixed probability; avoids claiming calibration the model lacks.
 - **Debounce**: Waiting until input pauses (here 300 ms) before acting, so search sends one request instead of one per keystroke.
+- **Pareto dominance**: Solution A dominates B if A is at least as good on every objective and strictly better on one; dominated settings should never be offered.
+- **Counterfactual (one-swap)**: "What if a different carer had taken this visit?", estimated without re-planning the rest of the day.
+- **Tile server**: A service that returns map image tiles by zoom/x/y; the public OSM servers have a usage policy and see which areas are viewed.
+- **DivIcon**: A Leaflet marker drawn with HTML instead of an image, used for numbered visit markers.
+- **Code splitting (lazy route)**: Loading a screen's JavaScript only when it's first opened, keeping the initial bundle small.
+- **Keyed remount**: Giving a React component a `key` so that a new key discards its state and starts fresh, instead of resetting state in an effect.
+- **Transaction timestamp**: Postgres `now()` returns the start time of the current transaction, so rows written in one transaction share it; `clock_timestamp()` is wall-clock.

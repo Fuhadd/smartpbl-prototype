@@ -38,6 +38,7 @@ describe('overview', () => {
     expect(within(sched).getByText('41.2 h')).toBeInTheDocument()
     expect(within(sched).getByText('\u22123.1 h vs greedy baseline')).toBeInTheDocument()
     expect(within(sched).getByText('+6 pts vs greedy baseline')).toBeInTheDocument()
+    expect(within(sched).getByText('Serves 5 more visits than the greedy baseline.')).toBeInTheDocument()
     const ai = screen.getByRole('region', { name: 'AI pipeline health' })
     expect(within(ai).getByText('99%')).toBeInTheDocument()
     expect(within(ai).getByText('3.1 s')).toBeInTheDocument()

@@ -8,8 +8,6 @@ import { ClipboardList, LayoutGrid, MapPin, MessageSquareCheck, Users, type Luci
 import { api } from '@/api/client'
 import type { Permission } from '@/auth/auth'
 
-const NIL = '00000000-0000-0000-0000-000000000000'
-
 export type PageKey = 'overview' | 'review' | 'schedule' | 'workforce' | 'audit'
 
 export type PageDef = {
@@ -58,7 +56,7 @@ export const PAGES: readonly PageDef[] = [
     icon: MapPin,
     permission: 'schedule.read',
     deniedSubject: 'The schedule is visible to coordinators and care managers.',
-    probe: () => api.GET('/schedule/{run_id}', { params: { path: { run_id: NIL } } }),
+    probe: () => api.GET('/schedule/latest'),
   },
   {
     key: 'workforce',

@@ -1,0 +1,88 @@
+{
+  "scenario_name": "birmingham-day-seed42",
+  "matrix_backend": "osrm:car:d12835fa63ef",
+  "time_limit_s": 30.0,
+  "visits": 94,
+  "points": [
+    {
+      "weight_min": 0,
+      "drive_min": 597,
+      "familiar_pct": 0.287,
+      "preferred_pct": 0.16,
+      "dropped": 0,
+      "pareto": true
+    },
+    {
+      "weight_min": 1,
+      "drive_min": 599,
+      "familiar_pct": 0.33,
+      "preferred_pct": 0.191,
+      "dropped": 0,
+      "pareto": true
+    },
+    {
+      "weight_min": 2,
+      "drive_min": 611,
+      "familiar_pct": 0.362,
+      "preferred_pct": 0.213,
+      "dropped": 0,
+      "pareto": false
+    },
+    {
+      "weight_min": 5,
+      "drive_min": 604,
+      "familiar_pct": 0.362,
+      "preferred_pct": 0.245,
+      "dropped": 0,
+      "pareto": true
+    },
+    {
+      "weight_min": 10,
+      "drive_min": 643,
+      "familiar_pct": 0.426,
+      "preferred_pct": 0.277,
+      "dropped": 0,
+      "pareto": true
+    },
+    {
+      "weight_min": 15,
+      "drive_min": 716,
+      "familiar_pct": 0.543,
+      "preferred_pct": 0.372,
+      "dropped": 0,
+      "pareto": true
+    },
+    {
+      "weight_min": 20,
+      "drive_min": 769,
+      "familiar_pct": 0.564,
+      "preferred_pct": 0.372,
+      "dropped": 0,
+      "pareto": false
+    },
+    {
+      "weight_min": 30,
+      "drive_min": 753,
+      "familiar_pct": 0.564,
+      "preferred_pct": 0.404,
+      "dropped": 0,
+      "pareto": true
+    },
+    {
+      "weight_min": 45,
+      "drive_min": 770,
+      "familiar_pct": 0.543,
+      "preferred_pct": 0.372,
+      "dropped": 0,
+      "pareto": false
+    },
+    {
+      "weight_min": 60,
+      "drive_min": 774,
+      "familiar_pct": 0.532,
+      "preferred_pct": 0.383,
+      "dropped": 0,
+      "pareto": false
+    }
+  ]
+}

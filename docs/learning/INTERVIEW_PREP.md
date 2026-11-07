@@ -644,3 +644,29 @@ Elevated = top 20 % (support capacity from the model card), moderate = above the
 
 **With real data and scale?**
 An index or `entry_kind` column for anchors, trigram or full-text search, monthly partitions and retention from the DPIA, patch-scoped access, today's actual rota, and validated thresholds.
+
+### 5.3 Schedule and map
+
+**Walk me through it.**
+Carers list (3 pinned in route colours) | Leaflet map with numbered visits and unassigned markers, timeline below | "why this carer" with stored reasons and a next-best counterfactual, and an "Optimise for" panel that previews the Pareto sweep before one real re-solve.
+
+**Why is the map sample-only?**
+Runs store a keyed hash of their input, not addresses (data minimisation). The API serves locations only when the hash matches the committed synthetic day. With real data, locations come from the client record under its own access control.
+
+**Why Continuity = 30?**
+45 is dominated in the sweep (less continuity, more driving than 30). A test asserts every preset is on the Pareto front.
+
+**Next best?**
+The closest other qualified carer from where their route has them; stored at solve time; one-swap, so knock-on effects are ignored. The exact version is a forced re-solve.
+
+**Preview vs live solve?**
+Solves take 20 s and are rate-limited, so the preview is instant from the sweep and Apply commits once. The trade-off is fidelity (30 s sweep vs 10 s API solve).
+
+**Greedy comparison on live data?**
+Greedy drove 1.1 h less but served 8 fewer visits. Compare at equal coverage, or show coverage beside cost.
+
+**Bug story?**
+Postgres `now()` is transaction-scoped; two runs tied, and "latest" was arbitrary. Fixed with wall-clock stamping, caught by a two-run test.
+
+**With real data and scale?**
+Patch-scoped access, real names and addresses, self-hosted tiles, OSRM road geometry, dated runs with a real day switcher, a solve job queue, nightly sweeps per patch.
