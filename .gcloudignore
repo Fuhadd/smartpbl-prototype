@@ -1,0 +1,24 @@
+# Files NOT uploaded by `gcloud builds submit` (Cloud Build source upload).
+# Deliberately does not `#!include:.gitignore`: .gitignore lists the Dockerfile, which the
+# build needs. Mirrors .dockerignore so only what the API image uses is uploaded.
+.gcloudignore
+.git
+.github
+.venv
+**/__pycache__
+**/*.py[cod]
+.pytest_cache
+.ruff_cache
+.coverage
+htmlcov
+.env
+cloudrun.env.yaml
+osrm
+*.osm.pbf
+docs
+tests
+mobile
+web
+.idea
+.vscode
+.DS_Store

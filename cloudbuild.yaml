@@ -1,0 +1,11 @@
+# Build the API image in Cloud Build with BuildKit (the Dockerfile uses RUN --mount,
+# which the legacy builder rejects) and push it to Artifact Registry.
+#   gcloud builds submit --config cloudbuild.yaml --substitutions=_TAG=v1
+substitutions:
+  _IMAGE: europe-west2-docker.pkg.dev/smartpbl-app/smartpbl-repo/smartpbl-app
+  _TAG: v1
+steps:
+  - name: gcr.io/cloud-builders/docker
+    env: ["DOCKER_BUILDKIT=1"]
+    args: ["build", "-t", "${_IMAGE}:${_TAG}", "."]
+images: ["${_IMAGE}:${_TAG}"]
