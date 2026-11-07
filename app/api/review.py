@@ -8,7 +8,15 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import get_current_user, require
-from app.api.schemas import FlagOut, QueueItem, ReviewIn, ReviewOut
+from app.api.schemas import (
+    FlagOut,
+    NoteOut,
+    NoteReviewIn,
+    NoteReviewOut,
+    QueueItem,
+    ReviewIn,
+    ReviewOut,
+)
 from app.audit.log import record
 from app.audit.models import EventType
 from app.auth.models import User
@@ -21,7 +29,15 @@ from app.nlp.models import (
     ReviewStatus,
     RiskFlagRecord,
 )
-from app.nlp.review import AlreadyReviewedError, FlagNotFoundError, InvalidEditError, review_flag
+from app.nlp.review import (
+    AlreadyReviewedError,
+    FlagNotFoundError,
+    InvalidEditError,
+    NoteDecisionError,
+    NoteNotFoundError,
+    decide_note,
+    review_flag,
+)
 from app.nlp.schemas import Severity
 
 router = APIRouter(prefix="/review", tags=["review"], dependencies=[Depends(get_current_user)])
@@ -42,6 +58,7 @@ def _queue_item(note: CareNoteRecord) -> QueueItem:
         note_id=note.id,
         external_id=note.external_id,
         client_ref=note.client_ref,
+        carer_ref=note.carer_ref,
         visit_time=note.visit_time,
         created_at=note.created_at,
         redacted_text=note.redacted_text,
@@ -108,4 +125,42 @@ def review(
         flag=FlagOut.model_validate(flag),
         diff=decision.diff,
         note_review_required=flag.note.review_required,
+    )
+
+
+@router.post("/notes/{note_id}")
+def review_note(
+    reviewer: Annotated[User, Depends(require(Permission.REVIEW_DECIDE))],
+    note_id: UUID,
+    body: NoteReviewIn,
+    session: SessionDep,
+) -> NoteReviewOut:
+    """Approve, edit or reject every pending flag of a note, atomically, and optionally
+    escalate it to a care manager. One `review_decision` audit event per flag, plus a
+    `review_escalated` event."""
+    try:
+        decisions = decide_note(
+            session,
+            note_id,
+            reviewer=reviewer.username,
+            decisions=body.decisions,
+            escalate=body.escalate,
+            comment=body.comment,
+        )
+    except NoteNotFoundError as e:
+        session.rollback()
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "note not found") from e
+    except (AlreadyReviewedError, NoteDecisionError) as e:
+        session.rollback()
+        raise HTTPException(status.HTTP_409_CONFLICT, str(e)) from e
+    except InvalidEditError as e:
+        session.rollback()
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, str(e)) from e
+    session.commit()
+    note = session.get_one(CareNoteRecord, note_id)
+    session.refresh(note)
+    return NoteReviewOut(
+        note=NoteOut.model_validate(note),
+        decision_ids=[d.id for d in decisions],
+        escalated=body.escalate,
     )

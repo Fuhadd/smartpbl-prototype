@@ -42,12 +42,20 @@ export function AppShell() {
           </NavLink>
         ))}
       </nav>
-      <main className="min-w-0 flex-[999_1_560px] px-10 pt-7 pb-12 max-sm:px-4">
-        <div className="mx-auto flex max-w-[1240px] flex-col gap-7">
-          <Outlet />
-        </div>
-      </main>
+      {/* Pages own their layout: most use PageContainer; review is full-bleed. */}
+      <div className="flex min-w-0 flex-[999_1_560px] flex-col">
+        <Outlet />
+      </div>
     </div>
+  )
+}
+
+/** The padded, max-width 1240 px content column most pages use (Main.dc.html). */
+export function PageContainer({ children }: { children: ReactNode }) {
+  return (
+    <main className="px-10 pt-7 pb-12 max-sm:px-4">
+      <div className="mx-auto flex max-w-[1240px] flex-col gap-7">{children}</div>
+    </main>
   )
 }
 

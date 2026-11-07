@@ -598,3 +598,23 @@ Asked, with a recommendation; found the model card already named coordinators; o
 
 **With real data?**
 SSO (OIDC + PKCE), a BFF, branch scoping in the UI, PII-scrubbed error tracking, a strict CSP, a WCAG 2.2 AA audit.
+
+### 5.2a Care-note review screen
+
+**Walk me through it.**
+Queue (severity filter) | redacted note with evidence highlighted by category, beside the AI extraction (model, prompt, latency, severity as text and colour, confidence, grounding) | why routed (from server reasons), safety checks, approval route, decision buttons. Stage edits per flag, decide the whole note atomically, go to the next.
+
+**Why a note-level endpoint?**
+The act is "decide this note"; per-flag calls can half-apply. One transaction, decisions must cover exactly the pending flags, any invalid edit rolls back all; per-flag diffs and audit events are kept.
+
+**Highlight accuracy?**
+Uses the grounding step's stored offsets, not a browser search; highlight first, then render placeholders; drop overlapping or invalid spans.
+
+**Escalation rule?**
+High severity only (design rule). The UI shows the button only while a kept flag is high; the API independently returns 409 otherwise and applies nothing.
+
+**Why not the LLM summary as the title?**
+In real testing it was three lines with a raw `<PERSON>` token. A deterministic headline from top flag + visit time matches the design and keeps AI text inside the AI panel.
+
+**With real data?**
+A care-manager sign-off queue, PBL's real protocols, server-resolved display names under access control, routing policy exposed by the API, user testing of the edit flow.

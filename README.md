@@ -17,7 +17,7 @@ A portfolio prototype of an AI platform for domiciliary care. It has three parts
 - [x] Tier 2: carer matching (scheduling data, OSRM travel matrix, OR-Tools VRPTW, continuity trade-off, greedy comparison, schedule API)
 - [x] Tier 3: attrition prediction (synthetic workforce from Tier 2 schedules, LR vs gradient boosting with nested CV, SHAP explanations checked against ground truth, age audit, model card, workforce API)
 - [x] Tier 4: production layer: 4.1 JWT auth with refresh rotation and role-based permissions; 4.2 unified audit (middleware access log, request-id correlation, fail-closed reads); 4.3 OWASP API Top 10 review ([`docs/SECURITY.md`](docs/SECURITY.md)): rate limits, size limits, secure defaults, CORS; 4.4 Docker image, Compose stack and GitHub Actions CI
-- [ ] Tier 5: coordinator dashboard and carer app. Done: 5.1 dashboard architecture (sign-in, role-aware shell, states, typed API client)
+- [ ] Tier 5: coordinator dashboard and carer app. Done: 5.1 dashboard architecture (sign-in, role-aware shell, states, typed API client); 5.2a care-note review screen (highlighted evidence, atomic approve/edit/reject, escalation)
 - [ ] Tier 6: packaging
 
 ## Quick start

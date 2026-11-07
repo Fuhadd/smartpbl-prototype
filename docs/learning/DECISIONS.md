@@ -369,3 +369,18 @@
   - Search and notifications render but do nothing yet.
   - The shadcn `cn` package (5 days old) was replaced by the local `clsx` + `tailwind-merge` helper.
   - In development, StrictMode sends a denied page's probe twice (two audit rows); production sends one.
+
+## ADR-031: Note-level atomic review decisions and escalation; Step 5.2 split (2026-11-07)
+- **Context:** `Review.dc.html` decides a whole extraction (Approve, Reject, Escalate to care manager) and shows an approval route with "Care manager sign-off". The API decided single flags and had no escalation. Step 5.2 also had to cover the overview panels and the audit screen, each needing new endpoints.
+- **Decision:**
+  - **Endpoint:** `POST /review/notes/{note_id}` (`review.decide`) applies decisions for exactly the note's pending flags in one transaction (note row locked; each flag through `review_flag`, so per-flag diffs and audit events are kept). Any invalid edit rolls back the set.
+  - **Escalation:** `escalate: true` sets `care_notes.escalated_at` / `escalated_by` and appends `review_escalated`; it is refused (409) unless a kept flag is high severity (DESIGN.md interaction rule). Migration 0008.
+  - **Queue items** include `carer_ref`.
+  - **Frontend:** the review screen rebuilt from the design. Highlights come from the stored grounding offsets. The title is built from the top flag and the visit time, not the model's summary. Escalate is shown only while a kept flag is high.
+  - **Split:** Step 5.2 becomes **5.2a** (review screen, this ADR) and **5.2b** (overview panels and the audit log screen).
+- **Alternatives:** per-flag calls from the browser; a partial-success batch endpoint; escalation as an audit event only; using the LLM summary as the title.
+- **Consequences:**
+  - There is no care-manager sign-off screen yet (not in the designs; backlog).
+  - The design's per-category protocol text exists only as the falls placeholder.
+  - Four category colours were chosen outside the design.
+  - The confidence threshold is mirrored as a frontend constant.

@@ -10,7 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.audit.models import EventType, SubjectType
 from app.nlp.ground import GroundingStatus
 from app.nlp.models import ExtractionSource, ExtractionStatus, ReviewAction, ReviewStatus
-from app.nlp.review import FlagEdit
+from app.nlp.review import FlagDecision, FlagEdit
 from app.nlp.schemas import RiskCategory, Severity
 
 
@@ -56,6 +56,8 @@ class NoteOut(_Out):
     redacted_text: str
     review_required: bool
     created_at: datetime
+    escalated_at: datetime | None
+    escalated_by: str | None
     flags: list[FlagOut]
     extractions: list[ExtractionOut]
 
@@ -64,6 +66,7 @@ class QueueItem(BaseModel):
     note_id: UUID
     external_id: str | None
     client_ref: str
+    carer_ref: str
     visit_time: datetime
     created_at: datetime
     redacted_text: str
@@ -78,6 +81,22 @@ class ReviewIn(BaseModel):
     action: ReviewAction
     edit: FlagEdit | None = None
     comment: str | None = Field(default=None, max_length=1000)
+
+
+class NoteReviewIn(BaseModel):
+    """Decide all of a note's pending flags at once (Step 5.2 review screen)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    decisions: list[FlagDecision] = Field(max_length=50)
+    escalate: bool = False
+    comment: str | None = Field(default=None, max_length=1000)
+
+
+class NoteReviewOut(BaseModel):
+    note: "NoteOut"
+    decision_ids: list[UUID]
+    escalated: bool
 
 
 class ReviewOut(BaseModel):

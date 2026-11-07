@@ -49,6 +49,17 @@
   --elevated-text: #c4320a;
   --elevated-bg: #fff4ed;
 
+  /* Review screen (Review.dc.html): queue priority dots, AI panel border. */
+  --dot-high: #d92d20;
+  --dot-medium: #f79009;
+  --dot-low: #2e90fa;
+  --dot-done: #12b76a;
+  --dot-idle: #d4d4d8;
+  --ai-border: #d9d6fb;
+  --ai-divider: #e7e5fc;
+  --note-text: #27272a;
+  --low-border: #b2ddff;
+
   --skeleton-strong: #efefed;
   --skeleton: #f4f4f2;
 
@@ -102,6 +113,15 @@
   --color-success-border: var(--success-border);
   --color-elevated: var(--elevated-text);
   --color-elevated-bg: var(--elevated-bg);
+  --color-dot-high: var(--dot-high);
+  --color-dot-medium: var(--dot-medium);
+  --color-dot-low: var(--dot-low);
+  --color-dot-done: var(--dot-done);
+  --color-dot-idle: var(--dot-idle);
+  --color-ai-border: var(--ai-border);
+  --color-ai-divider: var(--ai-divider);
+  --color-note-text: var(--note-text);
+  --color-low-border: var(--low-border);
   --color-skeleton: var(--skeleton);
   --color-skeleton-strong: var(--skeleton-strong);
 

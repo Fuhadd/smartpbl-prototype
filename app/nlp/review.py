@@ -10,6 +10,7 @@ Edited evidence must still be a quote from the (redacted) note: it is re-grounde
 the stored evidence is the matched span of the note, not the reviewer's typed text.
 """
 
+from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID
 
@@ -169,3 +170,86 @@ def review_flag(
         },
     )
     return decision
+
+
+# --- Note-level decisions (Step 5.2) ---------------------------------------------------
+
+
+class FlagDecision(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    flag_id: UUID
+    action: ReviewAction
+    edit: FlagEdit | None = None
+
+
+class NoteNotFoundError(LookupError):
+    pass
+
+
+class NoteDecisionError(ValueError):
+    """The decision set doesn't fit the note (incomplete, duplicated, or bad escalation)."""
+
+
+_KEPT = frozenset({ReviewStatus.APPROVED, ReviewStatus.EDITED})
+
+
+def decide_note(
+    session: Session,
+    note_id: UUID,
+    *,
+    reviewer: str,
+    decisions: list[FlagDecision],
+    escalate: bool = False,
+    comment: str | None = None,
+) -> list[ReviewDecisionRecord]:
+    """Decide every pending flag of one note in one transaction, optionally escalating.
+
+    All or nothing: the decisions must cover exactly the note's pending flags, so a note
+    never leaves review half-decided, and any invalid edit rolls the whole set back. Each
+    flag still goes through `review_flag` (row lock, diff, audit event). Adds rows to the
+    session; the caller commits.
+    """
+    note = session.get(CareNoteRecord, note_id, with_for_update=True)
+    if note is None:
+        raise NoteNotFoundError(str(note_id))
+    ids = [d.flag_id for d in decisions]
+    if len(ids) != len(set(ids)):
+        raise NoteDecisionError("each flag may be decided once")
+    pending = {f.id for f in note.flags if f.review_status is ReviewStatus.PENDING}
+    if set(ids) != pending:
+        raise NoteDecisionError("decisions must cover exactly the note's pending flags")
+    if not note.review_required:
+        raise NoteDecisionError("this note is not waiting for review")
+
+    records = [
+        review_flag(session, d.flag_id, reviewer=reviewer, action=d.action, edit=d.edit,
+                    comment=comment)
+        for d in decisions
+    ]  # fmt: skip
+    if not decisions:  # e.g. the LLM failed and the rules found nothing: acknowledge it
+        note.review_required = False
+        record(session, EventType.REVIEW_DECISION, actor=f"user:{reviewer}", note_id=note.id,
+               output={"action": "acknowledge", "flags": 0, "has_comment": comment is not None,
+                       "note_review_required": False})  # fmt: skip
+
+    if escalate:
+        session.flush()
+        high = [f for f in note.flags if f.severity is Severity.HIGH and f.review_status in _KEPT]
+        if not high:
+            raise NoteDecisionError("only a note with a kept high-severity flag can be escalated")
+        note.escalated_at = datetime.now(UTC)
+        note.escalated_by = reviewer
+        record(
+            session,
+            EventType.REVIEW_ESCALATED,
+            actor=f"user:{reviewer}",
+            note_id=note.id,
+            output={
+                "to": "care manager",
+                "flags": [
+                    {"category": f.category.value, "severity": f.severity.value} for f in high
+                ],
+            },
+        )
+    return records

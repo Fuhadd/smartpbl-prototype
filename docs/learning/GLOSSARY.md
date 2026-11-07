@@ -246,3 +246,9 @@
 - **Fast refresh**: Vite and React's hot reload that keeps component state; it needs files to export only components.
 - **React StrictMode**: Development-only checks that, among other things, run effects twice to expose missing cleanup.
 - **Self-hosted fonts**: Serving font files from your own origin instead of a third-party CDN, so visitors' IP addresses aren't shared.
+- **Atomic (all-or-nothing) operation**: A group of changes that either all happen or none do, here one database transaction per reviewed note.
+- **Escalation**: Passing a decision up to a more senior role (here, a care manager) for sign-off; recorded as state and as an audit event.
+- **Character offsets (spans)**: Start and end positions of a quote within a text, used to highlight exactly the verified evidence.
+- **Optimistic UI vs server-confirmed UI**: Updating the screen before the server confirms vs after; the review screen waits for confirmation, because decisions are audited actions.
+- **Cache invalidation (TanStack Query)**: Marking cached server data stale after a change so it is refetched (the queue after a decision).
+- **WCAG 1.4.1 Use of Color**: Information must not be conveyed by colour alone; severity is always also a word.

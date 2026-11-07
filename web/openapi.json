@@ -438,6 +438,7 @@
           "workforce_explanation_viewed",
           "api_request",
           "review_queue_viewed",
+          "review_escalated",
           "refresh_token_reuse_detected"
         ],
         "title": "EventType",
@@ -673,6 +674,35 @@
           "support"
         ],
         "title": "FactorOut",
+        "type": "object"
+      },
+      "FlagDecision": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/ReviewAction"
+          },
+          "edit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FlagEdit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "flag_id": {
+            "format": "uuid",
+            "title": "Flag Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "flag_id",
+          "action"
+        ],
+        "title": "FlagDecision",
         "type": "object"
       },
       "FlagEdit": {
@@ -912,6 +942,29 @@
             "title": "Created At",
             "type": "string"
           },
+          "escalated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Escalated At"
+          },
+          "escalated_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Escalated By"
+          },
           "external_id": {
             "anyOf": [
               {
@@ -965,10 +1018,74 @@
           "redacted_text",
           "review_required",
           "created_at",
+          "escalated_at",
+          "escalated_by",
           "flags",
           "extractions"
         ],
         "title": "NoteOut",
+        "type": "object"
+      },
+      "NoteReviewIn": {
+        "additionalProperties": false,
+        "description": "Decide all of a note's pending flags at once (Step 5.2 review screen).",
+        "properties": {
+          "comment": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/FlagDecision"
+            },
+            "maxItems": 50,
+            "title": "Decisions",
+            "type": "array"
+          },
+          "escalate": {
+            "default": false,
+            "title": "Escalate",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "decisions"
+        ],
+        "title": "NoteReviewIn",
+        "type": "object"
+      },
+      "NoteReviewOut": {
+        "properties": {
+          "decision_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Decision Ids",
+            "type": "array"
+          },
+          "escalated": {
+            "title": "Escalated",
+            "type": "boolean"
+          },
+          "note": {
+            "$ref": "#/components/schemas/NoteOut"
+          }
+        },
+        "required": [
+          "note",
+          "decision_ids",
+          "escalated"
+        ],
+        "title": "NoteReviewOut",
         "type": "object"
       },
       "Permission": {
@@ -987,6 +1104,10 @@
       },
       "QueueItem": {
         "properties": {
+          "carer_ref": {
+            "title": "Carer Ref",
+            "type": "string"
+          },
           "client_ref": {
             "title": "Client Ref",
             "type": "string"
@@ -1040,6 +1161,7 @@
           "note_id",
           "external_id",
           "client_ref",
+          "carer_ref",
           "visit_time",
           "created_at",
           "redacted_text",
@@ -1923,6 +2045,65 @@
         "summary": "Get Note",
         "tags": [
           "notes"
+        ]
+      }
+    },
+    "/review/notes/{note_id}": {
+      "post": {
+        "description": "Approve, edit or reject every pending flag of a note, atomically, and optionally\nescalate it to a care manager. One `review_decision` audit event per flag, plus a\n`review_escalated` event.",
+        "operationId": "review_note_review_notes__note_id__post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "note_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Note Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteReviewIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteReviewOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Review Note",
+        "tags": [
+          "review"
         ]
       }
     },

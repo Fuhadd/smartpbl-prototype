@@ -5,7 +5,7 @@ import { useAuth } from '@/auth/auth'
 import { AccessDenied } from '@/components/states/States'
 import { CARER_APP_URL } from '@/config'
 
-import { PageHeader } from './AppShell'
+import { PageContainer, PageHeader } from './AppShell'
 import { page, type PageKey } from './pages'
 
 /** Signed-out users go to sign-in, and come back to where they were afterwards. */
@@ -48,11 +48,11 @@ export function Guarded({ pageKey, children }: { pageKey: PageKey; children: Rea
       ? { label: 'Back to my visits', to: CARER_APP_URL, external: true }
       : { label: 'Back to overview', to: '/' }
   return (
-    <>
+    <PageContainer>
       <PageHeader title={def.title} />
       <div className="flex min-h-[420px]">
         <AccessDenied subject={def.deniedSubject} signedInAs={name} back={back} recorded={recorded} />
       </div>
-    </>
+    </PageContainer>
   )
 }

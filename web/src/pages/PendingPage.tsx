@@ -1,4 +1,4 @@
-import { PageHeader } from '@/app/AppShell'
+import { PageContainer, PageHeader } from '@/app/AppShell'
 import { page, type PageKey } from '@/app/pages'
 
 import { PendingStep } from './PendingStep'
@@ -7,9 +7,9 @@ import { PendingStep } from './PendingStep'
 export function PendingPage({ pageKey, step }: { pageKey: PageKey; step: string }) {
   const def = page(pageKey)
   return (
-    <>
+    <PageContainer>
       <PageHeader title={def.title} />
       <PendingStep step={step} what={`The ${def.title.toLowerCase()} screen and its data`} />
-    </>
+    </PageContainer>
   )
 }

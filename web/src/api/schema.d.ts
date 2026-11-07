@@ -170,6 +170,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/review/notes/{note_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Review Note
+         * @description Approve, edit or reject every pending flag of a note, atomically, and optionally
+         *     escalate it to a care manager. One `review_decision` audit event per flag, plus a
+         *     `review_escalated` event.
+         */
+        post: operations["review_note_review_notes__note_id__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/review/queue": {
         parameters: {
             query?: never;
@@ -441,7 +463,7 @@ export interface components {
          * EventType
          * @enum {string}
          */
-        EventType: "note_ingested" | "pii_redacted" | "extraction_completed" | "extraction_failed" | "baseline_completed" | "flags_routed" | "review_decision" | "schedule_solved" | "workforce_risk_viewed" | "workforce_explanation_viewed" | "api_request" | "review_queue_viewed" | "refresh_token_reuse_detected";
+        EventType: "note_ingested" | "pii_redacted" | "extraction_completed" | "extraction_failed" | "baseline_completed" | "flags_routed" | "review_decision" | "schedule_solved" | "workforce_risk_viewed" | "workforce_explanation_viewed" | "api_request" | "review_queue_viewed" | "review_escalated" | "refresh_token_reuse_detected";
         /** ExplanationOut */
         ExplanationOut: {
             /** Average Risk */
@@ -515,6 +537,16 @@ export interface components {
             support: string | null;
             /** Value */
             value: string;
+        };
+        /** FlagDecision */
+        FlagDecision: {
+            action: components["schemas"]["ReviewAction"];
+            edit?: components["schemas"]["FlagEdit"] | null;
+            /**
+             * Flag Id
+             * Format: uuid
+             */
+            flag_id: string;
         };
         /**
          * FlagEdit
@@ -604,6 +636,10 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+            /** Escalated At */
+            escalated_at: string | null;
+            /** Escalated By */
+            escalated_by: string | null;
             /** External Id */
             external_id: string | null;
             /** Extractions */
@@ -626,12 +662,37 @@ export interface components {
             visit_time: string;
         };
         /**
+         * NoteReviewIn
+         * @description Decide all of a note's pending flags at once (Step 5.2 review screen).
+         */
+        NoteReviewIn: {
+            /** Comment */
+            comment?: string | null;
+            /** Decisions */
+            decisions: components["schemas"]["FlagDecision"][];
+            /**
+             * Escalate
+             * @default false
+             */
+            escalate: boolean;
+        };
+        /** NoteReviewOut */
+        NoteReviewOut: {
+            /** Decision Ids */
+            decision_ids: string[];
+            /** Escalated */
+            escalated: boolean;
+            note: components["schemas"]["NoteOut"];
+        };
+        /**
          * Permission
          * @enum {string}
          */
         Permission: "note.create" | "note.read" | "review.queue.read" | "review.decide" | "audit.read" | "schedule.solve" | "schedule.read" | "workforce.read";
         /** QueueItem */
         QueueItem: {
+            /** Carer Ref */
+            carer_ref: string;
             /** Client Ref */
             client_ref: string;
             /**
@@ -1103,6 +1164,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NoteOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    review_note_review_notes__note_id__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                note_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NoteReviewIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoteReviewOut"];
                 };
             };
             /** @description Validation Error */

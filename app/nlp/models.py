@@ -57,6 +57,10 @@ class CareNoteRecord(CreatedAtMixin, Base):
     raw_text: Mapped[str] = mapped_column(Text)
     redacted_text: Mapped[str] = mapped_column(Text)
     review_required: Mapped[bool]
+    # Step 5.2: a coordinator escalated this note to a care manager (operational state;
+    # the decision itself is in review_decisions and the audit log).
+    escalated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    escalated_by: Mapped[str | None] = mapped_column(String(100))
 
     extractions: Mapped[list["ExtractionRecord"]] = relationship(back_populates="note")
     flags: Mapped[list["RiskFlagRecord"]] = relationship(back_populates="note")

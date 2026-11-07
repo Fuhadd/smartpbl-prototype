@@ -28,6 +28,7 @@ MATRIX: list[tuple[str, str, str, dict, set[Role]]] = [
     ("GET", "/notes/{note_id}", f"/notes/{uuid4()}", {}, {C, M}),
     ("GET", "/review/queue", "/review/queue", {}, {C, M}),
     ("POST", "/review/{flag_id}", f"/review/{uuid4()}", {"json": {}}, {C}),
+    ("POST", "/review/notes/{note_id}", f"/review/notes/{uuid4()}", {"json": {}}, {C}),
     ("GET", "/audit/{note_id}", f"/audit/{uuid4()}", {}, {C, M}),
     ("POST", "/schedule/solve", "/schedule/solve", {"json": {"time_limit_s": -1}}, {C}),
     ("GET", "/schedule/{run_id}", f"/schedule/{uuid4()}", {}, {C, M}),
