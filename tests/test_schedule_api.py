@@ -11,6 +11,7 @@ from sqlalchemy import select
 
 from app.audit.log import input_hash
 from app.audit.models import AuditEvent, EventType
+from app.auth.models import Role
 from app.core.db import get_session
 from app.main import app
 from app.matching.data import Client, Scenario, Skill
@@ -18,8 +19,6 @@ from app.matching.explain import DropReason, explain
 from app.matching.service import resolve_matrix
 from app.matching.solver import SolverParams, solve
 from tests.test_solver import FAR, NEAR, OFFICE, carer, client, visit
-
-HEADERS = {"X-Reviewer": "coord.alpha"}
 
 
 def small_scenario() -> Scenario:
@@ -48,9 +47,9 @@ def small_scenario() -> Scenario:
 
 
 @pytest.fixture
-def api(db_session) -> Iterator[TestClient]:
+def api(db_session, auth_headers) -> Iterator[TestClient]:
     app.dependency_overrides[get_session] = lambda: db_session
-    with TestClient(app) as client:
+    with TestClient(app, headers=auth_headers(Role.COORDINATOR)) as client:
         yield client
     app.dependency_overrides.clear()
 
@@ -59,7 +58,7 @@ def post(api, scenario: Scenario | None, **params):
     body = {"time_limit_s": 1.0, "continuity_weight_min": 15, **params}
     if scenario is not None:
         body["scenario"] = json.loads(scenario.model_dump_json())
-    return api.post("/schedule/solve", json=body, headers=HEADERS)
+    return api.post("/schedule/solve", json=body)
 
 
 def test_explanations_give_reasons_and_drop_causes() -> None:
@@ -129,9 +128,7 @@ def test_parameter_limits(api, params) -> None:
     assert post(api, small_scenario(), **params).status_code == 422
 
 
-def test_requires_identity_header_and_404(api) -> None:
-    r = api.post("/schedule/solve", json={"time_limit_s": 1})
-    assert r.status_code == 422
+def test_unknown_run_is_404(api) -> None:
     assert api.get(f"/schedule/{uuid4()}").status_code == 404
 
 

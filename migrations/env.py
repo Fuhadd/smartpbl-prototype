@@ -6,6 +6,7 @@ from alembic import context
 from sqlalchemy import create_engine
 
 import app.audit.models
+import app.auth.models
 import app.matching.models
 import app.nlp.models  # noqa: F401  (register tables on Base.metadata)
 from app.core.config import get_settings

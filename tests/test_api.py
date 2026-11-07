@@ -10,6 +10,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import event, select
 
 from app.api.deps import get_llm_client
+from app.auth.models import Role
 from app.core.db import get_session
 from app.main import app
 from app.nlp.models import ReviewDecisionRecord
@@ -21,7 +22,6 @@ FALL_TEXT = (
     "Found on the floor by the bed. Refused her tablets."
 )
 PII = ["Sampleton", "Fictional Avenue", "ZZ3 4AB", "07700 900123"]
-REVIEWER = {"X-Reviewer": "coord.alpha"}
 
 
 def reply(*flags: tuple[str, str, str, float], medication: str = "not_mentioned") -> str:
@@ -51,10 +51,16 @@ def llm() -> FakeClient:
 
 
 @pytest.fixture
-def api(db_session, llm) -> Iterator[TestClient]:
+def as_manager(auth_headers) -> dict[str, str]:
+    return auth_headers(Role.MANAGER)
+
+
+@pytest.fixture
+def api(db_session, llm, auth_headers) -> Iterator[TestClient]:
+    """Authenticated as a coordinator by default; audit reads pass manager headers."""
     app.dependency_overrides[get_session] = lambda: db_session
     app.dependency_overrides[get_llm_client] = lambda: llm
-    with TestClient(app) as client:
+    with TestClient(app, headers=auth_headers(Role.COORDINATOR)) as client:
         yield client
     app.dependency_overrides.clear()
 
@@ -160,13 +166,12 @@ def test_queue_orders_by_priority_and_excludes_settled_notes(api, llm) -> None:
 # --- POST /review/{flag_id} --------------------------------------------------------------
 
 
-def test_approve_settles_note_and_writes_audit_event(api, llm) -> None:
+def test_approve_settles_note_and_writes_audit_event(api, llm, as_manager) -> None:
     note = post_note(api, llm, "API-8", FALL_TEXT, FALL_REPLY)
     falls = flag(note, "falls")
     r = api.post(
         f"/review/{falls['id']}",
         json={"action": "approve", "comment": "Rang Mrs Sampleton's daughter"},
-        headers=REVIEWER,
     )
     assert r.status_code == 200, r.text
     out = r.json()
@@ -175,7 +180,7 @@ def test_approve_settles_note_and_writes_audit_event(api, llm) -> None:
     assert out["note_review_required"] is False  # last pending flag
     assert note["id"] not in [q["note_id"] for q in api.get("/review/queue").json()]
 
-    trail = api.get(f"/audit/{note['id']}").json()
+    trail = api.get(f"/audit/{note['id']}", headers=as_manager).json()
     last = trail[-1]
     assert (last["event_type"], last["actor"]) == ("review_decision", "user:coord.alpha")
     assert last["output"]["has_comment"] is True
@@ -186,7 +191,7 @@ def test_edit_stores_diff_and_regrounds_evidence(api, llm, db_session) -> None:
     note = post_note(api, llm, "API-9", FALL_TEXT, FALL_REPLY)
     falls = flag(note, "falls")
     edit = {"severity": "medium", "evidence": "found on the floor"}  # lower case: normalised
-    r = api.post(f"/review/{falls['id']}", json={"action": "edit", "edit": edit}, headers=REVIEWER)
+    r = api.post(f"/review/{falls['id']}", json={"action": "edit", "edit": edit})
     assert r.status_code == 200, r.text
     out = r.json()
     assert out["flag"]["evidence"] == "Found on the floor"  # the note's own text, not typed
@@ -209,7 +214,7 @@ def test_edit_stores_diff_and_regrounds_evidence(api, llm, db_session) -> None:
 def test_reviewer_can_reject_an_auto_accepted_flag(api, llm) -> None:
     note = post_note(api, llm, "API-10", FALL_TEXT, FALL_REPLY)
     meds = flag(note, "medication")
-    r = api.post(f"/review/{meds['id']}", json={"action": "reject"}, headers=REVIEWER)
+    r = api.post(f"/review/{meds['id']}", json={"action": "reject"})
     assert r.status_code == 200
     assert r.json()["flag"]["review_status"] == "rejected"
     assert r.json()["note_review_required"] is True  # falls still pending
@@ -226,45 +231,52 @@ def test_reviewer_can_reject_an_auto_accepted_flag(api, llm) -> None:
         {"action": "escalate"},  # unknown action
     ],
 )
-def test_invalid_review_is_422_and_changes_nothing(api, llm, body) -> None:
+def test_invalid_review_is_422_and_changes_nothing(api, llm, body, as_manager) -> None:
     note = post_note(api, llm, "API-11", FALL_TEXT, FALL_REPLY)
     falls = flag(note, "falls")
-    r = api.post(f"/review/{falls['id']}", json=body, headers=REVIEWER)
+    r = api.post(f"/review/{falls['id']}", json=body)
     assert r.status_code == 422, r.text
     after = api.get(f"/notes/{note['id']}").json()
     assert flag(after, "falls") == falls
-    assert api.get(f"/audit/{note['id']}").json()[-1]["event_type"] == "flags_routed"
+    assert (
+        api.get(f"/audit/{note['id']}", headers=as_manager).json()[-1]["event_type"]
+        == "flags_routed"
+    )
 
 
 def test_second_decision_on_same_flag_is_409(api, llm) -> None:
     note = post_note(api, llm, "API-12", FALL_TEXT, FALL_REPLY)
     url = f"/review/{flag(note, 'falls')['id']}"
-    assert api.post(url, json={"action": "approve"}, headers=REVIEWER).status_code == 200
-    again = api.post(url, json={"action": "reject"}, headers=REVIEWER)
+    assert api.post(url, json={"action": "approve"}).status_code == 200
+    again = api.post(url, json={"action": "reject"})
     assert again.status_code == 409
     assert "approved" in again.json()["detail"]
 
 
-@pytest.mark.parametrize("headers", [{}, {"X-Reviewer": "bad name; drop"}])
-def test_review_requires_valid_reviewer_header(api, llm, headers) -> None:
+def test_reviewer_identity_comes_from_the_token_not_the_client(api, llm, db_session) -> None:
+    """The old prototype header is ignored: a client can't claim to be someone else."""
     note = post_note(api, llm, "API-13", FALL_TEXT, FALL_REPLY)
     r = api.post(
-        f"/review/{flag(note, 'falls')['id']}", json={"action": "approve"}, headers=headers
+        f"/review/{flag(note, 'falls')['id']}",
+        json={"action": "approve"},
+        headers={"X-Reviewer": "manager.alpha"},
     )
-    assert r.status_code == 422
+    assert r.status_code == 200, r.text
+    decision = db_session.scalar(select(ReviewDecisionRecord))
+    assert decision.reviewer == "coord.alpha"
 
 
 def test_review_unknown_flag_is_404(api) -> None:
-    r = api.post(f"/review/{uuid4()}", json={"action": "approve"}, headers=REVIEWER)
+    r = api.post(f"/review/{uuid4()}", json={"action": "approve"})
     assert r.status_code == 404
 
 
 # --- GET /audit/{note_id} ----------------------------------------------------------------
 
 
-def test_audit_trail_is_ordered_and_404_for_unknown(api, llm) -> None:
+def test_audit_trail_is_ordered_and_404_for_unknown(api, llm, as_manager) -> None:
     note = post_note(api, llm, "API-14", FALL_TEXT, FALL_REPLY)
-    trail = api.get(f"/audit/{note['id']}").json()
+    trail = api.get(f"/audit/{note['id']}", headers=as_manager).json()
     assert [e["event_type"] for e in trail] == [
         "note_ingested",
         "pii_redacted",
@@ -273,7 +285,7 @@ def test_audit_trail_is_ordered_and_404_for_unknown(api, llm) -> None:
         "flags_routed",
     ]
     assert trail[2]["prompt_version"] == "extraction/v2"
-    assert api.get(f"/audit/{uuid4()}").status_code == 404
+    assert api.get(f"/audit/{uuid4()}", headers=as_manager).status_code == 404
 
 
 def test_review_locks_the_flag_row(api, llm, db_session) -> None:
@@ -285,9 +297,7 @@ def test_review_locks_the_flag_row(api, llm, db_session) -> None:
     listener = lambda *args: statements.append(args[2])  # noqa: E731
     event.listen(conn, "before_cursor_execute", listener)
     try:
-        api.post(
-            f"/review/{flag(note, 'falls')['id']}", json={"action": "approve"}, headers=REVIEWER
-        )
+        api.post(f"/review/{flag(note, 'falls')['id']}", json={"action": "approve"})
     finally:
         event.remove(conn, "before_cursor_execute", listener)
     assert any("FROM risk_flags" in s and "FOR UPDATE" in s for s in statements)

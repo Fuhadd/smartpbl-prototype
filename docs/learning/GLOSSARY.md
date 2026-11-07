@@ -181,3 +181,20 @@
 - **Broken Object Property Level Authorization (OWASP API3:2023)**: Exposing (or allowing writes to) object fields a client shouldn't see; prevented by explicit response schemas.
 - **Jensen's inequality (here)**: For a convex function f, mean(f(x)) ≥ f(mean(x)); so the mean of probabilities differs from the probability of the mean log-odds.
 - **Cold start**: The extra latency of the first request while a process initialises (here, training the model).
+- **Authentication vs authorisation**: Authentication proves who a caller is (a valid token); authorisation decides what they may do (role → permission). They map to HTTP 401 and 403.
+- **JWT (JSON Web Token)**: `header.payload.signature`, base64url-encoded. The payload is readable by anyone; the signature (here HMAC-SHA256) proves it wasn't changed.
+- **Claims (`sub`, `exp`, `iat`, `iss`, `aud`, `jti`)**: Subject (user id), expiry, issued-at, issuer, intended audience and a unique token id.
+- **`alg: none` / algorithm confusion**: Attacks where the token header chooses a weak or no algorithm. Prevented by the server pinning the allowed algorithms.
+- **Cross-JWT confusion**: Using a token issued for one purpose (refresh) as another (access). Prevented by a type claim and mutually exclusive validation rules.
+- **Access vs refresh token**: A short-lived token sent with every request, and a longer-lived one used only to get new access tokens.
+- **Refresh token rotation**: Each refresh token is single use; exchanging it issues a new one and invalidates the old.
+- **Token family / reuse detection**: All refresh tokens from one login. Presenting an already-rotated token signals theft, so the whole family is revoked.
+- **RBAC (role-based access control)**: Permissions are granted to roles, and users get roles, so the policy is a small table rather than per-user rules.
+- **Least privilege**: Each role gets only the permissions its job needs.
+- **Separation of duties**: Splitting acting (deciding flags, running the solver) from overseeing (audit, risk review) between roles.
+- **Deny by default**: Every endpoint is closed unless a permission explicitly opens it; enforced here by a guard test.
+- **Argon2id**: A memory-hard password hashing function (winner of the Password Hashing Competition). Each guess costs memory as well as CPU, which slows GPU cracking.
+- **Salt**: Random data stored with each password hash, so equal passwords give different hashes and precomputed (rainbow) tables don't work.
+- **Username enumeration**: Learning which accounts exist from differences in error messages or response times.
+- **BOLA / BFLA (OWASP API1 / API5)**: Broken Object-Level Authorization (accessing someone else's record) vs Broken Function-Level Authorization (calling an endpoint your role shouldn't reach).
+- **OIDC (OpenID Connect)**: An identity layer on OAuth 2.0, used for single sign-on with an external identity provider such as Microsoft Entra ID.

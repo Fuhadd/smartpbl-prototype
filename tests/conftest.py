@@ -6,7 +6,7 @@ to make that a failure instead.
 """
 
 import os
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 
 import pytest
 from alembic import command
@@ -16,6 +16,8 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 
+from app.auth.models import Role
+from app.auth.service import create_user, issue_tokens
 from app.core.config import get_settings
 
 
@@ -73,3 +75,33 @@ def db_session(engine: Engine) -> Iterator[Session]:
         finally:
             session.close()
             outer.rollback()
+
+
+# Obviously synthetic accounts, one per role; tests expect these names in audit rows.
+USERNAMES = {
+    Role.COORDINATOR: "coord.alpha",
+    Role.MANAGER: "manager.alpha",
+    Role.CARER: "carer.alpha",
+}
+TEST_PASSWORD = "synthetic-test-password"
+
+AuthHeaders = Callable[[Role], dict[str, str]]
+
+
+@pytest.fixture
+def auth_headers(db_session: Session) -> AuthHeaders:
+    """`auth_headers(Role.MANAGER)` -> a Bearer header for that role's test user, created
+    on first use inside the rolled-back test transaction."""
+    cache: dict[Role, dict[str, str]] = {}
+
+    def make(role: Role) -> dict[str, str]:
+        if role not in cache:
+            user = create_user(db_session, USERNAMES[role], TEST_PASSWORD, role)
+            token = issue_tokens(db_session, user).access_token
+            # Commit = release the savepoint; the outer test transaction still rolls it all
+            # back. Without it, an endpoint's own rollback() would discard the user.
+            db_session.commit()
+            cache[role] = {"Authorization": f"Bearer {token}"}
+        return cache[role]
+
+    return make

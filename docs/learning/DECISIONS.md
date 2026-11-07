@@ -272,3 +272,22 @@
   - Tier 4's CORS and auth design must serve two browser origins.
   - The OpenAPI schema becomes a contract: the response models from Tiers 1–3 (spans, reasons, SHAP factors, use notice) are what the clients consume.
   - Demo mode needs seeded data and no Ollama dependency.
+
+## ADR-025: JWT access tokens, rotating DB-tracked refresh tokens, and a permission table (2026-11-07)
+- **Context:** Steps 1.8–3.4 identified users by a client-supplied `X-Reviewer` header, which is not access control. Reviewer decisions, solver runs and workforce-risk reads need a verified identity and least-privilege roles (coordinator, manager, carer). Two client types are coming in Tier 5 (a React dashboard and a Flutter carer app).
+- **Decision:**
+  - **Tokens:** HS256 JWT access tokens (15 min) and JWT refresh tokens (7 days). Decoding pins the algorithm and requires `exp, iat, iss, aud, sub, jti, type`; a `type` claim prevents a refresh token from being used as an access token.
+  - **Refresh state:** each refresh `jti` is stored (never the token), in a family per login. Tokens are single use (rotation), and reuse of a rotated token revokes the family (RFC 9700 §4.14.2). The row is locked during rotation.
+  - **Authorisation:** the user is reloaded from the DB on every request, and the current role and `is_active` decide. The role claim in the token is for client UI only.
+  - **Policy:** routes declare a `Permission`, and one role → permissions table maps them. Managers oversee (audit, workforce risk, read-only operations); coordinators act (review decisions, solver, notes); carers create notes only.
+  - **Enforcement:** router-level authentication runs before endpoint dependencies. A guard test (OpenAPI security plus a `require(...)` on every non-public route), an independently written route × role matrix and a coverage test keep the policy honest.
+  - **Passwords:** Argon2id via pwdlib defaults (m = 64 MiB, t = 3, p = 4). The same 401 for unknown user, wrong password and disabled account; a dummy hash for timing parity. Accounts are created by a CLI, with no self-registration.
+- **Alternatives:** opaque server-side sessions (equally defensible here; not what the plan specified); an external OIDC IdP such as Entra ID (preferred for production at PBL); RS256 with JWKS (only worth it with several verifying services); role checks inline in routes (spreads the policy across files).
+- **Consequences:**
+  - Logout and rotation can't revoke an access token already issued, but disabling an account takes effect on the next request because of the DB reload.
+  - Tokens are returned in the JSON body. A browser cookie variant (`httpOnly` refresh cookie plus CSRF) is decided with CORS in 4.3.
+  - No login rate limiting yet (4.3), and the default signing secret is not yet refused outside local development (4.3).
+  - Login and permission-denied events are not audited yet (4.2).
+  - Expired refresh rows are not yet purged.
+  - Carers can't read notes back until object-level checks exist (Tier 5).
+  - FastAPI 0.162 includes routers lazily, so route introspection uses the OpenAPI schema plus a `ROUTERS` tuple, not `app.routes`.

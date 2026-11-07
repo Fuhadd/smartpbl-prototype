@@ -11,17 +11,21 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_reviewer, get_workforce
+from app.api.deps import get_current_user, get_workforce, require
 from app.audit.log import record
 from app.audit.models import EventType
+from app.auth.models import User
+from app.auth.permissions import Permission
 from app.core.db import get_session
 from app.workforce.explain import Reason
 from app.workforce.service import MODEL_NAME, SUPPORT_SHARE, ScoredCarer, WorkforceRisk
 
-router = APIRouter(prefix="/workforce", tags=["workforce"])
+router = APIRouter(
+    prefix="/workforce", tags=["workforce"], dependencies=[Depends(get_current_user)]
+)
 SessionDep = Annotated[Session, Depends(get_session)]
 WorkforceDep = Annotated[WorkforceRisk, Depends(get_workforce)]
-ReviewerDep = Annotated[str, Depends(get_reviewer)]
+ViewerDep = Annotated[User, Depends(require(Permission.WORKFORCE_READ))]
 
 USE_NOTICE = (
     "Supportive use only. A higher score suggests where to offer help with working "
@@ -111,9 +115,9 @@ def _audit(session: Session, event: EventType, actor: str, w: WorkforceRisk, out
 
 @router.get("/risk")
 def list_risk(
+    viewer: ViewerDep,
     session: SessionDep,
     w: WorkforceDep,
-    reviewer: ReviewerDep,
     limit: Annotated[int, Query(ge=1, le=200)] = 20,
     offset: Annotated[int, Query(ge=0)] = 0,
     priority_only: bool = False,
@@ -123,7 +127,7 @@ def list_risk(
     if priority_only:
         carers = [c for c in carers if c.support_priority]
     page = carers[offset : offset + limit]
-    _audit(session, EventType.WORKFORCE_RISK_VIEWED, reviewer, w,
+    _audit(session, EventType.WORKFORCE_RISK_VIEWED, f"user:{viewer.username}", w,
            {"carer_refs": [c.carer_ref for c in page], "offset": offset, "limit": limit,
             "priority_only": priority_only})  # fmt: skip
     return RiskList(
@@ -148,16 +152,16 @@ def list_risk(
 @router.get("/{carer_ref}/explanation")
 def explain(
     carer_ref: Annotated[str, Path(pattern=r"^WF-\d{4}$")],
+    viewer: ViewerDep,
     session: SessionDep,
     w: WorkforceDep,
-    reviewer: ReviewerDep,
 ) -> ExplanationOut:
     """Every factor's contribution (log-odds; they add up to the score), with support
     actions for the provider-side factors that raise risk."""
     c = w.carers.get(carer_ref)
     if c is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "carer not in the current workforce")
-    _audit(session, EventType.WORKFORCE_EXPLANATION_VIEWED, reviewer, w,
+    _audit(session, EventType.WORKFORCE_EXPLANATION_VIEWED, f"user:{viewer.username}", w,
            {"carer_ref": c.carer_ref, "risk": c.risk, "rank": c.rank})  # fmt: skip
     reasons = c.explanation.reasons
     support = list(

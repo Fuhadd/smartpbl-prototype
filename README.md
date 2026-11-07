@@ -14,7 +14,8 @@ A portfolio prototype of an AI platform for domiciliary care. It has three parts
 - [x] Tier 1: care-notes NLP (schemas, synthetic data, PII redaction, rules baseline, LLM extraction, grounding + routing, persistence + audit, API + human review, evaluation)
 - [x] Tier 2: carer matching (scheduling data, OSRM travel matrix, OR-Tools VRPTW, continuity trade-off, greedy comparison, schedule API)
 - [x] Tier 3: attrition prediction (synthetic workforce from Tier 2 schedules, LR vs gradient boosting with nested CV, SHAP explanations checked against ground truth, age audit, model card, workforce API)
-- [ ] Tiers 4–6: production layer, coordinator dashboard and carer app, packaging
+- [ ] Tier 4: production layer. Done: 4.1 JWT auth with refresh rotation and role-based permissions
+- [ ] Tiers 5–6: coordinator dashboard and carer app, packaging
 
 ## Quick start
 
@@ -28,7 +29,13 @@ docker compose up -d db                   # PostgreSQL 16 on 127.0.0.1:5442
 uv run alembic upgrade head               # create tables + append-only audit trigger
 ollama pull llama3.1:8b                   # default LLM (qwen2.5:3b optional)
 uv run pytest                             # tests
+uv run python -m scripts.create_user coord.demo coordinator   # prompts for a password
 uv run uvicorn app.main:app --reload      # API at http://localhost:8000/docs
+
+# Every endpoint except /health and /auth/* needs a bearer token (Step 4.1):
+TOKEN=$(curl -s -X POST localhost:8000/auth/token -d 'username=coord.demo&password=<yours>' \
+  | python -c 'import sys, json; print(json.load(sys.stdin)["access_token"])')
+AUTH="Authorization: Bearer $TOKEN"       # used by the curl examples below
 
 # Optional, Tier 2: road travel times (the committed matrix works without it)
 scripts/prepare_osrm.sh                   # download West Midlands OSM + preprocess (~1 min)
@@ -99,10 +106,10 @@ The deployed pipeline is llama + rules safety net + routing:
 
 ```bash
 # One note through the API (Ollama running):
-curl -X POST localhost:8000/notes -H 'content-type: application/json' -d '{"note_id":"DEMO-1",
+curl -X POST localhost:8000/notes -H "$AUTH" -H 'content-type: application/json' -d '{"note_id":"DEMO-1",
   "client_ref":"CL-0001","carer_ref":"CR-0001","visit_time":"2026-11-07T08:00:00Z",
   "text":"Visited Mrs Testperson. Found her on the floor in the hallway. Refused morning tablets."}'
-curl localhost:8000/review/queue
+curl -H "$AUTH" localhost:8000/review/queue
 
 # Re-score the committed predictions (no Ollama needed):
 uv run python -m scripts.eval --split test --final
@@ -117,7 +124,7 @@ uv run python -m scripts.run_extraction --split test --model llama3.1:8b --promp
 - **LLM self-reported confidence is uninformative:** 86% of flags have confidence 1.0. Routing therefore relies on policy, grounding and the rules safety net, not on confidence.
 - **Grounding checks that a quote exists, not that it supports the flag.** A negation misread ("no signs of falls" flagged as a fall) passes grounding.
 - **The audit log is append-only against the application only.** A database owner or superuser can disable the trigger. Production needs separate DB roles and tamper evidence such as a hash chain or write-once storage.
-- **No authentication yet.** The reviewer is identified by an `X-Reviewer` header, replaced by JWT and roles in Tier 4. The API returns redacted text only.
+- **Authentication arrived in Step 4.1** (JWT + roles; the reviewer is the authenticated user). The API returns redacted text only.
 - **Ingestion is synchronous** (6–18 s per note), and raw text is not encrypted at rest. Both are in [`BACKLOG.md`](docs/learning/BACKLOG.md).
 
 ## Tier 2: carer matching
@@ -190,10 +197,10 @@ Notes 10–15 in [`docs/learning/`](docs/learning/) explain each part.
 
 ```bash
 uv run uvicorn app.main:app --reload
-curl -X POST localhost:8000/schedule/solve -H 'X-Reviewer: coord.alpha' \
+curl -X POST localhost:8000/schedule/solve -H "$AUTH" \
   -H 'content-type: application/json' -d '{"time_limit_s": 10, "continuity_weight_min": 15}'
 # -> routes per carer with reasons, unassigned visits with causes, metrics, run id
-curl localhost:8000/schedule/<run id>
+curl -H "$AUTH" localhost:8000/schedule/<run id>
 
 # Reproduce the Tier 2 results (OSRM optional; committed matrices are used):
 uv run python -m scripts.solve_baseline     # strategies, bound, what-ifs (~5 min)
@@ -273,8 +280,9 @@ Notes 16–19 in [`docs/learning/`](docs/learning/) explain each part. The model
 
 ```bash
 uv run uvicorn app.main:app --reload
-curl -H 'X-Reviewer: manager.alpha' 'localhost:8000/workforce/risk?limit=5'
-curl -H 'X-Reviewer: manager.alpha' localhost:8000/workforce/WF-0461/explanation
+# Needs a manager token (coordinators get 403): create_user manager.demo manager
+curl -H "$AUTH" 'localhost:8000/workforce/risk?limit=5'
+curl -H "$AUTH" localhost:8000/workforce/WF-0461/explanation
 
 # Reproduce the Tier 3 results (deterministic):
 uv run python -m scripts.calibrate_workforce  # re-solve Tier 2 days (~2 min; output committed)
@@ -289,7 +297,7 @@ uv run python -m scripts.explain_attrition    # SHAP, truth check, age audit (~3
 - **Small, simple workforce.** 1,000 carers from 84 Tier 2 rounds; employment features are mostly independent draws; one snapshot with no censoring; leavers aren't split by reason.
 - **SHAP mode.** Interventional SHAP fails additivity for HistGradientBoosting in shap 0.54.1, so explanations use the path-dependent mode, which follows feature correlations.
 - **Fairness audit covers age only,** because that's all the synthetic data contains. Real deployment needs audits of every lawfully measurable characteristic, a DPIA and worker consultation.
-- **No access control yet:** the `X-Reviewer` header is not authentication (Tier 4). The model retrains on first request (~4 s).
+- **Access is manager-only since Step 4.1,** but not yet scoped per patch, and carers can't yet see their own explanation. The model retrains on first request (~4 s).
 
 ## Roadmap: Tiers 4–6
 

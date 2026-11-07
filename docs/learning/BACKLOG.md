@@ -71,3 +71,11 @@
 - **Model registry:** `skops` artefacts plus metadata (data snapshot, code commit, versions, CV score) instead of training at start-up, once training is no longer instant.
 - **Warm-up:** build the workforce model at application start-up (lifespan event) rather than on the first request.
 - **Snapshot date and drift monitoring** in workforce responses once features come from live rota data.
+- **Login throttling (4.3):** per-account and per-IP limits on `/auth/token`, stricter than general limits (OWASP API2); consider lockout with notification rather than a hard lock.
+- **Refuse default secrets (4.3):** fail start-up when `jwt_secret` or `audit_hash_key` is the dev default outside `environment=local`.
+- **Browser token storage (4.3):** an httpOnly refresh cookie variant for the React dashboard, with CSRF protection and CORS for two origins.
+- **Auth audit events (4.2):** login success/failure, refresh reuse detected, permission denied, recorded in the unified audit log; also the authenticated submitter on `note_ingested` (currently `system:pipeline`).
+- **Refresh-token housekeeping:** purge expired and revoked rows past a retention window; an admin "sign out everywhere" (revoke every family for a user).
+- **Password rehash on login:** pwdlib's `verify_and_update` to upgrade hashes when Argon2 parameters change.
+- **Object-level authorisation (Tier 5):** link carer accounts to `carer_ref`, so carers can read their own notes, visits and attrition explanation (BOLA checks), and per-patch scoping for coordinators.
+- **External IdP:** OIDC with Microsoft Entra ID (RS256, JWKS) for real staff accounts and MFA, mapping IdP groups to the existing roles.

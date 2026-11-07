@@ -11,24 +11,13 @@ from enum import StrEnum
 from typing import Any
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, Enum, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.db import Base, CreatedAtMixin
+from app.core.db import Base, CreatedAtMixin, string_enum
 from app.nlp.ground import GroundingStatus
 from app.nlp.schemas import RiskCategory, Severity
-
-
-def _enum(e: type[StrEnum], length: int = 30) -> Enum:
-    # VARCHAR + CHECK constraint (not a native PG enum): adding a value is a simple migration.
-    return Enum(
-        e,
-        native_enum=False,
-        create_constraint=True,  # CHECK constraint: the DB itself rejects unknown values
-        length=length,
-        values_callable=lambda x: [m.value for m in x],
-    )
 
 
 class ExtractionSource(StrEnum):
@@ -78,8 +67,8 @@ class ExtractionRecord(CreatedAtMixin, Base):
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     note_id: Mapped[UUID] = mapped_column(ForeignKey("care_notes.id"), index=True)
-    source: Mapped[ExtractionSource] = mapped_column(_enum(ExtractionSource))
-    status: Mapped[ExtractionStatus] = mapped_column(_enum(ExtractionStatus))
+    source: Mapped[ExtractionSource] = mapped_column(string_enum(ExtractionSource))
+    status: Mapped[ExtractionStatus] = mapped_column(string_enum(ExtractionStatus))
     extraction: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     model_name: Mapped[str | None] = mapped_column(String(100))
     model_version: Mapped[str | None] = mapped_column(String(100))
@@ -99,17 +88,17 @@ class RiskFlagRecord(CreatedAtMixin, Base):
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     note_id: Mapped[UUID] = mapped_column(ForeignKey("care_notes.id"), index=True)
     extraction_id: Mapped[UUID] = mapped_column(ForeignKey("extractions.id"))
-    source: Mapped[ExtractionSource] = mapped_column(_enum(ExtractionSource))
-    category: Mapped[RiskCategory] = mapped_column(_enum(RiskCategory))
-    severity: Mapped[Severity] = mapped_column(_enum(Severity))
+    source: Mapped[ExtractionSource] = mapped_column(string_enum(ExtractionSource))
+    category: Mapped[RiskCategory] = mapped_column(string_enum(RiskCategory))
+    severity: Mapped[Severity] = mapped_column(string_enum(Severity))
     evidence: Mapped[str] = mapped_column(Text)
     confidence: Mapped[float]
-    grounding_status: Mapped[GroundingStatus] = mapped_column(_enum(GroundingStatus))
+    grounding_status: Mapped[GroundingStatus] = mapped_column(string_enum(GroundingStatus))
     grounding_score: Mapped[float]
     span_start: Mapped[int | None]  # offsets into redacted_text, for highlighting
     span_end: Mapped[int | None]
     review_reasons: Mapped[list[str]] = mapped_column(JSONB, default=list)
-    review_status: Mapped[ReviewStatus] = mapped_column(_enum(ReviewStatus), index=True)
+    review_status: Mapped[ReviewStatus] = mapped_column(string_enum(ReviewStatus), index=True)
 
     note: Mapped[CareNoteRecord] = relationship(back_populates="flags")
 
@@ -120,7 +109,7 @@ class ReviewDecisionRecord(CreatedAtMixin, Base):
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     flag_id: Mapped[UUID] = mapped_column(ForeignKey("risk_flags.id"), index=True)
     reviewer: Mapped[str] = mapped_column(String(100))
-    action: Mapped[ReviewAction] = mapped_column(_enum(ReviewAction))
+    action: Mapped[ReviewAction] = mapped_column(string_enum(ReviewAction))
     before: Mapped[dict[str, Any]] = mapped_column(JSONB)
     after: Mapped[dict[str, Any]] = mapped_column(JSONB)
     diff: Mapped[dict[str, Any]] = mapped_column(JSONB)  # {field: {"before": x, "after": y}}

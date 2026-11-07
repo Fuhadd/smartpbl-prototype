@@ -476,3 +476,31 @@ JWT roles and per-patch scoping, carer self-access and contest, a snapshot date 
 
 **average_risk vs baseline_risk?**
 Mean probability 0.306 vs sigmoid(mean log-odds) 0.282; Jensen's inequality. Named apart and tested.
+
+## Tier 4 — Production layer
+
+### 4.1 Auth and RBAC
+
+**How is a request authorised?**
+Bearer access token → decode (HS256 pinned; exp, iss, aud, required claims, type = access) → load the user by `sub` (must be active) → `require(permission)` against the current role. 401 if unknown, 403 if not allowed. Runs at router level, before validation and expensive dependencies. The authenticated username goes into the audit and review tables.
+
+**JWTs are stateless: why the DB hit?**
+Real revocation: disabling or demoting takes effect on the next request. One PK lookup per request; forged and expired tokens are still rejected by the signature alone.
+
+**Refresh rotation and reuse detection?**
+Single-use refresh tokens in a family per login; the old token is revoked and linked to its replacement. Reuse means two holders, so revoke the family (RFC 9700 §4.14.2). The revocation is committed before the 401; the row lock stops a double refresh.
+
+**Why not opaque sessions?**
+Equally defensible here. JWT was specified, gives clients a signed role for UI routing, and allows verification without a session store if the system splits.
+
+**Who can do what, and how do you keep it right?**
+Carers create notes; coordinators act (review, solve); managers oversee (audit, workforce risk). Least privilege plus separation of duties. One permission table, pinned by an independent route × role matrix test plus a deny-by-default guard test; mutation-tested.
+
+**Enumeration and brute force?**
+Identical 401s, and a dummy Argon2 verify for unknown users. Argon2id at 64 MiB/t = 3/p = 4 and a 12-character minimum. Login rate limiting comes in 4.3 (OWASP API2).
+
+**With real PBL staff?**
+Entra ID via OIDC (SSO, MFA, leavers handled by HR processes); RS256 verified against the IdP's keys; IdP groups mapped to the same roles and tests. Per-patch scoping, carer self-access, auth events audited.
+
+**Where do browser clients keep tokens?**
+Access token in memory; refresh token in an httpOnly, Secure, SameSite=Strict cookie scoped to `/auth/refresh`, plus CSRF protection. Mobile: platform secure storage. Decided with CORS in 4.3.

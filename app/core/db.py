@@ -2,9 +2,10 @@
 
 from collections.abc import Iterator
 from datetime import datetime
+from enum import StrEnum
 from functools import lru_cache
 
-from sqlalchemy import DateTime, Engine, MetaData, create_engine, func
+from sqlalchemy import DateTime, Engine, Enum, MetaData, create_engine, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
 from app.core.config import get_settings
@@ -21,6 +22,18 @@ NAMING_CONVENTION = {
 
 class Base(DeclarativeBase):
     metadata = MetaData(naming_convention=NAMING_CONVENTION)
+
+
+def string_enum(e: type[StrEnum], length: int = 30) -> Enum:
+    """VARCHAR + CHECK constraint (not a native PG enum): adding a value is a simple
+    migration, and the database itself still rejects unknown values."""
+    return Enum(
+        e,
+        native_enum=False,
+        create_constraint=True,
+        length=length,
+        values_callable=lambda x: [m.value for m in x],
+    )
 
 
 class CreatedAtMixin:

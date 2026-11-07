@@ -9,13 +9,15 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_reviewer
+from app.api.deps import get_current_user, require
+from app.auth.models import User
+from app.auth.permissions import Permission
 from app.core.db import get_session
 from app.matching.data import Scenario, integrity_problems
 from app.matching.models import ScheduleRun
 from app.matching.service import run_schedule
 
-router = APIRouter(prefix="/schedule", tags=["schedule"])
+router = APIRouter(prefix="/schedule", tags=["schedule"], dependencies=[Depends(get_current_user)])
 SessionDep = Annotated[Session, Depends(get_session)]
 SAMPLE_SCENARIO = Path("data/scheduling/scenario.json")
 
@@ -97,9 +99,9 @@ def _out(run: ScheduleRun) -> ScheduleOut:
 
 @router.post("/solve", status_code=status.HTTP_201_CREATED)
 def solve_schedule(
+    user: Annotated[User, Depends(require(Permission.SCHEDULE_SOLVE))],
     body: SolveRequest,
     session: SessionDep,
-    requested_by: Annotated[str, Depends(get_reviewer)],
 ) -> ScheduleOut:
     """Plan one day: OR-Tools VRPTW (+ two-phase continuity if the weight is > 0), with
     reasons for every assignment and every unassigned visit. Synchronous (10-60 s)."""
@@ -114,14 +116,18 @@ def solve_schedule(
         scenario,
         time_limit_s=body.time_limit_s,
         continuity_weight_min=body.continuity_weight_min,
-        requested_by=requested_by,
+        requested_by=user.username,
     )
     session.commit()
     return _out(run)
 
 
 @router.get("/{run_id}")
-def get_schedule(run_id: UUID, session: SessionDep) -> ScheduleOut:
+def get_schedule(
+    _: Annotated[User, Depends(require(Permission.SCHEDULE_READ))],
+    run_id: UUID,
+    session: SessionDep,
+) -> ScheduleOut:
     run = session.get(ScheduleRun, run_id)
     if run is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "schedule run not found")

@@ -7,8 +7,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
-from app.api.deps import get_reviewer
+from app.api.deps import get_current_user, require
 from app.api.schemas import FlagOut, QueueItem, ReviewIn, ReviewOut
+from app.auth.models import User
+from app.auth.permissions import Permission
 from app.core.db import get_session
 from app.nlp.models import (
     CareNoteRecord,
@@ -20,7 +22,7 @@ from app.nlp.models import (
 from app.nlp.review import AlreadyReviewedError, FlagNotFoundError, InvalidEditError, review_flag
 from app.nlp.schemas import Severity
 
-router = APIRouter(prefix="/review", tags=["review"])
+router = APIRouter(prefix="/review", tags=["review"], dependencies=[Depends(get_current_user)])
 SessionDep = Annotated[Session, Depends(get_session)]
 _RANK = {Severity.LOW: 0, Severity.MEDIUM: 1, Severity.HIGH: 2}
 
@@ -49,7 +51,9 @@ def _queue_item(note: CareNoteRecord) -> QueueItem:
 
 @router.get("/queue")
 def review_queue(
-    session: SessionDep, limit: Annotated[int, Query(ge=1, le=200)] = 50
+    _: Annotated[User, Depends(require(Permission.REVIEW_QUEUE_READ))],
+    session: SessionDep,
+    limit: Annotated[int, Query(ge=1, le=200)] = 50,
 ) -> list[QueueItem]:
     """Notes needing a human decision: highest pending severity first, then oldest first.
 
@@ -67,16 +71,16 @@ def review_queue(
 
 @router.post("/{flag_id}")
 def review(
+    reviewer: Annotated[User, Depends(require(Permission.REVIEW_DECIDE))],
     flag_id: UUID,
     body: ReviewIn,
     session: SessionDep,
-    reviewer: Annotated[str, Depends(get_reviewer)],
 ) -> ReviewOut:
     try:
         decision = review_flag(
             session,
             flag_id,
-            reviewer=reviewer,
+            reviewer=reviewer.username,
             action=body.action,
             edit=body.edit,
             comment=body.comment,

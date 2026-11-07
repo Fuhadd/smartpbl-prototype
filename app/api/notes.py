@@ -8,8 +8,10 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_llm_client, get_prompt
+from app.api.deps import get_current_user, get_llm_client, get_prompt, require
 from app.api.schemas import NoteOut
+from app.auth.models import User
+from app.auth.permissions import Permission
 from app.core.db import get_session
 from app.nlp.llm import ChatClient
 from app.nlp.models import CareNoteRecord
@@ -17,7 +19,7 @@ from app.nlp.pipeline import process_note
 from app.nlp.prompts import PromptTemplate
 from app.nlp.schemas import CareNote
 
-router = APIRouter(prefix="/notes", tags=["notes"])
+router = APIRouter(prefix="/notes", tags=["notes"], dependencies=[Depends(get_current_user)])
 SessionDep = Annotated[Session, Depends(get_session)]
 
 
@@ -27,6 +29,7 @@ def _duplicate(external_id: str) -> HTTPException:
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 def create_note(
+    _: Annotated[User, Depends(require(Permission.NOTE_CREATE))],
     note: CareNote,
     session: SessionDep,
     client: Annotated[ChatClient, Depends(get_llm_client)],
@@ -54,7 +57,11 @@ def create_note(
 
 
 @router.get("/{note_id}")
-def get_note(note_id: UUID, session: SessionDep) -> NoteOut:
+def get_note(
+    _: Annotated[User, Depends(require(Permission.NOTE_READ))],
+    note_id: UUID,
+    session: SessionDep,
+) -> NoteOut:
     rec = session.get(CareNoteRecord, note_id)
     if rec is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "note not found")

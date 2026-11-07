@@ -25,6 +25,13 @@ class Settings(BaseSettings):
     travel_cache_dir: str = "data/scheduling/travel"
     osrm_base_url: str | None = None
     osrm_data_version: str | None = None  # first 12 chars of the extract's MD5
+    # Tier 4 auth. HS256 key: at least 32 bytes (RFC 7518 s3.2). The dev default is public;
+    # refusing to start with it outside local development is Step 4.3 (secrets management).
+    jwt_secret: SecretStr = SecretStr("dev-only-jwt-secret-not-for-real-use-0123456789")
+    jwt_issuer: str = "smartpbl-api"
+    jwt_audience: str = "smartpbl-clients"
+    access_token_ttl_s: int = 15 * 60
+    refresh_token_ttl_s: int = 7 * 24 * 3600
 
 
 @lru_cache
