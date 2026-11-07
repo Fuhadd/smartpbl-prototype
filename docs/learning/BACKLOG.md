@@ -36,3 +36,8 @@
 - **Door-to-door overhead:** add parking and walking-to-door minutes per visit, calibrated from call-monitoring timestamps.
 - **Multimodal travel:** walking and bus carers (Valhalla or OSRM foot profile plus public-transport data).
 - **OSRM image tags:** newer OSRM releases (v26.5+) have no published container tags. Re-check before upgrading.
+- **Tighter drop bound:** an exact or stronger relaxation that includes travel (CP-SAT circuit on peak windows), to split the 2→11 gap into travel versus heuristic.
+- **Costed waiting / span:** `SetSpanCostCoefficientForVehicle` or waiting cost to compress carers' days; measure against travel, drops and continuity.
+- **Re-check the metaheuristic choice on other seeds** (tabu vs GLS was one instance).
+- **Rolling re-optimisation:** lock assignments and re-plan around short-notice changes.
+- **OR-Tools SWIG deprecation warnings** under Python 3.12: track upstream; harmless today.

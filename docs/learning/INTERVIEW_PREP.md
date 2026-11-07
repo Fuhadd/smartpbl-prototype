@@ -283,3 +283,26 @@ Time-of-day travel times, travel mode per carer, parking overhead from call moni
 
 **MLD vs CH?**
 CH is the fastest to query but slow to reweight. MLD's cell partition allows re-customisation in seconds, keeping traffic updates possible.
+
+### 2.3 VRPTW baseline
+
+**Model?**
+Carer = vehicle (start at home or office, open end). Visit = node. Time dimension in seconds (drive + service), with windows and shifts as limits on it. Skills restrict each visit's vehicle domain. Objective: drive time + drop penalties.
+
+**Day over capacity?**
+Visits are optional. Penalty 1M > maximum possible driving (446k s), so visits are dropped only when forced; time-critical ×2. A CP-SAT travel-free relaxation proves ≥ 2 drops are unavoidable; the best found is 11.
+
+**Why did PATH_CHEAPEST_ARC look cheapest but do worst?**
+374 min of driving because it dropped 47 visits. Myopic route-by-route construction gives up easily with optional nodes. Parallel insertion dropped 15. Compare on the full objective.
+
+**First solution vs metaheuristic?**
+Construction builds a solution fast. Local moves improve it until a local minimum. GLS, tabu or annealing then escape. Greedy descent stalled at 13 drops; tabu reached 11.
+
+**How do you know solutions are valid?**
+An independent checker re-derives arrivals from the matrix and checks every constraint. Every row reports it, a doctored-solution test exercises it, and a mutation check confirms it.
+
+**With real PBL data at scale?**
+Partition by patch, double-ups, split shifts and breaks, costed waiting and overtime, time-dependent travel, locked assignments with re-optimisation, many historical days.
+
+**Waiting not costed?**
+It shows up as 1–2.5 h unpaid gaps (an attrition risk). Span or waiting costs are the next lever, to be measured, not silently added.

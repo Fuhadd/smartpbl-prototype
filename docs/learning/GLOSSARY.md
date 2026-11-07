@@ -100,3 +100,12 @@
 - **Contraction hierarchies (CH)**: Routing preprocessing that adds shortcut edges by node importance; very fast queries, slow reweighting.
 - **Multi-level Dijkstra (MLD)**: Routing preprocessing using nested graph partitions; fast reweighting (customisation) and good query speed.
 - **Asymmetric matrix**: Travel times where A→B ≠ B→A (one-way streets, turn restrictions).
+- **VRPTW**: Vehicle routing problem with time windows; NP-hard generalisation of the travelling salesman problem.
+- **Dimension (OR-Tools)**: A quantity accumulated along routes (here time); `cumul(j) ≥ cumul(i) + transit(i,j)` with optional slack.
+- **Disjunction / drop penalty**: Makes a node optional; leaving it out adds a penalty to the objective.
+- **First-solution strategy**: Construction heuristic producing the initial complete solution (e.g. parallel cheapest insertion, savings).
+- **Local search**: Repeatedly applying small moves (relocate, exchange, 2-opt) while they improve the cost.
+- **Metaheuristic**: A strategy to escape local minima: guided local search, tabu search, simulated annealing.
+- **Open route**: A route that ends at its last stop (no return to depot or home).
+- **Relaxation / lower bound**: An easier version of a problem (e.g. zero travel) whose optimum bounds what the real problem can achieve.
+- **CP-SAT**: OR-Tools' constraint-programming solver over integer variables; exact, with proofs of optimality.

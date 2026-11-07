@@ -124,3 +124,22 @@
   - The matrix is asymmetric (up to 3.2 min).
   - Tests and the solver run without Docker.
   - Changing map data invalidates the cache by design.
+
+## ADR-016: Baseline VRPTW model and solver configuration (2026-11-07)
+- **Context:** Assign 106 visits to 17 carers respecting skills, shifts and arrival windows, on a day that is over capacity.
+- **Decision:**
+  - **Model:** OR-Tools routing library with one vehicle per carer. Routes start at the carer's start location and end at a zero-cost dummy node (open routes; the trip home is not counted).
+  - **Time:** a dimension in seconds (transit = service + drive; up to 4 h waiting allowed).
+  - **Hard constraints:** windows and shifts as limits on the time dimension; eligibility through each visit's vehicle-variable domain.
+  - **Optional visits:** penalty 1,000,000, doubled for time-critical visits. This exceeds the maximum possible driving, about 446,000 s, so visits are dropped only when forced.
+  - **Search defaults:** PARALLEL_CHEAPEST_INSERTION + TABU_SEARCH, 10 s, chosen from measured results on this instance.
+  - **Checking:** every solution is verified by an independent checker, with a CP-SAT travel-free lower bound on drops.
+  - **Not costed yet:** waiting time.
+- **Alternatives:** CP-SAT circuit model; MIP; ALNS, PyVRP or HGS; closed routes (return home).
+- **Consequences:**
+  - 12 drops at 10 s and 11 at 60 s, against a proven minimum of 2.
+  - Drops come from a morning skill-mix bottleneck and an evening bed-time peak.
+  - Staffing what-ifs reduce drops to 7.
+  - Idle gaps of 1–2.5 h are visible mid-shift.
+  - The choice of tabu over GLS rests on one instance.
+  - OR-Tools 9.15's SWIG binding rejects lists in `SetAllowedVehiclesForIndex`, so `VehicleVar().SetValues` is used instead.
