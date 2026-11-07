@@ -92,3 +92,11 @@
 - **Hard / soft constraint**: A rule that must hold, versus a preference that is traded off through a cost.
 - **Skill-mix coverage**: Whether some single carer has every skill a visit needs, not just whether each skill exists somewhere on shift.
 - **Continuity of care**: Being supported by the same small group of familiar carers.
+- **OSRM**: Open Source Routing Machine, a fast routing engine over OpenStreetMap data, with route, table, match and trip services.
+- **Table (matrix) service**: One request returning travel durations and distances for all source–destination pairs.
+- **Haversine distance**: Great-circle (straight-line over the Earth's surface) distance between two coordinates.
+- **Circuity / detour factor**: Road distance divided by straight-line distance (median 1.34 here).
+- **Free-flow speed**: Travel speed with no traffic; what OSRM's car profile models.
+- **Contraction hierarchies (CH)**: Routing preprocessing that adds shortcut edges by node importance; very fast queries, slow reweighting.
+- **Multi-level Dijkstra (MLD)**: Routing preprocessing using nested graph partitions; fast reweighting (customisation) and good query speed.
+- **Asymmetric matrix**: Travel times where A→B ≠ B→A (one-way streets, turn restrictions).

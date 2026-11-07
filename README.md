@@ -12,7 +12,7 @@ A portfolio prototype of an AI platform for domiciliary care. It has three parts
 
 - [x] Step 0: setup
 - [x] Tier 1: care-notes NLP (schemas, synthetic data, PII redaction, rules baseline, LLM extraction, grounding + routing, persistence + audit, API + human review, evaluation)
-- [ ] Tier 2: carer matching (2.1 scheduling data ✅)
+- [ ] Tier 2: carer matching (2.1 scheduling data ✅, 2.2 travel matrix ✅)
 - [ ] Tiers 3–6: attrition, production layer, Flutter app, packaging
 
 ## Quick start
@@ -28,6 +28,10 @@ uv run alembic upgrade head               # create tables + append-only audit tr
 ollama pull llama3.1:8b                   # default LLM (qwen2.5:3b optional)
 uv run pytest                             # tests
 uv run uvicorn app.main:app --reload      # API at http://localhost:8000/docs
+
+# Optional, Tier 2: road travel times (the committed matrix works without it)
+scripts/prepare_osrm.sh                   # download West Midlands OSM + preprocess (~1 min)
+docker compose --profile osrm up -d osrm  # OSRM on 127.0.0.1:5005
 ```
 
 ## Tier 1: care-notes NLP

@@ -32,3 +32,7 @@
 - **Scheduling realism:** split shifts with breaks (OR-Tools vehicle breaks), double-up calls (synchronised arrivals), travel mode per carer (walk/bus/drive), paid-travel and working-time rules.
 - **Skill-mix-aware generator:** guarantee combination coverage directly, instead of relying on rejection by the validator.
 - **Multi-day and multi-seed scenarios** for Tier 2 results that generalise beyond one synthetic day.
+- **Time-dependent travel times:** peak-hour factors or historical speed profiles (OSRM `osrm-customize` with traffic CSVs), or a traffic-aware API under a DPA.
+- **Door-to-door overhead:** add parking and walking-to-door minutes per visit, calibrated from call-monitoring timestamps.
+- **Multimodal travel:** walking and bus carers (Valhalla or OSRM foot profile plus public-transport data).
+- **OSRM image tags:** newer OSRM releases (v26.5+) have no published container tags. Re-check before upgrading.

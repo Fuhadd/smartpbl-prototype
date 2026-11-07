@@ -111,3 +111,16 @@
   - The morning peak is about 90% loaded once travel is counted, so dropped visits are likely in 2.3.
   - Per-skill coverage proved insufficient (skill-mix gap with 7 early carers), so validation is mandatory.
   - Results from one synthetic day are illustrative only.
+
+## ADR-015: Self-hosted OSRM (MLD) for travel times, with a calibrated haversine fallback (2026-11-07)
+- **Context:** The solver needs directed drive times between all scenario points. Client locations are personal data, and experiments need reproducibility.
+- **Decision:**
+  - **OSRM:** `ghcr.io/project-osrm/osrm-backend:v26.4.0`, the newest tag published with arm64 support (later releases have no image tag). It runs on the Geofabrik West Midlands extract with the car profile and the MLD pipeline, as an opt-in Compose profile on `127.0.0.1:5005`.
+  - **Matrices:** fetched with one `/table` call and cached by a hash of the ordered points and the backend, which includes the map MD5. The scenario's matrix is committed.
+  - **Fallback:** `115 s + 1.34 × straight line at 42.3 km/h`, fitted to 3,306 OSRM pairs (MAE 1.3 min, bias 0).
+- **Alternatives:** Google, Mapbox or HERE matrix APIs; GraphHopper or Valhalla; uncalibrated haversine.
+- **Consequences:**
+  - Times are free-flow, with no traffic, so they are optimistic at peak hours.
+  - The matrix is asymmetric (up to 3.2 min).
+  - Tests and the solver run without Docker.
+  - Changing map data invalidates the cache by design.

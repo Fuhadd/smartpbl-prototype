@@ -18,5 +18,16 @@ services:
       timeout: 3s
       retries: 10
 
+  osrm:
+    # Road travel times (Tier 2). Opt-in: needs `scripts/prepare_osrm.sh` first.
+    #   docker compose --profile osrm up -d osrm
+    profiles: ["osrm"]
+    image: ghcr.io/project-osrm/osrm-backend:v26.4.0
+    command: osrm-routed --algorithm mld --max-table-size 500 /data/west-midlands-latest.osrm
+    ports:
+      - "127.0.0.1:${OSRM_HOST_PORT:-5005}:5000"  # 5000 is macOS AirPlay Receiver
+    volumes:
+      - ./osrm:/data:ro
+
 volumes:
   pgdata:

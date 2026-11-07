@@ -258,3 +258,28 @@ Postcode-centroid locations under a DPIA, travel modes (walking, bus), preferenc
 
 **Why round synthetic coordinates?**
 A random full-precision point can sit on a real front door. At ~100 m, travel times barely change. Production needs approximate locations, not addresses.
+
+### 2.2 Travel times
+
+**Why road time ≠ straight line?**
+- Detour: about 1.34×.
+- Fixed overhead per trip: about 2 min.
+- Road-class speeds.
+- Asymmetry: up to 3.2 min.
+
+A naive straight line at 30 km/h is biased by −1.4 min/trip, about 2.5 h per day: schedules look feasible when they aren't.
+
+**Why self-host OSRM?**
+Free, private (client locations stay in-house) and reproducible (pinned map). The cost is free-flow speeds; a commercial traffic API would need a DPA and DPIA.
+
+**Why calibrate a fallback?**
+Tests and CI shouldn't need the routing graph, and an uncalibrated fallback misleads. The fitted model gives a known error budget: bias 0, MAE 1.3 min, max 6.8 min.
+
+**How do you avoid stale caches?**
+The key is the ordered points plus the backend, including the map MD5. Each matrix records its backend.
+
+**At scale or with real data?**
+Time-of-day travel times, travel mode per carer, parking overhead from call monitoring, per-patch caching, postcode-centroid precision.
+
+**MLD vs CH?**
+CH is the fastest to query but slow to reweight. MLD's cell partition allows re-customisation in seconds, keeping traffic updates possible.
