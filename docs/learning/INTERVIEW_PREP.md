@@ -573,3 +573,28 @@ The ML stack and the spaCy `lg` model. Shrink by: the `md` model (re-check recal
 
 **With real data?**
 A private registry with signed, scanned images; vault secrets; TLS at the proxy with `FORWARDED_ALLOW_IPS`; managed UK-region Postgres; Ollama on a private GPU node; staged rollouts gated on migrations; readiness probes.
+
+## Tier 5 — Coordinator dashboard and carer app
+
+### 5.1 Dashboard architecture
+
+**Architecture?**
+Vite + React 19 + strict TS; React Router; TanStack Query; Tailwind + shadcn/ui carrying the design tokens. A typed client generated from the API's OpenAPI schema (drift caught in pytest and CI). In-memory tokens, one fetch wrapper, refresh once on 401. Role-aware rail and guards; the API is the gate.
+
+**Why generate the client?**
+One contract, two codebases: an API rename becomes a TS compile error. Schema export test + regenerate-and-diff CI step.
+
+**Single-flight refresh?**
+Refresh tokens are single use with reuse detection; parallel 401s refreshing separately would look like theft and end the session. One shared promise; mutation-tested.
+
+**Carer vs workforce page?**
+Rail hides it (usability), the guard shows denial (UX), the API returns 403 and audits (security). The guard still calls the API, so "recorded in the audit log" is true.
+
+**Reload signs out: why?**
+Tokens in memory can't be read from storage by XSS; cookies need CSRF and credentials mode. Production: a BFF with an httpOnly session cookie.
+
+**Design vs backend disagreement?**
+Asked, with a recommendation; found the model card already named coordinators; one-line permission change, matrix rows, ADR-029; reads stay audited.
+
+**With real data?**
+SSO (OIDC + PKCE), a BFF, branch scoping in the UI, PII-scrubbed error tracking, a strict CSP, a WCAG 2.2 AA audit.

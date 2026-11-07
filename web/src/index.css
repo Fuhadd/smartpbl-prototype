@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+/* Inter, self-hosted (no Google Fonts request: no visitor IPs sent to a third party). */
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+
+/* The designs are light-only. shadcn components carry `dark:` classes, which Tailwind v4
+ * ties to the OS colour scheme by default; bind them to a `.dark` class we never set, so
+ * a visitor in dark mode doesn't get half-dark controls. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design tokens: docs/design/DESIGN.md section 1. Single source for every colour in the
+ * app. shadcn/ui components read the semantic names (--primary, --border, ...), which are
+ * mapped onto the design tokens below; screens use the token utilities directly
+ * (bg-surface, text-muted-foreground, bg-high-bg, ...).
+ */
+:root {
+  color-scheme: light;
+  --bg: #f4f4f2;
+  --surface: #ffffff;
+  --surface-muted: #fafaf9;
+  --border-token: #e7e7e4;
+  --text: #18181b;
+  --text-muted: #5f5f66;
+  --text-soft: #3f3f46; /* secondary labels in the designs (role switch, bar labels) */
+  --text-faint: #a1a1aa; /* breadcrumb separator, footnotes on dark */
+  --primary-token: #111113;
+
+  --ai: #5b4fe9;
+  --ai-text: #3b32b8;
+  --ai-bg: #f6f5ff;
+  --ai-bg-strong: #eeedfd;
+  --avatar-bg: #e8e6fd;
+
+  --high-text: #b42318;
+  --high-bg: #fef3f2;
+  --high-border: #fecdca;
+  --medium-text: #93370d;
+  --medium-bg: #fffaeb;
+  --medium-border: #fedf89;
+  --low-text: #175cd3;
+  --low-bg: #eff8ff;
+  --success-text: #067647;
+  --success-bg: #ecfdf3;
+  --success-border: #abefc6;
+  --elevated-text: #c4320a;
+  --elevated-bg: #fff4ed;
+
+  --skeleton-strong: #efefed;
+  --skeleton: #f4f4f2;
+
+  /* shadcn/ui semantic variables, mapped onto the tokens. */
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--primary-token);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-muted);
+  --secondary-foreground: var(--text);
+  --muted: var(--surface-muted);
+  --muted-foreground: var(--text-muted);
+  --accent: var(--surface-muted);
+  --accent-foreground: var(--text);
+  --destructive: var(--high-text);
+  --border: var(--border-token);
+  --input: var(--border-token);
+  --ring: var(--primary-token);
+  --radius: 12px;
+}
+
+@theme inline {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-text: var(--text);
+  --color-soft: var(--text-soft);
+  --color-faint: var(--text-faint);
+  --color-ai: var(--ai);
+  --color-ai-text: var(--ai-text);
+  --color-ai-bg: var(--ai-bg);
+  --color-ai-bg-strong: var(--ai-bg-strong);
+  --color-avatar: var(--avatar-bg);
+  --color-high: var(--high-text);
+  --color-high-bg: var(--high-bg);
+  --color-high-border: var(--high-border);
+  --color-medium: var(--medium-text);
+  --color-medium-bg: var(--medium-bg);
+  --color-medium-border: var(--medium-border);
+  --color-low: var(--low-text);
+  --color-low-bg: var(--low-bg);
+  --color-success: var(--success-text);
+  --color-success-bg: var(--success-bg);
+  --color-success-border: var(--success-border);
+  --color-elevated: var(--elevated-text);
+  --color-elevated-bg: var(--elevated-bg);
+  --color-skeleton: var(--skeleton);
+  --color-skeleton-strong: var(--skeleton-strong);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted); /* shadcn: a light surface */
+  --color-muted-foreground: var(--muted-foreground); /* #5F5F66 muted text */
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: 6px; /* table chips */
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 18px; /* cards (small) */
+  --radius-3xl: 24px; /* cards */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+  body {
+    @apply bg-bg font-sans text-text antialiased;
+    margin: 0;
+    /* The designs use the browser default ("normal"), not Tailwind's 1.5. */
+    line-height: normal;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}

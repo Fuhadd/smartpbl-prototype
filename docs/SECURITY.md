@@ -13,7 +13,7 @@ Status key: **Addressed** = implemented and tested. **Partial** = mitigated, wit
 | API3 | Broken Object Property Level Authorization | Addressed | Explicit response models; raw note text, the attrition label and age band never returned; 422s don't echo input; `extra="forbid"` on request bodies | `test_api.py`, `test_workforce_api.py`, `test_security_hardening.py` |
 | API4 | Unrestricted Resource Consumption | Addressed (per process) | 1 MB body limit (declared or chunked); id patterns and length caps; scenario caps; solver time cap; paging caps; per-user limits on LLM and solver calls | `test_security_hardening.py` |
 | API5 | Broken Function Level Authorization | Addressed | Deny by default: a permission per route from one role → permission table; guard test, independent route × role matrix, coverage test | `test_auth_api.py` |
-| API6 | Unrestricted Access to Sensitive Business Flows | Partial | Rate limits on solver runs and note submission; every workforce-risk view audited; manager-only | `test_security_hardening.py`, `test_audit_middleware.py` |
+| API6 | Unrestricted Access to Sensitive Business Flows | Partial | Rate limits on solver runs and note submission; every workforce-risk view audited; coordinators and managers only (ADR-029) | `test_security_hardening.py`, `test_audit_middleware.py` |
 | API7 | Server Side Request Forgery | Addressed | No user-supplied URLs; OSRM and Ollama addresses come from server settings only | n/a (by design) |
 | API8 | Security Misconfiguration | Partial | Refuses to start outside local with default secrets, a short JWT key or `*` CORS; security headers; strict CORS; docs off outside local; no stack traces to clients. Open: TLS termination and the `server` header (Step 4.4 container) | `test_security_hardening.py` |
 | API9 | Improper Inventory Management | Partial | One API version; OpenAPI is the single route inventory (the guard tests read it); docs hidden outside local. Open: versioned paths, deprecation policy | `test_auth_api.py` |
@@ -61,6 +61,8 @@ Deny by default, as described in note 20. One table maps roles to permissions:
 - **Coordinator:** notes, review decisions, solver.
 - **Manager:** audit trail, workforce risk, read-only operations.
 
+Since ADR-029 (Tier 5 designs), coordinators can also read the audit trail and workforce risk.
+
 Authentication runs at router level before any endpoint dependency. Three tests keep the policy honest:
 - **Guard test:** every non-public operation in the OpenAPI schema has bearer security and a `require(...)`.
 - **Matrix test:** an independently written route × role table is checked against every role.
@@ -70,7 +72,7 @@ Mutation-tested.
 
 ### API6: Unrestricted Access to Sensitive Business Flows
 The sensitive flows are bulk reading of workforce risk (profiling employees), mass note submission (LLM cost) and solver runs (CPU). Controls:
-- workforce risk is manager-only, every view is audited with the carers shown, and list pages are capped;
+- workforce risk is limited to coordinators and managers (never carers), every view is audited with the carers shown, and list pages are capped;
 - per-user limits on solver runs and note submission.
 
 **Gap:** no anomaly alerting yet (e.g. one manager opening every carer's explanation); see BACKLOG.

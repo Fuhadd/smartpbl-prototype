@@ -18,6 +18,7 @@ osrm
 docs
 tests
 mobile
+web
 .idea
 .vscode
 .DS_Store

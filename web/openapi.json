@@ -1,0 +1,2259 @@
+{
+  "components": {
+    "schemas": {
+      "AssignmentOut": {
+        "properties": {
+          "carer_ref": {
+            "title": "Carer Ref",
+            "type": "string"
+          },
+          "client_ref": {
+            "title": "Client Ref",
+            "type": "string"
+          },
+          "end_s": {
+            "title": "End S",
+            "type": "integer"
+          },
+          "familiarity": {
+            "title": "Familiarity",
+            "type": "string"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "sequence": {
+            "title": "Sequence",
+            "type": "integer"
+          },
+          "start_s": {
+            "title": "Start S",
+            "type": "integer"
+          },
+          "travel_s": {
+            "title": "Travel S",
+            "type": "integer"
+          },
+          "visit_id": {
+            "title": "Visit Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "carer_ref",
+          "sequence",
+          "visit_id",
+          "client_ref",
+          "start_s",
+          "end_s",
+          "travel_s",
+          "familiarity",
+          "reasons"
+        ],
+        "title": "AssignmentOut",
+        "type": "object"
+      },
+      "AuditEventOut": {
+        "properties": {
+          "actor": {
+            "title": "Actor",
+            "type": "string"
+          },
+          "event_type": {
+            "$ref": "#/components/schemas/EventType"
+          },
+          "hash_alg": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hash Alg"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "input_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Hash"
+          },
+          "model_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Name"
+          },
+          "model_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Version"
+          },
+          "occurred_at": {
+            "format": "date-time",
+            "title": "Occurred At",
+            "type": "string"
+          },
+          "output": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output"
+          },
+          "prompt_sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Sha256"
+          },
+          "prompt_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Version"
+          },
+          "request_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id"
+          },
+          "subject_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject Id"
+          },
+          "subject_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SubjectType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "occurred_at",
+          "event_type",
+          "actor",
+          "model_name",
+          "model_version",
+          "prompt_version",
+          "prompt_sha256",
+          "input_hash",
+          "hash_alg",
+          "output",
+          "subject_type",
+          "subject_id",
+          "request_id"
+        ],
+        "title": "AuditEventOut",
+        "type": "object"
+      },
+      "Body_login_auth_token_post": {
+        "properties": {
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "client_secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "format": "password",
+            "title": "Client Secret"
+          },
+          "grant_type": {
+            "anyOf": [
+              {
+                "pattern": "^password$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grant Type"
+          },
+          "password": {
+            "format": "password",
+            "title": "Password",
+            "type": "string"
+          },
+          "scope": {
+            "default": "",
+            "title": "Scope",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "Body_login_auth_token_post",
+        "type": "object"
+      },
+      "CareNote": {
+        "additionalProperties": false,
+        "description": "A free-text note written by a carer after a visit. Refs are pseudonymous IDs, not names.",
+        "properties": {
+          "carer_ref": {
+            "description": "Pseudonymous carer ID, e.g. 'CR-0001'.",
+            "pattern": "^[A-Za-z0-9_.-]{1,50}$",
+            "title": "Carer Ref",
+            "type": "string"
+          },
+          "client_ref": {
+            "description": "Pseudonymous client ID, e.g. 'CL-0001'.",
+            "pattern": "^[A-Za-z0-9_.-]{1,50}$",
+            "title": "Client Ref",
+            "type": "string"
+          },
+          "note_id": {
+            "pattern": "^[A-Za-z0-9_.-]{1,50}$",
+            "title": "Note Id",
+            "type": "string"
+          },
+          "text": {
+            "maxLength": 5000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          },
+          "visit_time": {
+            "format": "date-time",
+            "title": "Visit Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "note_id",
+          "client_ref",
+          "carer_ref",
+          "visit_time",
+          "text"
+        ],
+        "title": "CareNote",
+        "type": "object"
+      },
+      "Carer": {
+        "additionalProperties": false,
+        "properties": {
+          "carer_ref": {
+            "pattern": "^CR-\\d{4}$",
+            "title": "Carer Ref",
+            "type": "string"
+          },
+          "home": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "shift_end": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 1440.0,
+            "title": "Shift End",
+            "type": "integer"
+          },
+          "shift_start": {
+            "exclusiveMaximum": 1440.0,
+            "minimum": 0.0,
+            "title": "Shift Start",
+            "type": "integer"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/Skill"
+            },
+            "title": "Skills",
+            "type": "array",
+            "uniqueItems": true
+          },
+          "start": {
+            "$ref": "#/components/schemas/Location"
+          }
+        },
+        "required": [
+          "carer_ref",
+          "skills",
+          "shift_start",
+          "shift_end",
+          "home",
+          "start"
+        ],
+        "title": "Carer",
+        "type": "object"
+      },
+      "CarerRoute": {
+        "properties": {
+          "carer_ref": {
+            "title": "Carer Ref",
+            "type": "string"
+          },
+          "travel_min": {
+            "title": "Travel Min",
+            "type": "number"
+          },
+          "visits": {
+            "items": {
+              "$ref": "#/components/schemas/AssignmentOut"
+            },
+            "title": "Visits",
+            "type": "array"
+          }
+        },
+        "required": [
+          "carer_ref",
+          "visits",
+          "travel_min"
+        ],
+        "title": "CarerRoute",
+        "type": "object"
+      },
+      "Client": {
+        "additionalProperties": false,
+        "properties": {
+          "client_ref": {
+            "pattern": "^CL-\\d{4}$",
+            "title": "Client Ref",
+            "type": "string"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "needs": {
+            "items": {
+              "$ref": "#/components/schemas/Skill"
+            },
+            "title": "Needs",
+            "type": "array",
+            "uniqueItems": true
+          },
+          "preferred_carers": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Preferred Carers",
+            "type": "array"
+          },
+          "recent_carers": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Recent Carers",
+            "type": "array"
+          }
+        },
+        "required": [
+          "client_ref",
+          "location",
+          "needs"
+        ],
+        "title": "Client",
+        "type": "object"
+      },
+      "EventType": {
+        "enum": [
+          "note_ingested",
+          "pii_redacted",
+          "extraction_completed",
+          "extraction_failed",
+          "baseline_completed",
+          "flags_routed",
+          "review_decision",
+          "schedule_solved",
+          "workforce_risk_viewed",
+          "workforce_explanation_viewed",
+          "api_request",
+          "review_queue_viewed",
+          "refresh_token_reuse_detected"
+        ],
+        "title": "EventType",
+        "type": "string"
+      },
+      "ExplanationOut": {
+        "properties": {
+          "average_risk": {
+            "title": "Average Risk",
+            "type": "number"
+          },
+          "baseline_risk": {
+            "title": "Baseline Risk",
+            "type": "number"
+          },
+          "carer_ref": {
+            "title": "Carer Ref",
+            "type": "string"
+          },
+          "caveats": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Caveats",
+            "type": "array"
+          },
+          "factors": {
+            "items": {
+              "$ref": "#/components/schemas/FactorOut"
+            },
+            "title": "Factors",
+            "type": "array"
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelInfo"
+          },
+          "of": {
+            "title": "Of",
+            "type": "integer"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          },
+          "risk": {
+            "title": "Risk",
+            "type": "number"
+          },
+          "suggested_support": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Suggested Support",
+            "type": "array"
+          },
+          "support_priority": {
+            "title": "Support Priority",
+            "type": "boolean"
+          },
+          "use_notice": {
+            "title": "Use Notice",
+            "type": "string"
+          }
+        },
+        "required": [
+          "model",
+          "use_notice",
+          "carer_ref",
+          "rank",
+          "of",
+          "risk",
+          "baseline_risk",
+          "average_risk",
+          "support_priority",
+          "factors",
+          "suggested_support",
+          "caveats"
+        ],
+        "title": "ExplanationOut",
+        "type": "object"
+      },
+      "ExtractionOut": {
+        "properties": {
+          "attempts": {
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "errors": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "extraction": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extraction"
+          },
+          "latency_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latency Ms"
+          },
+          "model_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Name"
+          },
+          "model_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Version"
+          },
+          "prompt_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Version"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ExtractionSource"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ExtractionStatus"
+          }
+        },
+        "required": [
+          "source",
+          "status",
+          "model_name",
+          "model_version",
+          "prompt_version",
+          "attempts",
+          "latency_ms",
+          "errors",
+          "extraction"
+        ],
+        "title": "ExtractionOut",
+        "type": "object"
+      },
+      "ExtractionSource": {
+        "enum": [
+          "llm",
+          "baseline"
+        ],
+        "title": "ExtractionSource",
+        "type": "string"
+      },
+      "ExtractionStatus": {
+        "enum": [
+          "ok",
+          "failed"
+        ],
+        "title": "ExtractionStatus",
+        "type": "string"
+      },
+      "FactorOut": {
+        "properties": {
+          "direction": {
+            "title": "Direction",
+            "type": "string"
+          },
+          "feature": {
+            "title": "Feature",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "log_odds": {
+            "title": "Log Odds",
+            "type": "number"
+          },
+          "provider_can_change": {
+            "title": "Provider Can Change",
+            "type": "boolean"
+          },
+          "support": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Support"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "feature",
+          "label",
+          "value",
+          "log_odds",
+          "direction",
+          "provider_can_change",
+          "support"
+        ],
+        "title": "FactorOut",
+        "type": "object"
+      },
+      "FlagEdit": {
+        "additionalProperties": false,
+        "description": "Fields a reviewer may change. Omitted fields keep their current value.",
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RiskCategory"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Severity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "title": "FlagEdit",
+        "type": "object"
+      },
+      "FlagOut": {
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/RiskCategory"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "evidence": {
+            "title": "Evidence",
+            "type": "string"
+          },
+          "grounding_score": {
+            "title": "Grounding Score",
+            "type": "number"
+          },
+          "grounding_status": {
+            "$ref": "#/components/schemas/GroundingStatus"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "review_reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Review Reasons",
+            "type": "array"
+          },
+          "review_status": {
+            "$ref": "#/components/schemas/ReviewStatus"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/Severity"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ExtractionSource"
+          },
+          "span_end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Span End"
+          },
+          "span_start": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Span Start"
+          }
+        },
+        "required": [
+          "id",
+          "source",
+          "category",
+          "severity",
+          "evidence",
+          "confidence",
+          "grounding_status",
+          "grounding_score",
+          "span_start",
+          "span_end",
+          "review_reasons",
+          "review_status"
+        ],
+        "title": "FlagOut",
+        "type": "object"
+      },
+      "GroundingStatus": {
+        "enum": [
+          "exact",
+          "normalised",
+          "fuzzy",
+          "ungrounded"
+        ],
+        "title": "GroundingStatus",
+        "type": "string"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "Location": {
+        "additionalProperties": false,
+        "properties": {
+          "lat": {
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          }
+        },
+        "required": [
+          "lat",
+          "lon"
+        ],
+        "title": "Location",
+        "type": "object"
+      },
+      "MeOut": {
+        "properties": {
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "permissions": {
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            },
+            "title": "Permissions",
+            "type": "array"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "display_name",
+          "role",
+          "permissions"
+        ],
+        "title": "MeOut",
+        "type": "object"
+      },
+      "ModelInfo": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "synthetic": {
+            "default": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "version"
+        ],
+        "title": "ModelInfo",
+        "type": "object"
+      },
+      "NoteOut": {
+        "description": "Redacted text only: raw text is withheld until role-based access exists (Tier 4).",
+        "properties": {
+          "carer_ref": {
+            "title": "Carer Ref",
+            "type": "string"
+          },
+          "client_ref": {
+            "title": "Client Ref",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "external_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "External Id"
+          },
+          "extractions": {
+            "items": {
+              "$ref": "#/components/schemas/ExtractionOut"
+            },
+            "title": "Extractions",
+            "type": "array"
+          },
+          "flags": {
+            "items": {
+              "$ref": "#/components/schemas/FlagOut"
+            },
+            "title": "Flags",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "redacted_text": {
+            "title": "Redacted Text",
+            "type": "string"
+          },
+          "review_required": {
+            "title": "Review Required",
+            "type": "boolean"
+          },
+          "visit_time": {
+            "format": "date-time",
+            "title": "Visit Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "external_id",
+          "client_ref",
+          "carer_ref",
+          "visit_time",
+          "redacted_text",
+          "review_required",
+          "created_at",
+          "flags",
+          "extractions"
+        ],
+        "title": "NoteOut",
+        "type": "object"
+      },
+      "Permission": {
+        "enum": [
+          "note.create",
+          "note.read",
+          "review.queue.read",
+          "review.decide",
+          "audit.read",
+          "schedule.solve",
+          "schedule.read",
+          "workforce.read"
+        ],
+        "title": "Permission",
+        "type": "string"
+      },
+      "QueueItem": {
+        "properties": {
+          "client_ref": {
+            "title": "Client Ref",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "external_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "External Id"
+          },
+          "extraction_failed": {
+            "title": "Extraction Failed",
+            "type": "boolean"
+          },
+          "note_id": {
+            "format": "uuid",
+            "title": "Note Id",
+            "type": "string"
+          },
+          "pending_flags": {
+            "items": {
+              "$ref": "#/components/schemas/FlagOut"
+            },
+            "title": "Pending Flags",
+            "type": "array"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/Severity"
+          },
+          "redacted_text": {
+            "title": "Redacted Text",
+            "type": "string"
+          },
+          "visit_time": {
+            "format": "date-time",
+            "title": "Visit Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "note_id",
+          "external_id",
+          "client_ref",
+          "visit_time",
+          "created_at",
+          "redacted_text",
+          "extraction_failed",
+          "priority",
+          "pending_flags"
+        ],
+        "title": "QueueItem",
+        "type": "object"
+      },
+      "RefreshIn": {
+        "properties": {
+          "refresh_token": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "title": "Refresh Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "refresh_token"
+        ],
+        "title": "RefreshIn",
+        "type": "object"
+      },
+      "ReviewAction": {
+        "enum": [
+          "approve",
+          "edit",
+          "reject"
+        ],
+        "title": "ReviewAction",
+        "type": "string"
+      },
+      "ReviewIn": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/ReviewAction"
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "edit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FlagEdit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "ReviewIn",
+        "type": "object"
+      },
+      "ReviewOut": {
+        "properties": {
+          "decision_id": {
+            "format": "uuid",
+            "title": "Decision Id",
+            "type": "string"
+          },
+          "diff": {
+            "additionalProperties": true,
+            "title": "Diff",
+            "type": "object"
+          },
+          "flag": {
+            "$ref": "#/components/schemas/FlagOut"
+          },
+          "note_review_required": {
+            "title": "Note Review Required",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "decision_id",
+          "flag",
+          "diff",
+          "note_review_required"
+        ],
+        "title": "ReviewOut",
+        "type": "object"
+      },
+      "ReviewStatus": {
+        "enum": [
+          "auto_accepted",
+          "pending",
+          "approved",
+          "edited",
+          "rejected"
+        ],
+        "title": "ReviewStatus",
+        "type": "string"
+      },
+      "RiskCategory": {
+        "enum": [
+          "falls",
+          "medication",
+          "nutrition_hydration",
+          "skin_integrity",
+          "mood_behaviour",
+          "safeguarding",
+          "missed_late_visit"
+        ],
+        "title": "RiskCategory",
+        "type": "string"
+      },
+      "RiskItem": {
+        "properties": {
+          "carer_ref": {
+            "title": "Carer Ref",
+            "type": "string"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          },
+          "risk": {
+            "title": "Risk",
+            "type": "number"
+          },
+          "support_priority": {
+            "title": "Support Priority",
+            "type": "boolean"
+          },
+          "top_factors": {
+            "items": {
+              "$ref": "#/components/schemas/FactorOut"
+            },
+            "title": "Top Factors",
+            "type": "array"
+          }
+        },
+        "required": [
+          "carer_ref",
+          "rank",
+          "risk",
+          "support_priority",
+          "top_factors"
+        ],
+        "title": "RiskItem",
+        "type": "object"
+      },
+      "RiskList": {
+        "properties": {
+          "average_risk": {
+            "title": "Average Risk",
+            "type": "number"
+          },
+          "carers": {
+            "items": {
+              "$ref": "#/components/schemas/RiskItem"
+            },
+            "title": "Carers",
+            "type": "array"
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelInfo"
+          },
+          "support_share": {
+            "title": "Support Share",
+            "type": "number"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "use_notice": {
+            "title": "Use Notice",
+            "type": "string"
+          }
+        },
+        "required": [
+          "model",
+          "use_notice",
+          "average_risk",
+          "support_share",
+          "total",
+          "carers"
+        ],
+        "title": "RiskList",
+        "type": "object"
+      },
+      "Role": {
+        "enum": [
+          "coordinator",
+          "manager",
+          "carer"
+        ],
+        "title": "Role",
+        "type": "string"
+      },
+      "Scenario": {
+        "additionalProperties": false,
+        "properties": {
+          "carers": {
+            "items": {
+              "$ref": "#/components/schemas/Carer"
+            },
+            "title": "Carers",
+            "type": "array"
+          },
+          "clients": {
+            "items": {
+              "$ref": "#/components/schemas/Client"
+            },
+            "title": "Clients",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer"
+          },
+          "visits": {
+            "items": {
+              "$ref": "#/components/schemas/Visit"
+            },
+            "title": "Visits",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "seed",
+          "carers",
+          "clients",
+          "visits"
+        ],
+        "title": "Scenario",
+        "type": "object"
+      },
+      "ScheduleOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "dropped": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Dropped",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "matrix_backend": {
+            "title": "Matrix Backend",
+            "type": "string"
+          },
+          "metrics": {
+            "additionalProperties": true,
+            "title": "Metrics",
+            "type": "object"
+          },
+          "objective": {
+            "title": "Objective",
+            "type": "integer"
+          },
+          "params": {
+            "additionalProperties": true,
+            "title": "Params",
+            "type": "object"
+          },
+          "requested_by": {
+            "title": "Requested By",
+            "type": "string"
+          },
+          "routes": {
+            "items": {
+              "$ref": "#/components/schemas/CarerRoute"
+            },
+            "title": "Routes",
+            "type": "array"
+          },
+          "scenario_hash": {
+            "title": "Scenario Hash",
+            "type": "string"
+          },
+          "scenario_name": {
+            "title": "Scenario Name",
+            "type": "string"
+          },
+          "scenario_seed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Seed"
+          },
+          "solver": {
+            "title": "Solver",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "travel_min": {
+            "title": "Travel Min",
+            "type": "number"
+          },
+          "wall_s": {
+            "title": "Wall S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "created_at",
+          "scenario_name",
+          "scenario_seed",
+          "scenario_hash",
+          "solver",
+          "params",
+          "status",
+          "objective",
+          "travel_min",
+          "wall_s",
+          "matrix_backend",
+          "metrics",
+          "routes",
+          "dropped",
+          "requested_by"
+        ],
+        "title": "ScheduleOut",
+        "type": "object"
+      },
+      "Severity": {
+        "description": "Ordinal severity. Three levels keep LLM labels consistent and map to clear actions.",
+        "enum": [
+          "low",
+          "medium",
+          "high"
+        ],
+        "title": "Severity",
+        "type": "string"
+      },
+      "Skill": {
+        "enum": [
+          "personal_care",
+          "medication",
+          "manual_handling",
+          "dementia_care",
+          "catheter_care"
+        ],
+        "title": "Skill",
+        "type": "string"
+      },
+      "SolveRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "continuity_weight_min": {
+            "default": 15,
+            "maximum": 60.0,
+            "minimum": 0.0,
+            "title": "Continuity Weight Min",
+            "type": "integer"
+          },
+          "scenario": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Scenario"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "time_limit_s": {
+            "default": 10.0,
+            "exclusiveMinimum": 0.0,
+            "maximum": 30.0,
+            "title": "Time Limit S",
+            "type": "number"
+          }
+        },
+        "title": "SolveRequest",
+        "type": "object"
+      },
+      "SubjectType": {
+        "description": "What an audit row is about. `subject_id` is the id in that type's namespace.",
+        "enum": [
+          "care_note",
+          "risk_flag",
+          "schedule_run",
+          "carer",
+          "user"
+        ],
+        "title": "SubjectType",
+        "type": "string"
+      },
+      "TokenOut": {
+        "properties": {
+          "access_token": {
+            "title": "Access Token",
+            "type": "string"
+          },
+          "expires_in": {
+            "title": "Expires In",
+            "type": "integer"
+          },
+          "refresh_expires_in": {
+            "title": "Refresh Expires In",
+            "type": "integer"
+          },
+          "refresh_token": {
+            "title": "Refresh Token",
+            "type": "string"
+          },
+          "token_type": {
+            "default": "bearer",
+            "title": "Token Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "expires_in",
+          "refresh_token",
+          "refresh_expires_in"
+        ],
+        "title": "TokenOut",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "Visit": {
+        "additionalProperties": false,
+        "properties": {
+          "client_ref": {
+            "title": "Client Ref",
+            "type": "string"
+          },
+          "duration": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 240.0,
+            "title": "Duration",
+            "type": "integer"
+          },
+          "required_skills": {
+            "items": {
+              "$ref": "#/components/schemas/Skill"
+            },
+            "title": "Required Skills",
+            "type": "array",
+            "uniqueItems": true
+          },
+          "time_critical": {
+            "default": false,
+            "title": "Time Critical",
+            "type": "boolean"
+          },
+          "visit_id": {
+            "pattern": "^V-\\d{4}$",
+            "title": "Visit Id",
+            "type": "string"
+          },
+          "window_end": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 1440.0,
+            "title": "Window End",
+            "type": "integer"
+          },
+          "window_start": {
+            "exclusiveMaximum": 1440.0,
+            "minimum": 0.0,
+            "title": "Window Start",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "visit_id",
+          "client_ref",
+          "window_start",
+          "window_end",
+          "duration",
+          "required_skills"
+        ],
+        "title": "Visit",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "flows": {
+          "password": {
+            "scopes": {},
+            "tokenUrl": "/auth/token"
+          }
+        },
+        "type": "oauth2"
+      }
+    }
+  },
+  "info": {
+    "title": "SMARTPBL Prototype",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/audit/{note_id}": {
+      "get": {
+        "description": "Everything the log knows about one note, in insertion order (by id, not timestamp:\nevents in one transaction share now()):\n\n- the note's own events (ingestion, extraction, routing, review decisions);\n- the API requests that caused them, joined by request id (so: who submitted it);\n- every direct access to the note (`/notes/{id}`, `/audit/{id}`), by subject;\n- review-queue views that displayed it.\n\nWorks even if the note itself has since been deleted (no foreign key, by design).",
+        "operationId": "audit_trail_audit__note_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "note_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Note Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AuditEventOut"
+                  },
+                  "title": "Response Audit Trail Audit  Note Id  Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Audit Trail",
+        "tags": [
+          "audit"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "logout_auth_logout_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Logout",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "description": "Who the token belongs to and what they may do, for role-aware clients.",
+        "operationId": "me_auth_me_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Me",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "description": "Single-use rotation: returns a new pair; the presented refresh token is revoked.",
+        "operationId": "refresh_auth_refresh_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Refresh",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/token": {
+      "post": {
+        "description": "OAuth2 password flow (form-encoded `username`, `password`), so Swagger UI's\nAuthorize button works. Same 401 for unknown user, wrong password, disabled account.",
+        "operationId": "login_auth_token_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_login_auth_token_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Login",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "description": "Liveness probe: confirms the process is up. Does not check dependencies.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Health Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/notes": {
+      "post": {
+        "description": "Redact, extract (LLM + rules), ground, route and persist one note.\n\nSynchronous: the request waits for the LLM (~6 s on the dev laptop). A job queue is\nfuture work. If the LLM is down the note is still saved, with baseline flags.",
+        "operationId": "create_note_notes_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CareNote"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Create Note",
+        "tags": [
+          "notes"
+        ]
+      }
+    },
+    "/notes/{note_id}": {
+      "get": {
+        "operationId": "get_note_notes__note_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "note_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Note Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Get Note",
+        "tags": [
+          "notes"
+        ]
+      }
+    },
+    "/review/queue": {
+      "get": {
+        "description": "Notes needing a human decision: highest pending severity first, then oldest first.\n\nSorted in Python over all notes needing review: fine at prototype volumes; at scale,\nstore a priority column and sort and page in SQL.",
+        "operationId": "review_queue_review_queue_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/QueueItem"
+                  },
+                  "title": "Response Review Queue Review Queue Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Review Queue",
+        "tags": [
+          "review"
+        ]
+      }
+    },
+    "/review/{flag_id}": {
+      "post": {
+        "operationId": "review_review__flag_id__post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "flag_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Flag Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Review",
+        "tags": [
+          "review"
+        ]
+      }
+    },
+    "/schedule/solve": {
+      "post": {
+        "description": "Plan one day: OR-Tools VRPTW (+ two-phase continuity if the weight is > 0), with\nreasons for every assignment and every unassigned visit. Synchronous (10-60 s).",
+        "operationId": "solve_schedule_schedule_solve_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Solve Schedule",
+        "tags": [
+          "schedule"
+        ]
+      }
+    },
+    "/schedule/{run_id}": {
+      "get": {
+        "operationId": "get_schedule_schedule__run_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Get Schedule",
+        "tags": [
+          "schedule"
+        ]
+      }
+    },
+    "/workforce/risk": {
+      "get": {
+        "description": "Carers ranked by risk (highest first), each with its three largest factors.",
+        "operationId": "list_risk_workforce_risk_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "priority_only",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Priority Only",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "List Risk",
+        "tags": [
+          "workforce"
+        ]
+      }
+    },
+    "/workforce/{carer_ref}/explanation": {
+      "get": {
+        "description": "Every factor's contribution (log-odds; they add up to the score), with support\nactions for the provider-side factors that raise risk.",
+        "operationId": "explain_workforce__carer_ref__explanation_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "carer_ref",
+            "required": true,
+            "schema": {
+              "pattern": "^WF-\\d{4}$",
+              "title": "Carer Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExplanationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "Explain",
+        "tags": [
+          "workforce"
+        ]
+      }
+    }
+  }
+}

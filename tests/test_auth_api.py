@@ -11,6 +11,7 @@ from sqlalchemy import select
 
 from app.api.deps import get_workforce
 from app.auth.models import RefreshToken, Role, User
+from app.auth.service import create_user, issue_tokens
 from app.core.db import get_session
 from app.main import ROUTERS, app
 from tests.conftest import TEST_PASSWORD, USERNAMES
@@ -27,11 +28,11 @@ MATRIX: list[tuple[str, str, str, dict, set[Role]]] = [
     ("GET", "/notes/{note_id}", f"/notes/{uuid4()}", {}, {C, M}),
     ("GET", "/review/queue", "/review/queue", {}, {C, M}),
     ("POST", "/review/{flag_id}", f"/review/{uuid4()}", {"json": {}}, {C}),
-    ("GET", "/audit/{note_id}", f"/audit/{uuid4()}", {}, {M}),
+    ("GET", "/audit/{note_id}", f"/audit/{uuid4()}", {}, {C, M}),
     ("POST", "/schedule/solve", "/schedule/solve", {"json": {"time_limit_s": -1}}, {C}),
     ("GET", "/schedule/{run_id}", f"/schedule/{uuid4()}", {}, {C, M}),
-    ("GET", "/workforce/risk", "/workforce/risk", {"params": {"limit": 0}}, {M}),
-    ("GET", "/workforce/{carer_ref}/explanation", "/workforce/CR-0001/explanation", {}, {M}),
+    ("GET", "/workforce/risk", "/workforce/risk", {"params": {"limit": 0}}, {C, M}),
+    ("GET", "/workforce/{carer_ref}/explanation", "/workforce/CR-0001/explanation", {}, {C, M}),
     ("GET", "/auth/me", "/auth/me", {}, {C, M, W}),
 ]
 
@@ -212,8 +213,16 @@ def test_unauthenticated_is_401_everywhere(api, method, template, url, kwargs, a
 
 
 def test_authorisation_runs_before_expensive_dependencies(api, auth_headers) -> None:
-    """A coordinator asking for workforce risk is refused before the model is touched."""
+    """A carer asking for workforce risk is refused before the model is touched."""
     called = []
     app.dependency_overrides[get_workforce] = lambda: called.append(1)
-    assert api.get("/workforce/risk", headers=auth_headers(C)).status_code == 403
+    assert api.get("/workforce/risk", headers=auth_headers(W)).status_code == 403
     assert called == []
+
+
+def test_me_includes_display_name(api, db_session) -> None:
+    user = create_user(db_session, "hannah.zz", TEST_PASSWORD, C, display_name="Hannah K.")
+    db_session.commit()
+    token = issue_tokens(db_session, user).access_token
+    me = api.get("/auth/me", headers=bearer(token)).json()
+    assert me["display_name"] == "Hannah K." and me["role"] == "coordinator"

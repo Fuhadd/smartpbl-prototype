@@ -16,8 +16,9 @@ A portfolio prototype of an AI platform for domiciliary care. It has three parts
 - [x] Tier 1: care-notes NLP (schemas, synthetic data, PII redaction, rules baseline, LLM extraction, grounding + routing, persistence + audit, API + human review, evaluation)
 - [x] Tier 2: carer matching (scheduling data, OSRM travel matrix, OR-Tools VRPTW, continuity trade-off, greedy comparison, schedule API)
 - [x] Tier 3: attrition prediction (synthetic workforce from Tier 2 schedules, LR vs gradient boosting with nested CV, SHAP explanations checked against ground truth, age audit, model card, workforce API)
-- [ ] Tier 4: production layer. Done: 4.1 JWT auth with refresh rotation and role-based permissions; 4.2 unified audit (middleware access log, request-id correlation, fail-closed reads); 4.3 OWASP API Top 10 review ([`docs/SECURITY.md`](docs/SECURITY.md)): rate limits, size limits, secure defaults, CORS; 4.4 Docker image, Compose stack and GitHub Actions CI
-- [ ] Tiers 5–6: coordinator dashboard and carer app, packaging
+- [x] Tier 4: production layer: 4.1 JWT auth with refresh rotation and role-based permissions; 4.2 unified audit (middleware access log, request-id correlation, fail-closed reads); 4.3 OWASP API Top 10 review ([`docs/SECURITY.md`](docs/SECURITY.md)): rate limits, size limits, secure defaults, CORS; 4.4 Docker image, Compose stack and GitHub Actions CI
+- [ ] Tier 5: coordinator dashboard and carer app. Done: 5.1 dashboard architecture (sign-in, role-aware shell, states, typed API client)
+- [ ] Tier 6: packaging
 
 ## Quick start
 
@@ -38,6 +39,10 @@ uv run uvicorn app.main:app --reload      # API at http://localhost:8000/docs
 TOKEN=$(curl -s -X POST localhost:8000/auth/token -d 'username=coord.demo&password=<yours>' \
   | python -c 'import sys, json; print(json.load(sys.stdin)["access_token"])')
 AUTH="Authorization: Bearer $TOKEN"       # used by the curl examples below
+
+# Coordinator dashboard (Step 5.1): http://localhost:5173, demo accounts on the sign-in page
+uv run python -m scripts.seed_demo        # local/demo environments only
+(cd web && npm ci && npm run dev)
 
 # Or run the whole stack in containers (Step 4.4): db -> migrate -> api on 127.0.0.1:8000.
 # Ollama stays on the host (Metal GPU); the API reaches it at host.docker.internal.

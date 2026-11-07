@@ -26,6 +26,8 @@ class User(CreatedAtMixin, Base):
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     # Immutable once created (no rename endpoint): it is the actor recorded in audit rows.
     username: Mapped[str] = mapped_column(String(50), unique=True)
+    # How the UI greets and attributes the user ("Hannah K."). Not used for any decision.
+    display_name: Mapped[str] = mapped_column(String(100), default="", server_default="")
     password_hash: Mapped[str] = mapped_column(String(255))
     role: Mapped[Role] = mapped_column(string_enum(Role, length=20))
     is_active: Mapped[bool] = mapped_column(default=True)

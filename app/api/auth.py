@@ -39,6 +39,7 @@ class RefreshIn(BaseModel):
 
 class MeOut(BaseModel):
     username: str
+    display_name: str
     role: Role
     permissions: list[Permission]
 
@@ -105,4 +106,6 @@ def logout(body: RefreshIn, session: SessionDep) -> None:
 def me(user: CurrentUser) -> MeOut:
     """Who the token belongs to and what they may do, for role-aware clients."""
     perms = sorted(ROLE_PERMISSIONS[user.role])
-    return MeOut(username=user.username, role=user.role, permissions=perms)
+    return MeOut(
+        username=user.username, display_name=user.display_name, role=user.role, permissions=perms
+    )

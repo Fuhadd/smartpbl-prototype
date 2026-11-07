@@ -25,11 +25,12 @@ ROLE_PERMISSIONS: dict[Role, frozenset[Permission]] = {
     # Carers write notes from visits. Reading notes back needs object-level checks
     # (only their own notes), which arrive with the carer app in Tier 5.
     Role.CARER: frozenset({P.NOTE_CREATE}),
-    # Coordinators run the day: log notes, decide flags, plan rotas. No attrition scores
-    # (the model card limits those to managers) and no audit-log access.
+    # Coordinators run the day: log notes, decide flags, plan rotas. Since ADR-029 (the
+    # Tier 5 designs) they also read workforce risk, for supportive check-ins, and the
+    # audit log, to see their own decisions recorded. Every such read is itself audited.
     Role.COORDINATOR: frozenset(
         {P.NOTE_CREATE, P.NOTE_READ, P.REVIEW_QUEUE_READ, P.REVIEW_DECIDE}
-        | {P.SCHEDULE_SOLVE, P.SCHEDULE_READ}
+        | {P.SCHEDULE_SOLVE, P.SCHEDULE_READ, P.WORKFORCE_READ, P.AUDIT_READ}
     ),
     # Managers oversee: read everything operational, the audit trail and workforce risk.
     # They don't decide flags or run the solver (separation of duties: oversight vs action).

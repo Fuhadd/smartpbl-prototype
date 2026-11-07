@@ -37,8 +37,15 @@ class TokenPair:
     refresh_expires_in: int
 
 
-def create_user(session: Session, username: str, password: str, role: Role) -> User:
-    user = User(username=username, password_hash=hash_password(password), role=role)
+def create_user(
+    session: Session, username: str, password: str, role: Role, display_name: str = ""
+) -> User:
+    user = User(
+        username=username,
+        password_hash=hash_password(password),
+        role=role,
+        display_name=display_name,
+    )
     session.add(user)
     session.flush()
     return user

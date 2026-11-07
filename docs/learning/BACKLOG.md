@@ -90,3 +90,9 @@
 - **Containerised Ollama on GPU hosts:** official Ollama image plus the NVIDIA container toolkit on a Linux GPU node, in the same private network as the API.
 - **Dependabot for actions and uv:** automated PRs that bump SHA-pinned actions and locked dependencies, reviewed and tested by CI.
 - **Training out of the API image:** a separate job that trains the attrition model and publishes a signed artefact, so the API starts faster and needs fewer dependencies.
+- **Dashboard stand-ins (Tier 5):** overview panels (5.2), review (5.2), audit (5.2), schedule (5.3) and workforce (5.4) render labelled placeholders until built; remove `PendingStep`/`PendingPage` when the last lands.
+- **Search and notifications:** the header controls from the design render but do nothing yet; decide scope (client/carer/note search, flag notifications) with the design owner.
+- **Design gaps to confirm:** sign-in error and rate-limit messages, and the sign-out menu on the user chip, were added without a design.
+- **Dev-only duplicate probes:** StrictMode runs the access-denied probe twice in development (two audit rows); consider a ref guard if it confuses demos.
+- **TypeScript 7:** revisit when `openapi-typescript` supports it (peer range `^5.x` today).
+- **Dashboard CSP and hosting headers** for the demo deployment (5.5): `connect-src` limited to the API origin, no inline scripts.

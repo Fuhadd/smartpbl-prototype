@@ -26,6 +26,7 @@ def main() -> int:
     parser.add_argument("username", help="e.g. coord.demo (letters, digits, . _ -)")
     parser.add_argument("role", choices=[r.value for r in Role])
     parser.add_argument("--password-stdin", action="store_true", help="read password from stdin")
+    parser.add_argument("--display-name", default="", help='shown in the UI, e.g. "Hannah K."')
     args = parser.parse_args()
 
     if args.password_stdin:
@@ -41,7 +42,7 @@ def main() -> int:
 
     with Session(get_engine()) as session:
         try:
-            create_user(session, args.username, password, Role(args.role))
+            create_user(session, args.username, password, Role(args.role), args.display_name)
             session.commit()
         except IntegrityError:
             print(f"User {args.username!r} already exists.", file=sys.stderr)

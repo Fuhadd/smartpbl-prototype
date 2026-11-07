@@ -75,6 +75,30 @@ jobs:
             | grep -v '^en-core-web-lg' > "$RUNNER_TEMP/requirements.txt"
           uvx pip-audit==2.10.1 -r "$RUNNER_TEMP/requirements.txt" --progress-spinner off
 
+  web:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      # The typed client must match the committed OpenAPI schema (the API side of that
+      # contract is pinned by tests/test_frontend_contract.py).
+      - run: npm run gen:api && git diff --exit-code -- src/api/schema.d.ts
+      - run: npm run typecheck
+      - run: npx oxlint --deny-warnings
+      - run: npm test
+      - run: npm run build
+
   docker:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

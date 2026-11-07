@@ -342,3 +342,30 @@
   - CI never exercises the real LLM (`-m ollama` stays opt-in).
   - The amd64 Linux test run is rehearsed locally under emulation, but CI itself first runs on push.
   - No registry push, signing or image scanning yet (backlog).
+
+## ADR-029: Coordinators may read workforce risk and the audit log (2026-11-07)
+- **Context:** The Tier 5 designs (`docs/design/`) put Workforce and Audit in the coordinator's rail and a "Carers at elevated risk" card on the coordinator overview, and the access-denied copy says workforce risk "is visible to coordinators and care managers". ADR-025 had restricted both permissions to managers. The attrition model card had always named coordinators and managers as primary users, so ADR-025 was stricter than the documented intended use.
+- **Decision (project owner, 2026-11-07):** follow the design. Coordinators gain `workforce.read` and `audit.read`. Carers still get neither.
+- **Alternatives:** keep manager-only and hide those design elements from coordinators; grant audit only.
+- **Consequences:**
+  - The permission table, the independent route × role matrix and `SECURITY.md` are updated.
+  - Every workforce-risk and audit read stays audited, and the supportive-use notice and model-card restrictions still apply.
+  - The "authorisation before expensive dependencies" test now uses a carer.
+
+## ADR-030: React dashboard architecture: generated typed client, in-memory auth, server-authoritative guards (2026-11-07)
+- **Context:** Step 5.1 builds the coordinator dashboard shell to the design spec (`docs/design/DESIGN.md`, `Login.dc.html`, `States.dc.html`, the shell of `Main.dc.html`) on top of the Tier 4 API.
+- **Decision:**
+  - **Stack:** `web/` with Vite 8, React 19, TypeScript 5.9 (strict; TypeScript 7 conflicts with `openapi-typescript`'s peer range), Tailwind v4 and shadcn/ui (Button, Badge, Input, Label, Card, Skeleton, ToggleGroup) with design variants added, React Router 8 (data mode) and TanStack Query 5.
+  - **Contract:** `scripts/export_openapi.py` writes `web/openapi.json` and `openapi-typescript` generates `schema.d.ts`. pytest fails on schema drift; CI regenerates the types and fails on any diff. The runtime client is `openapi-fetch`.
+  - **Auth:** tokens in memory (ADR-027); one `authFetch` adds the bearer token, single-flight refresh on 401 and one retry. A failed refresh ends the session.
+  - **Guards:** permissions come from `/auth/me`. The rail is filtered, `Guarded` renders the access-denied state, and the page's API read is still sent so the server refuses and audits it. The "recorded" copy appears only after the 403.
+  - **Tokens and fonts:** design tokens as CSS variables mapped to Tailwind and shadcn names; Inter self-hosted (no Google Fonts request); light-only (`dark:` bound to an unused class).
+  - **Demo accounts:** the design's exact credentials, seeded by `scripts/seed_demo.py` in `local`/`demo` environments only. `users.display_name` added (migration 0007).
+  - **Design gaps filled:** sign-in error and rate-limit messages, and a sign-out menu on the user chip.
+- **Alternatives:** orval or openapi-generator hooks; hand-written types; Next.js or React Router framework mode with a backend-for-frontend; storing tokens in localStorage.
+- **Consequences:**
+  - A reload signs the user out.
+  - Overview panels and the review, schedule, workforce and audit screens are labelled stand-ins until Steps 5.2 to 5.4.
+  - Search and notifications render but do nothing yet.
+  - The shadcn `cn` package (5 days old) was replaced by the local `clsx` + `tailwind-merge` helper.
+  - In development, StrictMode sends a denied page's probe twice (two audit rows); production sends one.

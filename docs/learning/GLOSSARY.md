@@ -234,3 +234,15 @@
 - **SHA pinning (actions)**: Referencing a third-party action by full commit hash rather than a movable tag.
 - **`GITHUB_TOKEN` permissions**: The scopes granted to a workflow's automatic token; least privilege is `contents: read`.
 - **actionlint**: A static checker for GitHub Actions workflow files.
+- **SPA (single-page application)**: A web app that loads once and renders routes in the browser, calling an API for data.
+- **OpenAPI-generated client**: Types (and optionally code) generated from an API's OpenAPI schema, so frontend and backend share one contract.
+- **Contract drift**: The API changing without the client following; caught here by a schema test and a regenerate-and-diff CI step.
+- **Single-flight (request deduplication)**: Concurrent callers share one in-progress operation (here, one token refresh) instead of each starting their own.
+- **Server state vs client state**: Data owned by the server and cached in the browser (TanStack Query) vs purely local UI state (React state).
+- **Design tokens**: Named design values (colours, radii, type) stored once and referenced everywhere, here as CSS variables.
+- **shadcn/ui**: A collection of accessible React components (built on Radix primitives) copied into the project as source, so they can be edited.
+- **Radix primitives**: Unstyled, accessible React building blocks (toggle group, dialog, ...) handling keyboard and ARIA behaviour.
+- **Route guard**: A component that decides whether a route renders, redirects or shows a denial; a usability layer, not a security boundary.
+- **Fast refresh**: Vite and React's hot reload that keeps component state; it needs files to export only components.
+- **React StrictMode**: Development-only checks that, among other things, run effects twice to expose missing cleanup.
+- **Self-hosted fonts**: Serving font files from your own origin instead of a third-party CDN, so visitors' IP addresses aren't shared.
