@@ -142,3 +142,20 @@
 - **Proxy discrimination (indirect discrimination)**: Disadvantaging a protected group through features correlated with membership, even when the attribute itself is excluded.
 - **Censoring**: Not seeing the outcome for some people because the observation period ended (e.g. recent hires); survival analysis handles it.
 - **Data card / datasheet**: Documentation of how a dataset was made, what it contains, and its known biases and intended uses.
+- **Nested cross-validation**: An outer CV loop for evaluation with hyperparameter search run inside each outer training fold, so the estimate covers the tuning procedure without optimism.
+- **Repeated stratified k-fold**: k-fold CV repeated with different shuffles, each fold keeping the class proportions; it reduces the variance of the estimate.
+- **Paired comparison (CV)**: Comparing two models fold by fold on identical splits, so fold difficulty cancels out.
+- **Logistic regression**: A linear model of the log-odds; transparent coefficients, but it can't represent steps or interactions unless they are engineered as features.
+- **Histogram gradient boosting (HGB)**: An ensemble of small trees, each fitted to the gradient of the loss of the ensemble so far, with features binned into histograms for speed.
+- **Log loss (cross-entropy)**: −mean[y·log p + (1−y)·log(1−p)]; a proper scoring rule that heavily penalises confident wrong probabilities.
+- **Class imbalance**: One class is much rarer than the other; it affects which metrics are informative more than which model to use.
+- **Class weighting**: Scaling each class's loss (e.g. to 50:50); it shifts probabilities and the threshold, rarely the ranking.
+- **SMOTE**: Synthetic Minority Over-sampling Technique; creates artificial minority rows by interpolation. It distorts probabilities in a similar way to class weighting.
+- **ROC-AUC**: The probability that a random positive is ranked above a random negative; insensitive to the base rate.
+- **Precision–recall curve / average precision (AP)**: Precision against recall across thresholds; AP = Σ(Rₙ−Rₙ₋₁)·Pₙ. Chance level is the base rate.
+- **Precision at top-k**: The positive rate among the k highest-scored cases; what a fixed intervention budget buys.
+- **Calibration**: Predicted probabilities match observed frequencies (of those given 30%, about 30% leave).
+- **Reliability diagram (calibration curve)**: Mean predicted probability against observed rate, per bin.
+- **Brier score**: Mean squared error of probabilities, (p−y)²; mixes calibration and discrimination. The base-rate predictor scores p(1−p).
+- **Post-hoc calibration**: Re-mapping a model's scores to probabilities (Platt/sigmoid or isotonic) on held-out data.
+- **Bootstrap confidence interval**: Resampling rows with replacement to estimate the sampling spread of a metric.

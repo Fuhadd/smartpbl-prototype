@@ -210,3 +210,19 @@
   - **The test split is easy:** the oracle reaches 0.795 on it, the 97th percentile of 200 random splits (95% range 0.645–0.795). It was kept; Step 3.2 uses CV as the main estimate and reports test scores next to the oracle on the same rows.
   - Leaver rates differ by age (47% for 18–24 vs 23% for 55+) through tenure and contract alone, which sets up the proxy-discrimination audit in 3.3.
   - Results show the pipeline recovers a known mechanism, nothing about real carers.
+
+## ADR-021: Nested CV protocol and model set for attrition (2026-11-07)
+- **Context:** 800 training carers (238 leavers), a 200-row test split known to be easy (ADR-020), and an exploratory look at HGB settings on the evaluation folds before the protocol existed.
+- **Decision:**
+  - **Candidates:** standardised logistic regression; the same with `class_weight="balanced"` (kept as a teaching contrast, not for use); `HistGradientBoostingClassifier` (150 iterations).
+  - **Tuning:** each candidate is a `GridSearchCV` (3-fold inner, scored on log loss), so hyperparameters are chosen inside each outer training fold: LR `C ∈ {0.01, 0.1, 1}`; HGB depth {2, 3} × learning rate {0.03, 0.1} × min leaf {20, 50}.
+  - **Main estimate:** 5×5 repeated stratified CV, with the oracle and a constant base-rate predictor scored on the same folds, plus paired per-fold comparisons.
+  - **Test:** the test split is used once, with 2,000-resample bootstrap CIs, quoted next to the oracle.
+  - **Metrics:** ROC-AUC, PR-AUC as average precision, Brier, precision in the top 10%/20% of risk, and error vs the true probability.
+- **Alternatives:** non-nested CV (optimistic after the exploratory peek); a single train/validation split (too noisy at 800 rows); SMOTE/oversampling (distorts probabilities like reweighting); post-hoc calibration (unnecessary when the unweighted models are already calibrated in the mean).
+- **Consequences:**
+  - **CV:** HGB 0.675 ROC-AUC / 0.538 AP / 0.188 Brier vs LR 0.655 / 0.483 / 0.196 (HGB better in 18/25, 20/25 and 22/25 folds); oracle 0.709 / 0.556 / 0.181.
+  - **Balanced weights:** same ranking, Brier 0.232 (worse in 25/25 folds), mean prediction 48% vs a 30% base rate.
+  - **Test** cannot separate the models (LR 0.772, HGB 0.759, overlapping CIs).
+  - HGB chooses depth 2 and learning rate 0.03 in most folds: shallow trees, which can still represent the steps and pairwise interaction.
+  - About 2 minutes per run; deterministic (fixed seeds, no early stopping below 10k rows).

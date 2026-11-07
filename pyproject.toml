@@ -51,6 +51,10 @@ ignore = ["ANN401"]
 # Phrase library: one labelled phrase per line reads better than wrapped strings.
 "scripts/note_templates.py" = ["E501", "N817"]  # compact C/S/M aliases
 "app/nlp/baseline.py" = ["E501"]  # regex lexicon reads better unwrapped
+# scikit-learn convention: capital X for a feature matrix.
+"app/workforce/models.py" = ["N803", "N806"]
+"scripts/train_attrition.py" = ["N803", "N806"]
+"tests/test_workforce_models.py" = ["ANN", "N803", "N806"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

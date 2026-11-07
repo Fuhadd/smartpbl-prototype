@@ -57,3 +57,7 @@
 - **Survival framing:** a time-to-leaving generator with censoring, and Cox / gradient-boosted survival models.
 - **Longitudinal snapshots:** multiple snapshot dates per carer with a time-based split, to rehearse leakage-safe feature building.
 - **Primary-source anchors:** check the turnover and zero-hours figures against the Skills for Care report itself (the data card currently uses secondary reporting).
+- **Corrected resampled t-test (Nadeau–Bengio)** for CV model comparisons; fold overlap makes naive SEs too small.
+- **Threshold / budget curve:** precision and recall against the number of carers contacted, for a manager to choose a retention budget.
+- **Model persistence:** save the fitted HGB with a version, training-data hash and seed for the 3.4 API (or train deterministically at startup).
+- **Engineered-feature LR** (tenure steps, a changes hinge, a zero-hours interaction) as a transparent alternative, if PBL governance requires coefficients.

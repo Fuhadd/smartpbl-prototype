@@ -401,3 +401,29 @@ Snapshot features with no post-snapshot leakage, a time-based split, leaver reas
 
 **Why null features?**
 To catch explanation errors. The correlated pair (gaps and split shifts, r = 0.82) tests shared or swapped attribution.
+
+### 3.2 Models: LR vs HGB, calibration
+
+**Which model and why?**
+HGB: better than LR in 18/25 CV folds on AUC, 20/25 on AP and 22/25 on Brier; 84% of the achievable gain over chance vs 74%; top-10% list 69% true leavers vs 57% (oracle 71%). LR stays as a challenger.
+
+**Test says LR is better?**
+0.772 vs 0.759 with ±0.07 intervals: indistinguishable with 60 leavers. CV was pre-committed as the main estimate because the split was known to be easy.
+
+**Class weights or SMOTE?**
+Same ranking (AUC 0.653 vs 0.655), but mean risk 48% vs a true 30%, and Brier worse in 25/25 folds. Lower the threshold on a calibrated model instead.
+
+**Why PR-AUC?**
+It matches the retention budget question (of those flagged, how many leave?), and its chance level is the base rate. ROC-AUC is blind to prevalence.
+
+**How was calibration checked?**
+Reliability diagram (OOF, 10 quantile bins), Brier vs the 0.21 base-rate bar, and error vs the true probability (synthetic only). No post-hoc calibration: already calibrated, and isotonic would overfit 800 rows.
+
+**Black box in HR?**
+Shallow, cautious HGB plus per-prediction SHAP (3.3). If coefficient-level transparency were mandated: LR with domain-agreed engineered features.
+
+**With real data?**
+A time-based split, wide CIs with a few hundred carers, drift monitoring and recalibration, voluntary-leaver labels, and a fairness audit first.
+
+**What does nested CV protect against?**
+Optimism from tuning on the scored folds (my exploratory peek). The inner grid search runs on the 640 training rows only; a test logs every fit and predict to prove the 160 validation rows stay unseen.
