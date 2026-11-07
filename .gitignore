@@ -12,3 +12,7 @@ htmlcov/
 # Large local artefacts
 osrm/
 *.osm.pbf
+# Cloud Run settings for your own deployment (docs/DEPLOYMENT.md)
+cloudrun.env.yaml
+Dockerfile
+docs/DEPLOYMENT.md
