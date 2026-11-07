@@ -1,6 +1,184 @@
-# Interview Prep: Cumulative Q&A bank
+# Interview Prep: final pack (KTP Associate, BCU × PBL Care)
 
-## Setup / Infrastructure
+**Interview:** 9 December 2026. **How to use this pack:**
+1. Read **Part A** (system-level) and **Part B** (KTP) until you can answer each question in your own words in under 90 seconds.
+2. Skim the **must-know 20** before the interview.
+3. Use **Part D** (the per-step bank) for depth on anything the panel probes.
+4. For practice, ask Claude for **mock-interview mode** (Part C).
+
+Every answer below is backed by a file in this repo: README, `docs/DATA_PROTECTION.md`, `docs/model-cards/`, `docs/SECURITY.md` and the learning notes.
+
+**Contents:**
+- [Must-know 20](#must-know-20)
+- [Part A: system-level questions](#part-a-system-level-questions)
+- [Part B: KTP context](#part-b-ktp-context)
+- [Part C: mock-interview mode](#part-c-mock-interview-mode)
+- [Part D: per-step bank](#part-d-per-step-bank), by tier
+
+---
+
+## Must-know 20
+
+| # | Question | Where the answer is |
+|---|---|---|
+| 1 | Explain SMARTPBL in a minute to a care manager | 6.1 below; README "The problem" |
+| 2 | Walk us through the architecture end to end | A1 |
+| 3 | Why a local LLM, not a hosted API? | Setup; A6 |
+| 4 | How do you stop the LLM hallucinating flags? | 1.6 (grounding); model card |
+| 5 | Which metric matters most for safety flags, and why? | 1.9 (recall first; 0/19 high-severity escapes) |
+| 6 | How was the NLP evaluated, and what doesn't it show? | 1.9; A4 |
+| 7 | What is a VRPTW and how does OR-Tools solve it? | 2.3 |
+| 8 | How does a manager choose between travel and continuity? | 2.4 (Pareto curve, presets) |
+| 9 | Why gradient boosting over logistic regression, and how sure are you? | 3.2 |
+| 10 | What does SHAP tell you, and what doesn't it? | 3.3, 5.4 |
+| 11 | How do you stop the attrition model being used punitively? | 3.3, 5.4, 6.2 |
+| 12 | Lawful basis for care notes and for attrition scoring | 6.2 |
+| 13 | How is access controlled? What is BOLA? | 4.1, 5.6a |
+| 14 | Why is the audit log append-only, and why hashes? | 1.7, 4.2 |
+| 15 | What happens when the LLM is down? | A5 |
+| 16 | How would this scale to all of PBL's notes and branches? | A2 |
+| 17 | What would you do in the first 3 months with real PBL data? | A3, B3 |
+| 18 | Why React for coordinators and Flutter for carers? | 5.6b |
+| 19 | What are the three-way benefits of this KTP? | B1 |
+| 20 | How will you make sure knowledge stays with PBL after you leave? | B2 |
+
+---
+
+## Part A: system-level questions
+
+**A1. Walk us through the architecture end to end.**
+Two clients sit on one FastAPI backend: a React dashboard for coordinators and managers, and a Flutter carer app. A care note goes through this pipeline:
+1. PII redaction (Presidio with UK recognisers).
+2. A local LLM (llama3.1:8b on Ollama) constrained by a JSON schema, with a rules baseline alongside it as a safety net.
+3. Grounding: every flag's quote must be found in the note.
+4. Routing: high-severity, safeguarding and uncertain flags go to the review queue.
+
+Coordinators approve, edit or reject; the decision is stored with a diff, and everything is written to an append-only audit log in Postgres. Scheduling is an OR-Tools VRPTW with a continuity weight, and every assignment is explained. Attrition risk is gradient boosting on working conditions from those schedules, explained with SHAP and served for support only. Every route is behind JWT roles with least privilege, audited by middleware and rate-limited. The demo runs on Vercel, Cloud Run and Neon, all in UK regions.
+
+**A2. How would it scale to all of PBL's branches?**
+- **Ingestion:** move note processing to a job queue (Redis or Postgres-backed). The carer gets an instant "saved", and the queue fills as the LLM works. Run several inference workers on a GPU server inside PBL's network; an 8B model on one modern GPU handles thousands of notes a day.
+- **Database:** add a priority column so the queue is sorted and paged in SQL, partition the audit log by month, and use read replicas for dashboards.
+- **Scheduling:** solve per branch (routing is local), on a schedule, with solver jobs off the request path.
+- **Rate limits and the model cache:** move to Redis so the API can run more than one instance.
+- **Tenancy:** scope every query by branch or patch, for both performance and least privilege.
+
+**A3. What's your plan for moving to real PBL data?**
+1. **Governance first:** a DPIA, a data-sharing agreement with BCU, Caldicott and DPO sign-off, and updated privacy notices. Consult staff on the workforce module.
+2. **Data:** a pseudonymised extract of historic notes. Senior carers or clinicians label a stratified sample with agreed severity definitions; measure inter-rater agreement before trusting the labels.
+3. **Baseline:** measure today's process (how many risks are found, and how fast) so improvement is measured against reality, not against my rules.
+4. **Evaluate, then tune:** run the existing pipeline unchanged on a held-out set first (honest starting numbers), then tune prompts and rules on a separate dev set.
+5. **Shadow mode:** run alongside current practice for weeks, compare, then pilot in one branch with a rollback plan.
+
+**A4. How would you evaluate with real data, and what would make you stop?**
+- **Primary metric:** recall on high-severity and safeguarding categories, with confidence intervals and per-category breakdowns. Coordinator workload (the share of notes sent to review) is the cost side.
+- **Slices:** dialect, non-native English, voice-to-text and long notes.
+- **Production monitoring:** periodic double-reading samples to estimate misses.
+- **Stop criteria, agreed with PBL beforehand:**
+  - any category with high-severity recall below the agreed threshold;
+  - review workload above what coordinators can absorb;
+  - evidence that staff trust the flags more than they should (automation bias).
+
+**A5. What are the failure modes, and what happens in each?**
+
+| Failure | What happens |
+|---|---|
+| LLM down or slow | The note is saved with the rules' flags and sent to review as a failed extraction; nothing is lost |
+| Schema-invalid output | One retry, then treated as a failure |
+| Invented quote | Grounding rejects it |
+| Missed risk | The rules safety net, the carer's urgent switch, and coordinators still read notes |
+| Solver timeout | The best partial rota, with a reason for each unassigned visit |
+| Database or audit write fails | Reads fail closed: data isn't returned if its access can't be audited |
+| Token theft | Refresh-token reuse detection revokes the whole session family |
+| Carer loses signal | The note stays in the app; idempotent ids prevent duplicates on retry |
+
+**A6. What are the main ethical risks, and how are they handled?**
+
+| Risk | How it's handled |
+|---|---|
+| **Privacy** of health data | Redaction, local inference, minimisation, an audit of every read |
+| **Automation bias** | Evidence shown with every flag, review reasons given, staff told the pipeline misses things |
+| **Punitive use of attrition scores** | Prohibited in the model card, supportive actions only, audited, managers only. Consultation and policy are still needed |
+| **Proxy discrimination** (age via tenure) | Age excluded and audited. The controls sit on use: support for new starters is fine, adverse action is not |
+| **Accountability** | Every decision has a named human and an audit trail |
+
+**A7. What would you do differently if starting again?**
+- **Hold out a second test set from day one:** the Tier 1 test set is now spent.
+- **Generate synthetic notes with a second author or model,** to reduce the circularity of one person writing data, rules and labels.
+- **Put notes on a job queue from the start,** rather than the synchronous endpoint.
+- **Build the coordinator view of a carer's day** alongside the carer `/me` routes.
+
+None of these changes the architecture. They're about evaluation hygiene and operations.
+
+**A8. What are you proudest of, technically?**
+The scheduling evaluation. It doesn't just run OR-Tools: every solution is re-checked by an independent checker, a CP-SAT relaxation proves the lower bound on unassignable visits, and continuity is presented as a priced trade-off a manager can choose from. It turns an optimiser into a decision tool.
+
+---
+
+## Part B: KTP context
+
+**B1. What are the three-way benefits of this KTP?**
+- **PBL Care (business partner):** an in-house AI capability, aimed at safer care (risks surfaced faster), more efficient rotas (less driving, better continuity) and better retention. Everything is built under PBL's data governance, and ownership of the code and know-how stays with PBL.
+- **Birmingham City University (knowledge base):** a real-world testbed for applied AI in social care, with research outputs (evaluation of LLMs on care notes, fairness in workforce analytics), teaching cases and impact evidence. KTP knowledge bases typically generate new research projects and papers from each partnership.
+- **Me (associate):** leading a strategic project end to end, with academic supervision, a dedicated development budget and a route into a permanent role. Innovate UK reports that about 75% of associates are offered permanent positions with their business partner.
+
+**B2. How will you make sure knowledge transfers, rather than leaving with you?**
+This prototype already shows the habits:
+- one learning note per step, an ADR log and model cards;
+- a README written for newcomers;
+- tests and CI that make changes safe.
+
+At PBL I'd add:
+- pairing sessions and short training for coordinators (reading flags, automation bias), managers (reading workforce risk supportively) and IT (operating the stack);
+- a runbook for failures and model updates;
+- a quarterly evaluation ritual someone else can run.
+
+The measure of success is that PBL can re-run the evaluation and change a prompt without me.
+
+**B3. What would your first 3 months look like?**
+- **Month 1:** shadow coordinators and carers, map the current note, rota and retention processes, meet the DPO and Caldicott Guardian, start the DPIA, and agree success metrics with PBL and BCU supervisors.
+- **Month 2:** a pseudonymised data extract, a labelling protocol with senior carers, and an honest baseline: today's process, plus the existing pipeline run unchanged.
+- **Month 3:** tune on a dev set, prepare shadow mode for the notes pipeline in one branch, and report findings to the KTP Local Management Committee.
+
+Scheduling and workforce work follows once the data and governance foundations are in place.
+
+**B4. How would you use the development budget (about £4,000)?**
+Innovate UK gives each associate a dedicated training and development budget. Universities describe it as about £2,000 a year, so about £4,000 over a two-year KTP; I'd confirm with BCU's KTP office. I'd split it roughly as:
+- **About 40%: applied ML in production.** LLM evaluation and MLOps (monitoring, model versioning, deployment on GPU infrastructure), because that's the step from prototype to service.
+- **About 25%: data protection and AI governance.** A recognised data-protection qualification and ICO/AI-assurance courses, because health data and employee profiling are this project's main risk.
+- **About 20%: a conference.** One UK conference such as PyData London or a health and social care AI event, to present the evaluation and bring ideas back.
+- **About 15%: books and courses** on operations research and causal inference, for rota changes and measuring whether interventions help retention.
+
+I'd agree priorities with my academic and company supervisors against the project plan.
+
+**B5. Why this KTP, and why you?**
+- **The match:** it combines what I've done for years (production Flutter, FastAPI, Postgres, CI) with what my MSc gave me (ML evaluation) and what this prototype shows I can learn fast (LLM pipelines, OR-Tools, SHAP, data protection).
+- **The sector:** care is a sector where careful engineering matters: privacy, human oversight and honest evaluation are the job, not extras.
+- **The evidence:** this repository builds all three SMARTPBL innovations, with documented decisions and limitations.
+
+**B6. What's the biggest risk to the KTP itself, and how would you manage it?**
+- **The risk:** that real notes are harder than synthetic ones, and early results disappoint.
+- **The management:** set expectations from the start (synthetic results are a design proof, not a forecast), agree stop or pivot criteria in advance, and deliver value early through the parts that need less data. Scheduling and continuity analytics can show benefit from rota data alone.
+- **The second risk:** staff trust. Involve carers and coordinators from month one and never ship a workforce feature without consultation.
+
+---
+
+## Part C: mock-interview mode
+
+When I ask Claude for **mock-interview mode**:
+1. **One question at a time.** Claude picks from Part A, Part B and the must-know 20, mixed with probing follow-ups from Part D, at the level of a technical panel (one academic, one company lead, one KTP adviser).
+2. **Claude waits for my answer** and doesn't show the model answer first.
+3. **Critique:** what was strong, what was missing compared with the model answer, any technical inaccuracy, and length (aim for 60–90 s, and 3–6 sentences for technical answers). Then one sentence to add next time.
+4. **A follow-up the panel would plausibly ask,** then continue.
+5. **After 8–10 questions:** a summary of weak areas, with the notes to re-read.
+
+---
+
+## Part D: per-step bank
+
+The questions below were written step by step during the build. Each learning note (`docs/learning/NN-*.md`) has the full 5–8 Q&As for its step.
+
+
+### Setup / Infrastructure
 
 **Why run the LLM locally rather than call a hosted API?**
 Care notes are special-category health data under UK GDPR (Article 9). A hosted API makes the provider a processor, which brings contracts, transfer checks and a broader DPIA. Local inference keeps data on infrastructure PBL controls. The trade-off is lower model quality and running the model ourselves. That is acceptable for narrow extraction that is human-reviewed and evaluated against a baseline.

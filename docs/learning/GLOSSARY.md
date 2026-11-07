@@ -296,3 +296,5 @@
 - **Caldicott Guardian**: The senior person in a health or social care organisation responsible for protecting the confidentiality of people's information.
 - **Model card**: A short document stating a model's versions, intended and prohibited uses, evaluation (metrics, data, uncertainty, slices), ethical risks and caveats (Mitchell et al., 2019).
 - **Pipeline (compound AI system)**: Several components (here redaction, LLM, rules, grounding, routing) whose combined output is what users see, and so what should be evaluated and documented.
+- **KTP (Knowledge Transfer Partnership)**: An Innovate UK-funded three-way partnership between a UK business, a knowledge base (such as a university) and a graduate associate, who leads a strategic project in the business.
+- **Automation bias**: The tendency to over-trust automated outputs: accepting flags without checking, or assuming an unflagged note is safe.
