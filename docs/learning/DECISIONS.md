@@ -143,3 +143,18 @@
   - Idle gaps of 1–2.5 h are visible mid-shift.
   - The choice of tabu over GLS rests on one instance.
   - OR-Tools 9.15's SWIG binding rejects lists in `SetAllowedVehiclesForIndex`, so `VehicleVar().SetValues` is used instead.
+
+## ADR-017: Continuity as a weighted per-visit penalty, swept with coverage fixed (2026-11-07)
+- **Context:** Continuity of care (NICE QS123 statement 3) conflicts with travel. The provider needs the trade-off made visible, not hidden in one solution.
+- **Decision:**
+  - **Penalty per visit:** w for a new carer, w/2 for a recent carer, 0 for a preferred carer. It's applied as a per-carer arc cost on arrival, with w in seconds of driving.
+  - **Guard:** drop penalty > maximum travel + visits × w, so continuity never costs a visit.
+  - **Sweep:** w = 0–60 minutes with coverage fixed lexicographically (a continuity-blind solve, then the same 94 visits each time), warm-started from the reference routes.
+  - **Front:** non-dominated over (driving, familiar visits, drops).
+  - **Framing:** a CP-SAT travel-free continuity ceiling.
+- **Alternatives:** ε-constraint; hard preferred-only constraint; fixed teams then routing.
+- **Consequences:**
+  - The front runs from 29% familiar at 597 min to 56% at 753 min, against a proven ceiling of 81%.
+  - The first 7 points cost only 7 min a day; the middle of the curve costs about 6.5 min per extra familiar visit.
+  - At w > 30 the search degrades. Weights are best chosen per client group and checked on more days.
+  - `solve()` gains an `initial=` warm start.

@@ -134,8 +134,9 @@ def main() -> None:
         f"visits; travel `{m.backend}`.",
         "- Objective = drive seconds + 1,000,000 per dropped visit (2,000,000 if time-critical).",
         "- Every solution is re-verified by `app/matching/check.py` (column *Checked*).",
-        "- Single-threaded routing search; repeated runs with the same parameters gave identical "
-        "results on this machine (M1 Pro), but time-limited search can differ on other hardware.",
+        "- **Reproducibility:** search stops on a wall-clock limit, so results depend on CPU "
+        "speed and load. Repeats here matched, but identical reruns of the continuity sweep "
+        "changed 3 of 10 points (up to 19 min driving). Treat single numbers as ±a few %.",
         "",
         "## First-solution strategies (construction only, no local search)",
         "",

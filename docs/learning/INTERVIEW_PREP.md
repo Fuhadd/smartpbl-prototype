@@ -306,3 +306,30 @@ Partition by patch, double-ups, split shifts and breaks, costed waiting and over
 
 **Waiting not costed?**
 It shows up as 1–2.5 h unpaid gaps (an attrition risk). Span or waiting costs are the next lever, to be measured, not silently added.
+
+### 2.4 Continuity of care
+
+**How is continuity modelled?**
+As a soft per-visit penalty (new w, recent w/2, preferred 0), implemented as a per-carer arc cost on arrival. w is in minutes of driving, which is interpretable. A guard means a stranger always beats no visit.
+
+**Pareto front?**
+The non-dominated schedules. The weight sweep traced 29% familiar at 597 min to 56% at 753 min, with a proven ceiling of 81%.
+
+**What went wrong in the first sweep?**
+Drop counts varied (12–14) from heuristic noise, so higher-weight points looked cheaper. Fixed lexicographically: freeze coverage, warm-start from the reference routes. Control the objectives you're not studying.
+
+**How does a provider choose a point?**
+- Price it: about 6.5 min (≈ £2.50) per extra familiar visit mid-curve.
+- Take the near-free first 7 points.
+- Set policy floors by client group.
+- Find the knee.
+- The manager decides; the tool shows the prices.
+
+**Why not 100%?**
+A CP-SAT travel-free ceiling of 81%: familiar skilled carers are wanted by many clients at the same peak times. Closing that gap takes workforce levers.
+
+**With real data?**
+Familiarity from visit history (recency-weighted), week-level planning, weights by need, validation across days, and measuring client-reported outcomes.
+
+**Higher weights got worse?**
+A rugged landscape for local search, so it's a search artefact. The front is computed from all points; cap w at about 30 min or give it more time.

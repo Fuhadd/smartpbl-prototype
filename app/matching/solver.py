@@ -20,6 +20,7 @@ from dataclasses import dataclass, field
 
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 
+from app.matching.continuity import penalty_s
 from app.matching.data import Location, Scenario, can_serve
 from app.matching.travel import TravelMatrix
 
@@ -43,6 +44,8 @@ class SolverParams:
     metaheuristic: str = "TABU_SEARCH"  # best on the seed-42 instance at 10 s and 60 s
     first_solution_only: bool = False  # stop at the construction heuristic (no local search)
     drop_penalty: int = DROP_PENALTY
+    # Continuity (Step 2.4): seconds-equivalent cost per visit by a new carer (recent: half).
+    continuity_weight_s: int = 0
 
 
 @dataclass(frozen=True)
@@ -89,7 +92,26 @@ class Solution:
         return sum(len(r.stops) for r in self.routes)
 
 
-def solve(scenario: Scenario, matrix: TravelMatrix, params: SolverParams | None = None) -> Solution:
+def _check_penalties(scenario: Scenario, params: SolverParams) -> None:
+    """Dropping a visit must always cost more than any travel + continuity it could save,
+    otherwise the solver would drop care to protect continuity."""
+    max_travel = sum((c.shift_end - c.shift_start) * 60 for c in scenario.carers)
+    max_continuity = len(scenario.visits) * params.continuity_weight_s
+    if params.drop_penalty <= max_travel + max_continuity:
+        raise ValueError(
+            f"drop_penalty {params.drop_penalty} must exceed max travel + continuity cost "
+            f"({max_travel + max_continuity}); lower the continuity weight"
+        )
+
+
+def solve(
+    scenario: Scenario,
+    matrix: TravelMatrix,
+    params: SolverParams | None = None,
+    initial: "Solution | None" = None,
+) -> Solution:
+    """Solve the day. `initial` warm-starts the search from an existing schedule (visits
+    not in this scenario are skipped); the result is never worse than that start."""
     params = params or SolverParams()
     carers, visits = scenario.carers, scenario.visits
     loc_index = matrix.index()
@@ -120,7 +142,22 @@ def solve(scenario: Scenario, matrix: TravelMatrix, params: SolverParams | None 
 
     travel_idx = routing.RegisterTransitCallback(travel_cb)
     time_idx = routing.RegisterTransitCallback(time_cb)
-    routing.SetArcCostEvaluatorOfAllVehicles(travel_idx)
+    if params.continuity_weight_s <= 0:
+        routing.SetArcCostEvaluatorOfAllVehicles(travel_idx)
+    else:
+        _check_penalties(scenario, params)
+        # Per-carer arc cost: drive + continuity penalty for *arriving* at a visit. Every
+        # served visit has exactly one incoming arc, so each penalty is counted once.
+        clients = [scenario.client(v.client_ref) for v in visits]
+        for k, c in enumerate(carers):
+            pen = [penalty_s(cl, c.carer_ref, params.continuity_weight_s) for cl in clients]
+            pen += [0] * (2 * n_c)
+
+            def cost_cb(i: int, j: int, pen: list[int] = pen) -> int:
+                ni, nj = manager.IndexToNode(i), manager.IndexToNode(j)
+                return drive(ni, nj) + pen[nj]
+
+            routing.SetArcCostEvaluatorOfVehicle(routing.RegisterTransitCallback(cost_cb), k)
     routing.AddDimension(time_idx, MAX_WAIT_S, HORIZON_S, False, "Time")
     time_dim = routing.GetDimensionOrDie("Time")
 
@@ -148,7 +185,26 @@ def solve(scenario: Scenario, matrix: TravelMatrix, params: SolverParams | None 
         search.solution_limit = 1
 
     t0 = time.perf_counter()
-    assignment = routing.SolveWithParameters(search)
+    if initial is None:
+        assignment = routing.SolveWithParameters(search)
+    else:
+        routing.CloseModelWithParameters(search)
+        node_of = {v.visit_id: i for i, v in enumerate(visits)}
+        by_carer = {r.carer_ref: r for r in initial.routes}
+        routes = [
+            [
+                manager.NodeToIndex(node_of[st.visit_id])
+                for st in by_carer[c.carer_ref].stops
+                if st.visit_id in node_of
+            ]
+            if c.carer_ref in by_carer
+            else []
+            for c in carers
+        ]
+        start = routing.ReadAssignmentFromRoutes(routes, True)
+        if start is None:
+            raise ValueError("initial solution is not feasible for this scenario")
+        assignment = routing.SolveFromAssignmentWithParameters(start, search)
     wall = time.perf_counter() - t0
     status_name = _STATUS.get(routing.status(), str(routing.status()))
     if assignment is None:

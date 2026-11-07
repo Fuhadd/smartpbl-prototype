@@ -109,3 +109,11 @@
 - **Open route**: A route that ends at its last stop (no return to depot or home).
 - **Relaxation / lower bound**: An easier version of a problem (e.g. zero travel) whose optimum bounds what the real problem can achieve.
 - **CP-SAT**: OR-Tools' constraint-programming solver over integer variables; exact, with proofs of optimality.
+- **Multi-objective optimisation**: Optimising several conflicting goals at once; the answer is a set of trade-offs, not one optimum.
+- **Pareto-optimal / non-dominated**: A solution no other solution beats on one objective without being worse on another.
+- **Pareto front**: The set of Pareto-optimal solutions; choosing among them is a value judgement.
+- **Weighted-sum method**: Combine objectives as cost₁ + w × cost₂ and sweep w; finds only points on the convex hull of the front.
+- **ε-constraint method**: Optimise one objective subject to the others meeting thresholds; can reach non-convex front regions.
+- **Lexicographic optimisation**: Optimise objectives in priority order, fixing each before the next (here: coverage, then the travel/continuity trade-off).
+- **Warm start**: Starting a solver from an existing solution; with an improving search the result is never worse than the start.
+- **Knee point**: Where the marginal cost of improving one objective rises sharply.

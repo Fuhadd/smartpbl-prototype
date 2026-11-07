@@ -41,3 +41,8 @@
 - **Re-check the metaheuristic choice on other seeds** (tabu vs GLS was one instance).
 - **Rolling re-optimisation:** lock assignments and re-plan around short-notice changes.
 - **OR-Tools SWIG deprecation warnings** under Python 3.12: track upstream; harmless today.
+- **ε-constraint continuity:** minimise travel subject to familiar share ≥ target (CP-SAT, or a counting dimension in routing), to reach non-convex front points and match policy targets.
+- **Per-client-group continuity weights:** higher for dementia and end-of-life clients.
+- **Week-level continuity:** same carer, same weekday; plan a week rather than a day.
+- **Large-w search quality:** more time or a different metaheuristic for w > 30 min, where tabu search degrades.
+- **Deterministic solver budget:** time-limited search is not reproducible (3 of 10 sweep points changed on an identical rerun). Use `solution_limit` or fixed-iteration budgets for experiments, or repeat runs and report spread.
