@@ -79,6 +79,11 @@ def post_note(api, llm, note_id: str, text: str, llm_reply: str | Exception) -> 
     return r.json()
 
 
+def domain_events(trail: list[dict]) -> list[dict]:
+    """The note's own events, without the access rows (api_request, queue views)."""
+    return [e for e in trail if e["event_type"] not in ("api_request", "review_queue_viewed")]
+
+
 def flag(note: dict, category: str) -> dict:
     return next(f for f in note["flags"] if f["category"] == category)
 
@@ -181,7 +186,7 @@ def test_approve_settles_note_and_writes_audit_event(api, llm, as_manager) -> No
     assert note["id"] not in [q["note_id"] for q in api.get("/review/queue").json()]
 
     trail = api.get(f"/audit/{note['id']}", headers=as_manager).json()
-    last = trail[-1]
+    last = domain_events(trail)[-1]
     assert (last["event_type"], last["actor"]) == ("review_decision", "user:coord.alpha")
     assert last["output"]["has_comment"] is True
     assert "Sampleton" not in json.dumps(trail)  # the comment stays out of the audit log
@@ -238,10 +243,8 @@ def test_invalid_review_is_422_and_changes_nothing(api, llm, body, as_manager) -
     assert r.status_code == 422, r.text
     after = api.get(f"/notes/{note['id']}").json()
     assert flag(after, "falls") == falls
-    assert (
-        api.get(f"/audit/{note['id']}", headers=as_manager).json()[-1]["event_type"]
-        == "flags_routed"
-    )
+    trail = api.get(f"/audit/{note['id']}", headers=as_manager).json()
+    assert domain_events(trail)[-1]["event_type"] == "flags_routed"
 
 
 def test_second_decision_on_same_flag_is_409(api, llm) -> None:
@@ -283,8 +286,12 @@ def test_audit_trail_is_ordered_and_404_for_unknown(api, llm, as_manager) -> Non
         "extraction_completed",
         "baseline_completed",
         "flags_routed",
+        "api_request",  # the POST /notes that caused them, joined by request id
     ]
     assert trail[2]["prompt_version"] == "extraction/v2"
+    assert len({e["request_id"] for e in trail}) == 1
+    assert trail[-1]["actor"] == "user:coord.alpha"  # who submitted the note
+    assert trail[-1]["output"]["route"] == "/notes" and trail[-1]["output"]["status"] == 201
     assert api.get(f"/audit/{uuid4()}", headers=as_manager).status_code == 404
 
 

@@ -9,6 +9,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
+from app.audit.context import set_actor
 from app.auth.models import User
 from app.auth.permissions import Permission, has_permission
 from app.core.config import get_settings
@@ -58,6 +59,7 @@ def get_current_user(
     user = session.get(User, UUID(claims["sub"]))
     if user is None or not user.is_active:
         raise unauthorized()
+    set_actor(user.username)  # the audit middleware records who made this request
     return user
 
 

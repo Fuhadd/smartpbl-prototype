@@ -7,7 +7,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.audit.models import EventType
+from app.audit.models import EventType, SubjectType
 from app.nlp.ground import GroundingStatus
 from app.nlp.models import ExtractionSource, ExtractionStatus, ReviewAction, ReviewStatus
 from app.nlp.review import FlagEdit
@@ -99,3 +99,6 @@ class AuditEventOut(_Out):
     input_hash: str | None
     hash_alg: str | None
     output: dict[str, Any] | None
+    subject_type: SubjectType | None
+    subject_id: str | None
+    request_id: UUID | None

@@ -9,6 +9,8 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import get_current_user, require
 from app.api.schemas import FlagOut, QueueItem, ReviewIn, ReviewOut
+from app.audit.log import record
+from app.audit.models import EventType
 from app.auth.models import User
 from app.auth.permissions import Permission
 from app.core.db import get_session
@@ -51,7 +53,7 @@ def _queue_item(note: CareNoteRecord) -> QueueItem:
 
 @router.get("/queue")
 def review_queue(
-    _: Annotated[User, Depends(require(Permission.REVIEW_QUEUE_READ))],
+    viewer: Annotated[User, Depends(require(Permission.REVIEW_QUEUE_READ))],
     session: SessionDep,
     limit: Annotated[int, Query(ge=1, le=200)] = 50,
 ) -> list[QueueItem]:
@@ -66,7 +68,12 @@ def review_queue(
         .options(selectinload(CareNoteRecord.flags), selectinload(CareNoteRecord.extractions))
     ).all()
     items = sorted(map(_queue_item, notes), key=lambda q: (-_RANK[q.priority], q.created_at))
-    return items[:limit]
+    page = items[:limit]
+    # The queue discloses redacted note text: record exactly which notes were shown.
+    record(session, EventType.REVIEW_QUEUE_VIEWED, actor=f"user:{viewer.username}",
+           output={"note_ids": [str(q.note_id) for q in page], "limit": limit})  # fmt: skip
+    session.commit()
+    return page
 
 
 @router.post("/{flag_id}")

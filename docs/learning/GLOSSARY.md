@@ -198,3 +198,13 @@
 - **Username enumeration**: Learning which accounts exist from differences in error messages or response times.
 - **BOLA / BFLA (OWASP API1 / API5)**: Broken Object-Level Authorization (accessing someone else's record) vs Broken Function-Level Authorization (calling an endpoint your role shouldn't reach).
 - **OIDC (OpenID Connect)**: An identity layer on OAuth 2.0, used for single sign-on with an external identity provider such as Microsoft Entra ID.
+- **ASGI**: Python's async server interface: an app is `async (scope, receive, send)`, and the response is a sequence of messages (`http.response.start`, `http.response.body`).
+- **Pure ASGI middleware**: A wrapper app that intercepts `receive`/`send` directly; full control over the response, and context variables propagate correctly (unlike `BaseHTTPMiddleware`).
+- **Request (correlation) id**: A unique id per request, attached to every log or audit record it causes and returned to the client, so related events can be joined.
+- **Context variable (`contextvars`)**: Per-task "global" state that async tasks and worker threads inherit as a copy; downstream `set()` doesn't reach the caller, but mutating a shared object does.
+- **Fail closed / fail open**: On a failure of a safety mechanism, refuse the operation (closed) or let it proceed (open).
+- **Access log vs decision log**: Who requested what, and with what outcome, vs what a model or person decided and on what basis; joined here by request id.
+- **Subject (audit)**: The record an event is about, as a typed id (`care_note`, `carer`, …), so "who touched X?" is one indexed query.
+- **Route template**: The declared path (`/notes/{note_id}`) rather than the concrete URL; stable for grouping and free of ids or query text.
+- **SIEM**: Security Information and Event Management: central collection, search and alerting over security logs.
+- **pgaudit**: A PostgreSQL extension that logs SQL statements by database role; sees DBA activity the application can't.

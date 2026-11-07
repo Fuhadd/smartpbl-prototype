@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.api.deps import CurrentUser, unauthorized
+from app.audit import context
 from app.auth import service
 from app.auth.models import Role
 from app.auth.permissions import ROLE_PERMISSIONS, Permission
@@ -49,9 +50,12 @@ def _out(pair: service.TokenPair) -> TokenOut:
 def login(form: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep) -> TokenOut:
     """OAuth2 password flow (form-encoded `username`, `password`), so Swagger UI's
     Authorize button works. Same 401 for unknown user, wrong password, disabled account."""
+    if (ctx := context.current()) is not None:
+        ctx.attempted_username = form.username  # audited as an HMAC, success or failure
     user = service.authenticate(session, form.username, form.password)
     if user is None:
         raise unauthorized()
+    context.set_actor(user.username)
     pair = service.issue_tokens(session, user)
     session.commit()
     return _out(pair)
@@ -61,24 +65,26 @@ def login(form: Annotated[OAuth2PasswordRequestForm, Depends()], session: Sessio
 def refresh(body: RefreshIn, session: SessionDep) -> TokenOut:
     """Single-use rotation: returns a new pair; the presented refresh token is revoked."""
     try:
-        pair = service.rotate(session, body.refresh_token)
+        pair, user = service.rotate(session, body.refresh_token)
     except InvalidTokenError as e:
         # Commit before refusing: on reuse (or a disabled account) the service has revoked
         # the whole token family, and that must persist. For other failures it's a no-op.
         session.commit()
         raise unauthorized() from e
     session.commit()
+    context.set_actor(user.username)
     return _out(pair)
 
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 def logout(body: RefreshIn, session: SessionDep) -> None:
     try:
-        service.logout(session, body.refresh_token)
+        user = service.logout(session, body.refresh_token)
     except InvalidTokenError as e:
         session.rollback()
         raise unauthorized() from e
     session.commit()
+    context.set_actor(user.username)
 
 
 @router.get("/me")

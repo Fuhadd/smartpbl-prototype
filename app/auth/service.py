@@ -10,6 +10,8 @@ from uuid import UUID, uuid4
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
+from app.audit.log import record
+from app.audit.models import EventType, SubjectType
 from app.auth.models import RefreshToken, Role, User
 from app.core.config import get_settings
 from app.core.security import (
@@ -83,12 +85,20 @@ def _load_refresh(session: Session, token: str) -> RefreshToken:
     return row
 
 
-def rotate(session: Session, token: str) -> TokenPair:
+def rotate(session: Session, token: str) -> tuple[TokenPair, User]:
     """Exchange a refresh token for a new pair; the old one is revoked (single use)."""
     row = _load_refresh(session, token)
     now = datetime.now(UTC)
     if row.revoked_at is not None:
         _revoke_family(session, row.family_id, now)
+        # A security signal for whoever reviews the log; committed with the revocation.
+        record(
+            session,
+            EventType.REFRESH_TOKEN_REUSE_DETECTED,
+            actor="system:auth",
+            subject=(SubjectType.USER, str(row.user_id)),
+            output={"family_id": str(row.family_id), "reused_jti": str(row.jti)},
+        )
         raise RefreshTokenReuseError("refresh token reused")
     user = session.get(User, row.user_id)
     if user is None or not user.is_active:
@@ -96,11 +106,12 @@ def rotate(session: Session, token: str) -> TokenPair:
         raise InvalidTokenError("account disabled")
     row.revoked_at = now
     pair, row.replaced_by = _issue(session, user, family_id=row.family_id)
-    return pair
+    return pair, user
 
 
-def logout(session: Session, token: str) -> None:
+def logout(session: Session, token: str) -> User:
     """End the session: revoke every refresh token in its family. Access tokens already
     issued stay valid until they expire (at most `access_token_ttl_s`)."""
     row = _load_refresh(session, token)
     _revoke_family(session, row.family_id, datetime.now(UTC))
+    return session.get_one(User, row.user_id)

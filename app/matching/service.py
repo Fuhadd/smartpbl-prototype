@@ -12,7 +12,7 @@ import ortools
 from sqlalchemy.orm import Session
 
 from app.audit.log import input_hash, record
-from app.audit.models import EventType
+from app.audit.models import EventType, SubjectType
 from app.core.config import get_settings
 from app.matching.check import check_solution
 from app.matching.continuity import continuity_stats
@@ -132,6 +132,7 @@ def run_schedule(
         session,
         EventType.SCHEDULE_SOLVED,
         actor=f"user:{requested_by}",
+        subject=(SubjectType.SCHEDULE_RUN, str(run.id)),
         input_text=scenario_json,  # hashed (HMAC), never stored
         model_name="ortools",
         model_version=ortools.__version__,

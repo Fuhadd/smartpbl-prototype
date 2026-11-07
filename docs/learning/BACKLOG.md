@@ -51,7 +51,6 @@
 - **Historical-rota evaluation** with real call-monitoring data (KTP proper).
 - **Async schedule jobs:** 202 Accepted + status endpoint + worker queue; rate-limit `/schedule/solve` (Tier 4).
 - **Counterfactual explanations:** "why not carer X?" by re-solving with X forced or forbidden.
-- **Generic audit subject:** add `subject_type`/`subject_id` to audit events (Tier 4.2) instead of note-specific `note_id`.
 - **Locked assignments:** pin coordinator-chosen assignments and re-solve around them.
 - **Workforce realism:** entangle employment features (zero-hours carers offered fewer and more volatile shifts), weekends and seasons, and leaver reasons (voluntary, dismissal, retirement).
 - **Survival framing:** a time-to-leaving generator with censoring, and Cox / gradient-boosted survival models.
@@ -74,8 +73,12 @@
 - **Login throttling (4.3):** per-account and per-IP limits on `/auth/token`, stricter than general limits (OWASP API2); consider lockout with notification rather than a hard lock.
 - **Refuse default secrets (4.3):** fail start-up when `jwt_secret` or `audit_hash_key` is the dev default outside `environment=local`.
 - **Browser token storage (4.3):** an httpOnly refresh cookie variant for the React dashboard, with CSRF protection and CORS for two origins.
-- **Auth audit events (4.2):** login success/failure, refresh reuse detected, permission denied, recorded in the unified audit log; also the authenticated submitter on `note_ingested` (currently `system:pipeline`).
 - **Refresh-token housekeeping:** purge expired and revoked rows past a retention window; an admin "sign out everywhere" (revoke every family for a user).
 - **Password rehash on login:** pwdlib's `verify_and_update` to upgrade hashes when Argon2 parameters change.
 - **Object-level authorisation (Tier 5):** link carer accounts to `carer_ref`, so carers can read their own notes, visits and attrition explanation (BOLA checks), and per-patch scoping for coordinators.
 - **External IdP:** OIDC with Microsoft Entra ID (RS256, JWKS) for real staff accounts and MFA, mapping IdP groups to the existing roles.
+- **Audit retention and partitioning:** monthly partitions of `audit_events`, and a retention policy agreed with the DPO (access rows vs decision rows may differ).
+- **Audit alerting:** alerts on `refresh_token_reuse_detected`, 403 bursts, failed-login spikes and unusual read volumes; stream rows to a SIEM.
+- **Large or streaming responses:** the audit middleware buffers whole responses; exports or streams would need a commit-before-first-byte design.
+- **Workforce list subjects:** `workforce_risk_viewed` lists carer refs in `output`; add them to the "who has seen carer X" query as the note trail does for queue views (a per-carer trail endpoint).
+- **Submitter on notes:** store the authenticated submitter on `care_notes` (operational data), not only in the correlated audit row, once carers read their own notes (Tier 5).

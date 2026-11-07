@@ -7,7 +7,8 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from app.audit.models import AuditEvent, EventType
+from app.audit import context
+from app.audit.models import AuditEvent, EventType, SubjectType
 from app.core.config import get_settings
 
 HASH_ALG = "hmac-sha256"
@@ -37,9 +38,18 @@ def record(
     model_version: str | None = None,
     prompt_version: str | None = None,
     prompt_sha256: str | None = None,
+    subject: tuple[SubjectType, str] | None = None,
 ) -> AuditEvent:
     """Add an audit event to the session. It's committed with the caller's transaction,
-    so it lands if and only if the action it describes does."""
+    so it lands if and only if the action it describes does.
+
+    Every event is stamped with the current request's id (None outside a request), so a
+    model decision links back to the authenticated call that caused it. Note events get
+    the note as their subject unless another subject is given.
+    """
+    if subject is None and note_id is not None:
+        subject = (SubjectType.CARE_NOTE, str(note_id))
+    ctx = context.current()
     event = AuditEvent(
         event_type=event_type,
         actor=actor,
@@ -51,6 +61,9 @@ def record(
         model_version=model_version,
         prompt_version=prompt_version,
         prompt_sha256=prompt_sha256,
+        subject_type=subject[0] if subject else None,
+        subject_id=subject[1] if subject else None,
+        request_id=ctx.request_id if ctx else None,
     )
     session.add(event)
     return event

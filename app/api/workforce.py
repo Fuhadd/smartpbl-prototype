@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_workforce, require
 from app.audit.log import record
-from app.audit.models import EventType
+from app.audit.models import EventType, SubjectType
 from app.auth.models import User
 from app.auth.permissions import Permission
 from app.core.db import get_session
@@ -107,9 +107,17 @@ def _model(w: WorkforceRisk) -> ModelInfo:
     return ModelInfo(name=MODEL_NAME, version=w.version)
 
 
-def _audit(session: Session, event: EventType, actor: str, w: WorkforceRisk, output: dict) -> None:
+def _audit(
+    session: Session,
+    event: EventType,
+    actor: str,
+    w: WorkforceRisk,
+    output: dict,
+    carer_ref: str | None = None,
+) -> None:
+    subject = (SubjectType.CARER, carer_ref) if carer_ref else None
     record(session, event, actor=actor, output=output, model_name=MODEL_NAME,
-           model_version=w.version)  # fmt: skip
+           model_version=w.version, subject=subject)  # fmt: skip
     session.commit()
 
 
@@ -162,7 +170,7 @@ def explain(
     if c is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "carer not in the current workforce")
     _audit(session, EventType.WORKFORCE_EXPLANATION_VIEWED, f"user:{viewer.username}", w,
-           {"carer_ref": c.carer_ref, "risk": c.risk, "rank": c.rank})  # fmt: skip
+           {"carer_ref": c.carer_ref, "risk": c.risk, "rank": c.rank}, c.carer_ref)  # fmt: skip
     reasons = c.explanation.reasons
     support = list(
         dict.fromkeys(

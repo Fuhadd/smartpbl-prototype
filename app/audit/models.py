@@ -11,11 +11,11 @@ from enum import StrEnum
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import BigInteger, DateTime, Enum, String, func
+from sqlalchemy import BigInteger, DateTime, Enum, Index, String, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.core.db import Base
+from app.core.db import Base, string_enum
 
 
 class EventType(StrEnum):
@@ -29,6 +29,20 @@ class EventType(StrEnum):
     SCHEDULE_SOLVED = "schedule_solved"  # Step 2.6
     WORKFORCE_RISK_VIEWED = "workforce_risk_viewed"  # Step 3.4: who saw which carers' risk
     WORKFORCE_EXPLANATION_VIEWED = "workforce_explanation_viewed"
+    # Step 4.2: one row per routed API call (who, what, outcome), written by middleware.
+    API_REQUEST = "api_request"
+    REVIEW_QUEUE_VIEWED = "review_queue_viewed"  # which notes' text a reviewer was shown
+    REFRESH_TOKEN_REUSE_DETECTED = "refresh_token_reuse_detected"  # likely token theft
+
+
+class SubjectType(StrEnum):
+    """What an audit row is about. `subject_id` is the id in that type's namespace."""
+
+    CARE_NOTE = "care_note"
+    RISK_FLAG = "risk_flag"
+    SCHEDULE_RUN = "schedule_run"
+    CARER = "carer"
+    USER = "user"
 
 
 class AuditEvent(Base):
@@ -59,3 +73,10 @@ class AuditEvent(Base):
     input_hash: Mapped[str | None] = mapped_column(String(64))
     hash_alg: Mapped[str | None] = mapped_column(String(20))
     output: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    # Step 4.2. Generic subject (note_id stays for note events, so older rows still match).
+    subject_type: Mapped[SubjectType | None] = mapped_column(string_enum(SubjectType))
+    subject_id: Mapped[str | None] = mapped_column(String(100))
+    # Correlates every event caused by one HTTP request (also sent as X-Request-ID).
+    request_id: Mapped[UUID | None] = mapped_column(index=True)
+
+    __table_args__ = (Index("ix_audit_events_subject", "subject_type", "subject_id"),)

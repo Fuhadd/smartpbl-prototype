@@ -291,3 +291,21 @@
   - Expired refresh rows are not yet purged.
   - Carers can't read notes back until object-level checks exist (Tier 5).
   - FastAPI 0.162 includes routers lazily, so route introspection uses the OpenAPI schema plus a `ROUTERS` tuple, not `app.routes`.
+
+## ADR-026: Unified audit via ASGI middleware, request-id correlation and generic subjects (2026-11-07)
+- **Context:** Auditing relied on each endpoint calling `record()`. AI decisions and workforce views were covered, but reads of notes, the queue, schedules and the audit trail were not, and nor were logins and refusals. Events were tied to `note_id` only, and nothing linked a model decision to the user whose request caused it.
+- **Decision:**
+  - **Access layer:** a pure ASGI `AuditMiddleware` writes one `api_request` row per routed call: actor, method, route template, status, duration, and a subject from path parameters via `SUBJECT_PARAMS`. `/health`, docs and unmatched paths are skipped.
+  - **Fail closed:** responses are buffered; if the row can't be written, GET and HEAD return 500 without the body. Writes return their real outcome (their domain events committed atomically with the change) and log the failure.
+  - **Correlation:** a per-request `RequestAudit` object in a context variable carries `request_id` (also sent as `X-Request-ID`), the authenticated actor and any attempted login username. `record()` stamps every event with the request id.
+  - **Schema (migration 0006):** `subject_type`/`subject_id` (indexed) and `request_id` (indexed); new events `api_request`, `review_queue_viewed` and `refresh_token_reuse_detected`. No backfill (append-only); downgrade refuses if new events exist.
+  - **Actor = decision-maker:** pipeline events stay `system:pipeline`; the submitter is on the correlated request row.
+  - **Minimisation:** the attempted username is HMAC-hashed; no query strings, raw paths or free text.
+  - **Note trail:** `GET /audit/{note_id}` returns the note's events, the requests that caused them, direct reads, and queue views that showed it.
+- **Alternatives:** explicit calls only (forgettable); `BaseHTTPMiddleware` (breaks context-variable propagation, less control); DB triggers or `pgaudit` (no app user or model context; a complement for superuser activity); an external SIEM only (infrastructure; personal data leaves the boundary).
+- **Consequences:**
+  - One extra insert per request.
+  - Whole responses are buffered (fine for JSON, not for future streaming).
+  - Older rows have no subject or request id.
+  - Tests and middleware share `dependency_overrides[get_session]`.
+  - Retention, partitioning and alerting are backlog items.

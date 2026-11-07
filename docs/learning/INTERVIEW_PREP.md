@@ -504,3 +504,26 @@ Entra ID via OIDC (SSO, MFA, leavers handled by HR processes); RS256 verified ag
 
 **Where do browser clients keep tokens?**
 Access token in memory; refresh token in an httpOnly, Secure, SameSite=Strict cookie scoped to `/auth/refresh`, plus CSRF protection. Mobile: platform secure storage. Decided with CORS in 4.3.
+
+### 4.2 Unified audit
+
+**How is auditing unified?**
+An ASGI middleware writes one access row per routed call (actor, route template, status, typed subject); domain code writes decision events in-transaction; a request id (also `X-Request-ID`) joins them.
+
+**Fail closed?**
+Reads: buffer, commit the audit row, then send; on failure a 500 and no data. Writes: already committed with their domain events, so return the true outcome and log the failure (a 500 would invite a duplicate retry).
+
+**Why pure ASGI?**
+`BaseHTTPMiddleware` breaks upward context-variable propagation and gives less control over `send`. A dependency can't see the final status and must be added per route.
+
+**Who is the actor on pipeline events?**
+The decision-maker: `system:pipeline`. The submitter is on the correlated request row. "Model missed it" vs "human dismissed it" need different remedies.
+
+**What isn't logged?**
+Passwords and tokens; the attempted username only as an HMAC; no note text, comments, query strings or raw paths. OWASP logging guidance plus data minimisation.
+
+**Cost and scale?**
+One indexed insert per request; whole-response buffering. At scale: monthly partitions, a retention policy with the DPO, streaming to a SIEM.
+
+**With real data?**
+Insert-only DB role, a hash chain or WORM export, `pgaudit` for superusers, alerting (reuse, 403 bursts, unusual reads), and audit data in subject access responses.
