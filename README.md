@@ -92,7 +92,7 @@ The carer app installs to the home screen: use Add to Home Screen in Safari or C
 - [x] Tier 3: attrition prediction (synthetic workforce from Tier 2 schedules, LR vs gradient boosting with nested CV, SHAP explanations checked against ground truth, age audit, model card, workforce API)
 - [x] Tier 4: production layer: 4.1 JWT auth with refresh rotation and role-based permissions; 4.2 unified audit (middleware access log, request-id correlation, fail-closed reads); 4.3 OWASP API Top 10 review ([`docs/SECURITY.md`](docs/SECURITY.md)): rate limits, size limits, secure defaults, CORS; 4.4 Docker image, Compose stack and GitHub Actions CI
 - [x] Tier 5: coordinator dashboard (React) and carer app (Flutter): review queue, overview and audit log, schedule map and trade-off, workforce risk with SHAP, carer visits and notes, live demo (see below)
-- [ ] Tier 6: packaging (6.1 final README and 6.2 data-protection note done; model cards, demo script and interview pack in progress)
+- [ ] Tier 6: packaging (6.1 final README, 6.2 data-protection note and 6.3 model cards done; demo script and interview pack in progress)
 
 ## Quick start
 
@@ -454,7 +454,7 @@ The full list is in [`docs/learning/BACKLOG.md`](docs/learning/BACKLOG.md). With
 | [`docs/learning/DECISIONS.md`](docs/learning/DECISIONS.md) | Architecture Decision Records (ADR-001 onwards) |
 | [`docs/SECURITY.md`](docs/SECURITY.md) | OWASP API Top 10 review and what was addressed |
 | [`docs/DATA_PROTECTION.md`](docs/DATA_PROTECTION.md) | DPIA-style note: lawful basis, minimisation, retention, risks and mitigations |
-| [`docs/model-cards/`](docs/model-cards/) | Model cards |
+| [`docs/model-cards/`](docs/model-cards/) | Model cards: [extraction pipeline](docs/model-cards/extraction-pipeline.md), [attrition model](docs/model-cards/attrition-model.md) |
 | [`docs/results/`](docs/results/), [`docs/figures/`](docs/figures/) | Every reported metric, with test-set size and seed |
 | [`data/*/DATA_CARD.md`](data/) | How each synthetic dataset was generated, and its biases |
 

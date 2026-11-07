@@ -76,6 +76,18 @@ Structure follows Mitchell et al., *Model Cards for Model Reporting* (2019). **T
 
 Age is not an input. The gap is carried almost entirely by tenure (mean SHAP +0.52 log-odds for 18–24s vs 55+), then short-notice changes and zero-hours contracts. Predictions are roughly calibrated within each band (slightly under-predicting 18–24s), so the model is **accurate and disparate at the same time**.
 
+## Serving (Tiers 3–5)
+
+| | |
+|---|---|
+| API | `GET /workforce/risk` (ranked list, top 3 factors each) and `GET /workforce/{carer_ref}/explanation` (all factors, support actions, caveats). Manager and coordinator roles only; every read is audited with the carers shown and the model version |
+| Scores | Computed on read from a model trained on first use and cached for the process (about 5 s, deterministic, no pickle); not stored. The current workforce is the 200 held-out test carers, so every served score is out of sample |
+| Bands | Relative, not absolute: **Elevated** is the top 20% (the support group), **Moderate** is above the team's mean predicted risk, **Low** is the rest (ADR-032). There are no fixed probability cut-offs, because these scores come from synthetic data |
+| Explanation units | SHAP log-odds in the API (`log_odds`), plus **percentage points** (`points`) for people: the gap between the baseline and the score, split in proportion to each factor's log-odds, so the rows add up exactly (ADR-034). This is a presentation convention; the log-odds remain the exact values |
+| Support actions | Only for factors the provider can change that add at least 0.1 log-odds (about 2 points). Tenure and skills are not provider levers, so they never produce an action. The dashboard adds a "supportive check-in" only for the Elevated band |
+| Never served | The label (`left_within_12m`) and the age band |
+| Use notice | Returned in every response and shown on every workforce screen |
+
 ## Ethical considerations
 
 1. **Punitive use.** The main risk is that a "likely to leave" list is used to deprioritise people: fewer shifts, no training, being "managed out". That would turn a prediction into a self-fulfilling prophecy and be grossly unfair to the carer. Mitigations:

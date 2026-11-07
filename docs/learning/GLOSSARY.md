@@ -294,3 +294,5 @@
 - **Legitimate interests three-part test**: Purpose (a specific legitimate interest), necessity (no less intrusive way) and balancing (people's interests don't override it).
 - **Residual risk**: The risk that remains after mitigations: what the organisation is accepting.
 - **Caldicott Guardian**: The senior person in a health or social care organisation responsible for protecting the confidentiality of people's information.
+- **Model card**: A short document stating a model's versions, intended and prohibited uses, evaluation (metrics, data, uncertainty, slices), ethical risks and caveats (Mitchell et al., 2019).
+- **Pipeline (compound AI system)**: Several components (here redaction, LLM, rules, grounding, routing) whose combined output is what users see, and so what should be evaluated and documented.

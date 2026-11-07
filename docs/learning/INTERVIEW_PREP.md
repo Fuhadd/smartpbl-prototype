@@ -779,3 +779,14 @@ Punitive use of attrition scores. It's a policy and culture risk, so it stays Me
 
 **Erasure vs append-only audit?**
 Care records carry retention duties. The audit holds hashes and ids, not content, so it can be retained without re-exposing data.
+
+### 6.3 Model cards
+
+**What's in a model card, and for whom?**
+Versions, intended and out-of-scope use, factors, metrics and data (n, seed), results with CIs and slices, ethics, and caveats. It serves users, auditors and DPOs, and future engineers.
+
+**Why a pipeline card for Tier 1?**
+Users get the pipeline's output: LLM recall 0.857, but the pipeline lets 0/19 high-severity flags escape and gets union recall of 0.929. LLM-only figures misstate safety and hide that the rules are load-bearing.
+
+**What to monitor?**
+Recall by category from double-reading samples, the share sent to review, accuracy of auto-accepted flags, grounding and schema failures, and latency. Re-evaluate on any change to the model, prompt or redaction (all versioned in the audit log).
