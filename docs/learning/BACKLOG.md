@@ -126,3 +126,4 @@
 - **Carer session on the web:** a short-lived session with an `HttpOnly` refresh cookie (or native keystore on store builds), so a PWA reload doesn't sign the carer out.
 - **Carer app load time:** deferred imports for non-first screens, a preload of the renderer, and a check that the host sends Brotli for `.wasm`.
 - **Carer app accessibility:** test with carers (larger text option, plain-English review, screen readers on iOS and Android), and a Welsh or other language option if PBL needs it.
+- **Demo operations:** an uptime check that warms the API before scheduled demos; a nightly re-seed of the demo database (accounts, notes, one rota) so the walkthrough always starts from the same state.

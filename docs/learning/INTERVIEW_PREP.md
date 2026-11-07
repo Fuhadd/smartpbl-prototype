@@ -737,3 +737,14 @@ The note stays in the box. The id is created once per note, so a retry that gets
 
 **How did you verify the UI?**
 Widget tests at 390×844 with the real Inter font loaded, plus the release build driven in headless Chrome and compared with the designs. That caught two layout bugs.
+
+### 5.7 Demo access
+
+**Public demo passwords?**
+A bounded exposure: the data is synthetic, the accounts can only be created in `local`/`demo`, login is rate-limited per user, and every action is audited. Production would use SSO with no seeded accounts.
+
+**Why is the first request slow?**
+Cloud Run and Neon both scale to zero. That's fine for a portfolio (warm it up before demoing). For PBL, keep one instance warm during working hours.
+
+**What doesn't the hosted demo show?**
+Live LLM extraction, which runs locally by design (data stays on our hardware). The flags shown were produced locally on the same synthetic notes.

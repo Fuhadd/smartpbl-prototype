@@ -10,6 +10,27 @@ A portfolio prototype of an AI platform for domiciliary care. It has three parts
 
 > **All data is synthetic.** No real people, clients or PBL Care records are used. Results on synthetic data do not show real-world performance.
 
+## Try the demo
+
+| | Link | Sign in as |
+|---|---|---|
+| **Coordinator dashboard (web)** | https://tend-swart.vercel.app | `hannah@demo.smartpbl` / `demo-coordinator` (coordinator) or `sam@demo.smartpbl` / `demo-manager` (care manager) |
+| **Carer app (open in a phone browser)** | https://tend-carer.vercel.app | `joy@demo.smartpbl` / `demo-carer` |
+
+Both sign-in screens show these accounts. The passwords are public on purpose: the seed script refuses to create them outside `local` or `demo` environments.
+
+**Try this:**
+1. As Hannah, open **Schedule** and click **Optimise the day**. This takes about 20 s and saves a rota.
+2. As Joy in the carer app, see the day's visits, open one, write a note, and raise an urgent concern.
+3. Back as Hannah, the note is at the top of **Review**. Approve or acknowledge it, then find the decision in the **Audit log**.
+
+The carer app installs to the home screen: use Add to Home Screen in Safari or Chrome.
+
+**What to expect:**
+- **Slow first load:** the first request after a quiet spell takes 5–10 s while the database and API wake up from scale-to-zero.
+- **No AI extraction on the hosted demo:** the LLM runs locally (Ollama), so notes written there are saved but not extracted. The AI flags already in the review queue were produced locally on the same synthetic notes.
+- **Synthetic data:** every name, client, carer and note is synthetic.
+
 ## Status
 
 - [x] Step 0: setup
@@ -17,7 +38,7 @@ A portfolio prototype of an AI platform for domiciliary care. It has three parts
 - [x] Tier 2: carer matching (scheduling data, OSRM travel matrix, OR-Tools VRPTW, continuity trade-off, greedy comparison, schedule API)
 - [x] Tier 3: attrition prediction (synthetic workforce from Tier 2 schedules, LR vs gradient boosting with nested CV, SHAP explanations checked against ground truth, age audit, model card, workforce API)
 - [x] Tier 4: production layer: 4.1 JWT auth with refresh rotation and role-based permissions; 4.2 unified audit (middleware access log, request-id correlation, fail-closed reads); 4.3 OWASP API Top 10 review ([`docs/SECURITY.md`](docs/SECURITY.md)): rate limits, size limits, secure defaults, CORS; 4.4 Docker image, Compose stack and GitHub Actions CI
-- [ ] Tier 5: coordinator dashboard and carer app. Done: 5.1 dashboard architecture (sign-in, role-aware shell, states, typed API client); 5.2a care-note review screen (highlighted evidence, atomic approve/edit/reject, escalation)
+- [x] Tier 5: coordinator dashboard (React) and carer app (Flutter): review queue, overview and audit log, schedule map and trade-off, workforce risk with SHAP, carer visits and notes, live demo (see below)
 - [ ] Tier 6: packaging
 
 ## Quick start
@@ -311,6 +332,43 @@ uv run python -m scripts.explain_attrition    # SHAP, truth check, age audit (~3
 - **Fairness audit covers age only,** because that's all the synthetic data contains. Real deployment needs audits of every lawfully measurable characteristic, a DPIA and worker consultation.
 - **Access is manager-only since Step 4.1,** but not yet scoped per patch, and carers can't yet see their own explanation. The model retrains on first request (~4 s).
 
+## Tier 5: coordinator dashboard and carer app
+
+```mermaid
+flowchart LR
+  subgraph Vercel
+    D[React dashboard<br/>Vite · TanStack Query · typed client]
+    C[Flutter carer app<br/>Riverpod · GoRouter · Dio · Wasm PWA]
+  end
+  D -->|JWT, coordinator / manager| A[FastAPI on Cloud Run]
+  C -->|JWT, carer: /me routes only| A
+  A --> N[(Postgres on Neon)]
+  L[Laptop: Ollama] -.->|note extraction, local only| A
+```
+
+| Screen | Design | What it shows |
+|---|---|---|
+| Overview | `Main.dc.html` | What needs attention, flags by category, AI pipeline health, today's rota vs the greedy baseline, workforce check-ins |
+| Review | `Review.dc.html` | Queue by severity (urgent concerns first), note with highlighted evidence, approve/edit/reject per flag, escalation |
+| Schedule | `Schedule.dc.html` | Route map (OSM), timeline, "why this carer" with the next best option, travel vs continuity presets on the Pareto curve |
+| Workforce | `Workforce.dc.html` | Carers by relative risk band, SHAP contributions in percentage points, supportive actions only |
+| Audit log | `Audit.dc.html` | Every AI output, human decision, solver run and denied access, searchable, with CSV export |
+| Carer app | `Visits`, `VisitDetail`, `Note`, `Submitted` | Today's visits from the saved rota, a handover of recent notes, a care note with tasks and an urgent concern |
+
+**Engineering points:**
+- **Typed client:** the dashboard's API client is generated from the OpenAPI schema, and a CI test fails if the client and the API drift apart.
+- **Server-side access control:** pages hidden from a role still make their API request, so the server refuses it and the refusal is audited.
+- **Carer data:** carers reach their data only through `/me` routes, with object-level ownership checks (OWASP API1).
+- **Testing:** 87 dashboard tests (Vitest and Testing Library), 22 Flutter tests, and 436 API tests. Lint and type checks run in CI.
+
+**Limitations of Tier 5:**
+- **Single synthetic day:** "today" is the latest saved rota, and maps and locations exist only for the sample day.
+- **No AI in the cloud:** the hosted demo has no LLM.
+- **Sessions:** tokens live in memory, so a reload signs you out.
+- **No offline mode:** the carer app needs a connection.
+- **Not built:** parts of the designs with no backend yet (the carer Rota and My notes tabs, notifications, planning actions) are left out. They are listed in [`docs/learning/BACKLOG.md`](docs/learning/BACKLOG.md).
+- **Visual review:** screens were compared against the designs by screenshot, not by a designer.
+
 ## Roadmap: Tiers 4–6
 
 | Tier | What | Builds on |
@@ -328,6 +386,7 @@ app/        core (config, db) · nlp (schemas, redact, baseline, extract, ground
 prompts/    versioned prompt templates          data/      synthetic notes, data card, cached predictions
 scripts/    data generation, extraction, eval   migrations/ Alembic
 tests/      unit + Postgres integration tests   docs/      learning notes, results, figures, model cards
+web/        React coordinator dashboard         mobile/    Flutter carer app (web PWA + Android/iOS)
 ```
 
 ## Limitations
