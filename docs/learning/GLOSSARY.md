@@ -288,3 +288,4 @@
 - **Idempotent submit**: A request that can be safely repeated: the client keeps one id per note, so a retry after a lost response is recognised (409) rather than duplicated.
 - **Production domain vs deployment URL (Vercel)**: The project's stable public address versus the per-deploy generated URL; with Standard Protection only the production domain is public.
 - **Scale to zero / cold start**: Running no instances while idle (Cloud Run, Neon), so the first request pays for starting a container or waking the database.
+- **Mermaid**: A text syntax for diagrams that GitHub renders from fenced code blocks, so diagrams live in version control next to the code.

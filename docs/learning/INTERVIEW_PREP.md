@@ -748,3 +748,20 @@ Cloud Run and Neon both scale to zero. That's fine for a portfolio (warm it up b
 
 **What doesn't the hosted demo show?**
 Live LLM extraction, which runs locally by design (data stays on our hardware). The flags shown were produced locally on the same synthetic notes.
+
+## Tier 6 — Packaging
+
+### 6.1 Final README
+
+**SMARTPBL in one minute, for a care manager?**
+- It reads visit notes and highlights falls, medication and safeguarding worries for a coordinator to confirm, with the sentence shown.
+- It plans rotas that cut driving while keeping familiar carers.
+- It shows which working conditions push carers to leave, so they can be fixed.
+- People decide everything, and it's all logged.
+
+**Most and least confident result?**
+- **Most:** scheduling, which beat greedy on every day, with independent checks and proven bounds.
+- **Least:** the absolute NLP numbers (40 synthetic notes written by the same author). The design is validated; real-world performance isn't.
+
+**How do you avoid overclaiming?**
+Sample size and seed on every number, confidence intervals, and limitations per tier and overall, all on the front page.

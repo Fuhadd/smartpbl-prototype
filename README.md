@@ -2,13 +2,66 @@
 
 [![CI](https://github.com/Fuhadd/smartpbl-prototype/actions/workflows/ci.yml/badge.svg)](https://github.com/Fuhadd/smartpbl-prototype/actions/workflows/ci.yml)
 
-A portfolio prototype of an AI platform for domiciliary care. It has three parts:
-
-1. **Care-notes NLP**: a local LLM turns free-text notes into evidence-grounded risk flags, with human review and an audit trail.
-2. **Carer matching**: OR-Tools VRPTW that balances travel time against continuity of care.
-3. **Attrition prediction**: explainable models that flag carers at risk of leaving.
+A working prototype of **SMARTPBL**, an AI platform for a domiciliary (home) care provider. I built it for a KTP Associate application (AI Software Engineer, Birmingham City University × PBL Care).
 
 > **All data is synthetic.** No real people, clients or PBL Care records are used. Results on synthetic data do not show real-world performance.
+
+## The problem
+
+A home-care provider sends carers to hundreds of short visits a day. Three things go wrong at scale:
+
+1. **Risks hide in free-text notes.** A fall, refused medication or a safeguarding hint is buried in hundreds of notes a day, and coordinators can't read them all.
+2. **Rotas trade travel against continuity of care.** Hand-built rotas waste driving time or send strangers to clients who need familiar faces, and late or missed visits follow.
+3. **Carers leave.** Turnover in adult social care is high, and the working conditions behind it (short-notice changes, unpaid gaps, long drives) are set by the rota.
+
+SMARTPBL addresses each with an AI component, behind a secure API with human review and an audit trail:
+
+```mermaid
+flowchart LR
+  subgraph Clients
+    D[Coordinator dashboard<br/>React · TypeScript]
+    C[Carer app<br/>Flutter · web PWA]
+  end
+  subgraph API[FastAPI · JWT roles · audit middleware · rate limits]
+    N1[Care-notes NLP<br/>redact → local LLM + rules<br/>→ ground → route]
+    N2[Carer matching<br/>OR-Tools VRPTW<br/>+ continuity weight]
+    N3[Attrition risk<br/>gradient boosting + SHAP<br/>supportive use only]
+    R[Human review<br/>approve · edit · reject · escalate]
+  end
+  C -->|care note| N1
+  N1 --> R
+  D --> R
+  D --> N2
+  D --> N3
+  N2 -->|working conditions| N3
+  N2 -->|today's visits| C
+  API --> DB[(PostgreSQL<br/>append-only audit log)]
+  N1 -.->|redacted text only| O[Ollama<br/>llama3.1:8b, local]
+```
+
+### SMARTPBL innovations mapped to this prototype
+
+| Innovation | Implemented as | Where |
+|---|---|---|
+| NLP on care notes that flags risks | PII redaction (Presidio + UK recognisers) → local LLM with a JSON-schema contract → evidence grounding → routing to human review; rules baseline as a safety net | `app/nlp/`, `POST /notes`, dashboard **Review**, Tier 1 |
+| Human oversight and audit of AI decisions | Note-level approve/edit/reject with reviewer diffs, escalation, append-only audit log with keyed input hashes, audit timeline and CSV export | `app/nlp/review.py`, `app/audit/`, dashboard **Audit log** |
+| Intelligent carer matching and routing | VRP with time windows, skills and shifts (OR-Tools), road travel times (OSRM), explained assignments with a next-best alternative | `app/matching/`, `POST /schedule/solve`, dashboard **Schedule** |
+| Continuity of care as an explicit trade-off | Continuity weight in minutes of driving, Pareto sweep, Travel / Balanced / Continuity presets on the front | `app/matching/continuity.py`, `presets.py`, Tier 2 |
+| Workforce attrition prediction | Gradient boosting on rota-derived working conditions, calibrated probabilities, SHAP explanations, model card, age audit | `app/workforce/`, dashboard **Workforce**, Tier 3 |
+| Carer-facing digital tools | Today's visits, a handover of recent notes, and care notes with an urgent-concern switch, all object-level authorised | `app/api/me.py`, `mobile/`, Tier 5 |
+| Secure, compliant platform | JWT roles with least privilege, OWASP API Top 10 review, data minimisation, local inference, CI | `app/auth/`, [`docs/SECURITY.md`](docs/SECURITY.md), Tier 4 |
+
+### Results at a glance
+
+All results are on synthetic data, with seed 42. The tier sections below have the full tables and caveats.
+
+| Tier | Headline | Evaluated on |
+|---|---|---|
+| 1 · Care-notes NLP | LLM recall **0.857**, F1 **0.906** (rules: 0.768 / 0.860). The deployed pipeline let **0 of 19** high-severity flags escape, and 100% of evidence was grounded | Held-out test split: 40 notes, 56 gold flags |
+| 2 · Carer matching | vs a greedy heuristic: unassigned visits **17.0 vs 25.2**, time-critical misses **0 vs 5.4**, familiar carers **56% vs 22%** | 5 synthetic days, about 106 visits each |
+| 3 · Attrition | Gradient boosting ROC-AUC **0.675**, PR-AUC **0.538** against an oracle ceiling of 0.709 / 0.556; top-10% precision 69% (base rate 30%) | Nested 5×5 CV on 800 synthetic carers |
+| 4 · Production layer | Role × route permission matrix tested for every endpoint; 10 OWASP API risks reviewed | 436 API tests in CI |
+| 5 · Apps | Live dashboard and carer app; screens rebuilt from the design files | 87 dashboard and 22 Flutter tests |
 
 ## Try the demo
 
@@ -39,11 +92,11 @@ The carer app installs to the home screen: use Add to Home Screen in Safari or C
 - [x] Tier 3: attrition prediction (synthetic workforce from Tier 2 schedules, LR vs gradient boosting with nested CV, SHAP explanations checked against ground truth, age audit, model card, workforce API)
 - [x] Tier 4: production layer: 4.1 JWT auth with refresh rotation and role-based permissions; 4.2 unified audit (middleware access log, request-id correlation, fail-closed reads); 4.3 OWASP API Top 10 review ([`docs/SECURITY.md`](docs/SECURITY.md)): rate limits, size limits, secure defaults, CORS; 4.4 Docker image, Compose stack and GitHub Actions CI
 - [x] Tier 5: coordinator dashboard (React) and carer app (Flutter): review queue, overview and audit log, schedule map and trade-off, workforce risk with SHAP, carer visits and notes, live demo (see below)
-- [ ] Tier 6: packaging
+- [ ] Tier 6: packaging (6.1 final README done; data-protection note, model cards, demo script and interview pack in progress)
 
 ## Quick start
 
-Prerequisites: Python 3.12 (managed by `uv`), Docker, Ollama.
+Prerequisites: Python 3.12 (managed by `uv`), Docker, Ollama; Node 24 for the dashboard; Flutter 3.35 for the carer app.
 
 ```bash
 uv sync                                   # create .venv and install deps
@@ -61,9 +114,11 @@ TOKEN=$(curl -s -X POST localhost:8000/auth/token -d 'username=coord.demo&passwo
   | python -c 'import sys, json; print(json.load(sys.stdin)["access_token"])')
 AUTH="Authorization: Bearer $TOKEN"       # used by the curl examples below
 
-# Coordinator dashboard (Step 5.1): http://localhost:5173, demo accounts on the sign-in page
+# Coordinator dashboard (Tier 5): http://localhost:5173, demo accounts on the sign-in page
 uv run python -m scripts.seed_demo        # local/demo environments only
 (cd web && npm ci && npm run dev)
+# Carer app (Tier 5): Flutter web on http://localhost:8081, signed in as joy@demo.smartpbl
+(cd mobile && flutter pub get && flutter run -d chrome --web-port 8081)
 
 # Or run the whole stack in containers (Step 4.4): db -> migrate -> api on 127.0.0.1:8000.
 # Ollama stays on the host (Metal GPU); the API reaches it at host.docker.internal.
@@ -332,6 +387,18 @@ uv run python -m scripts.explain_attrition    # SHAP, truth check, age audit (~3
 - **Fairness audit covers age only,** because that's all the synthetic data contains. Real deployment needs audits of every lawfully measurable characteristic, a DPIA and worker consultation.
 - **Access is manager-only since Step 4.1,** but not yet scoped per patch, and carers can't yet see their own explanation. The model retrains on first request (~4 s).
 
+## Tier 4: production layer
+
+The three AI modules sit behind one API that a care provider could put in front of real data, with work still to do (see limitations).
+
+| Area | What is in place | Learning note |
+|---|---|---|
+| Authentication | OAuth2 password login, short-lived JWT access tokens (15 min), refresh tokens rotated on every use with reuse detection (a replayed token revokes the whole session family), Argon2id password hashes | 20 |
+| Authorisation | Routes depend on permissions, not roles; coordinator, manager and carer roles; least privilege (managers oversee but don't decide flags or run the solver); carers reach only their own data through `/me` | 20, 29 |
+| Audit | Middleware records every routed request (actor, route, outcome, subject) with a request id, correlated with the AI events; reads fail closed if the audit write fails; the audit table is append-only at the database level | 21 |
+| OWASP API Top 10 | Rate limits (login, notes, solves), body and field size limits, secure start-up defaults (refuses dev secrets outside `local`), strict CORS, security headers, generic 500s, dependency vulnerability scan | 22, [`SECURITY.md`](docs/SECURITY.md) |
+| Delivery | Two-stage, non-root Docker image; Compose stack (db → migrate → api, optional OSRM); GitHub Actions running lint, tests, a dependency audit, web and mobile builds and the Docker build, with actions pinned to commit SHAs | 23 |
+
 ## Tier 5: coordinator dashboard and carer app
 
 ```mermaid
@@ -369,13 +436,26 @@ flowchart LR
 - **Not built:** parts of the designs with no backend yet (the carer Rota and My notes tabs, notifications, planning actions) are left out. They are listed in [`docs/learning/BACKLOG.md`](docs/learning/BACKLOG.md).
 - **Visual review:** screens were compared against the designs by screenshot, not by a designer.
 
-## Roadmap: Tiers 4–6
+## Future work
 
-| Tier | What | Builds on |
-|---|---|---|
-| **4 · Production layer** | JWT auth with coordinator/manager/carer roles replacing `X-Reviewer`; unified audit middleware with a generic subject id; OWASP API Top 10 review (rate limits for `/schedule/solve`, input limits, secrets, CORS); Docker Compose for API + DB + OSRM; GitHub Actions CI | Backlog items from Tiers 1–2: DB roles for the append-only audit, async jobs, raw-text access control |
-| **5 · Coordinator dashboard and carer app** | React (Vite, TypeScript, TanStack Query, an OpenAPI-generated client): review queue with highlighted evidence, schedule map (react-leaflet, OSM) with the trade-off chart, supportive workforce-risk screen. A Flutter carer app (mobile + PWA): today's visits and care-note submission. Demo deployments with seeded results (ADR-024) | Tier 1–3 APIs as built; spans, assignment reasons, SHAP factors and the use notice are already in the responses |
-| **6 · Packaging** | Final README and architecture diagram, DPIA-style data-protection note, model cards, 3-minute demo script, interview pack | Learning notes 00–19, the ADR log, `INTERVIEW_PREP.md`, the attrition model card |
+The full list is in [`docs/learning/BACKLOG.md`](docs/learning/BACKLOG.md). With real PBL data, the priorities would be:
+
+1. **Data protection first.** A DPIA, data-sharing agreement and Caldicott sign-off, then a fresh held-out evaluation on real, consented notes, with clinicians labelling severity.
+2. **Notes pipeline.** Asynchronous ingestion (a job queue), encryption at rest for raw text, and a GPU inference server inside PBL's network (still no third-party LLM).
+3. **Scheduling.** Dated multi-day rotas from PBL's rostering system, traffic-aware travel times, breaks and double-up calls. The baseline would be PBL's actual rotas, not a greedy heuristic.
+4. **Workforce.** Retraining on real leaver records, fairness audits across every lawfully measurable characteristic, worker consultation, and patch-scoped access.
+5. **Apps.** An offline-first carer app with a sync queue, push notifications, SSO, and per-patch scoping in the dashboard.
+
+## Documentation
+
+| Read this | For |
+|---|---|
+| [`docs/learning/`](docs/learning/) | One learning note per step (00–31): what, why, alternatives, how it works, interview Q&A |
+| [`docs/learning/DECISIONS.md`](docs/learning/DECISIONS.md) | Architecture Decision Records (ADR-001 onwards) |
+| [`docs/SECURITY.md`](docs/SECURITY.md) | OWASP API Top 10 review and what was addressed |
+| [`docs/model-cards/`](docs/model-cards/) | Model cards |
+| [`docs/results/`](docs/results/), [`docs/figures/`](docs/figures/) | Every reported metric, with test-set size and seed |
+| [`data/*/DATA_CARD.md`](data/) | How each synthetic dataset was generated, and its biases |
 
 ## Layout
 
@@ -391,4 +471,9 @@ web/        React coordinator dashboard         mobile/    Flutter carer app (we
 
 ## Limitations
 
-Synthetic data only: see [`data/care_notes/DATA_CARD.md`](data/care_notes/DATA_CARD.md) for how it was generated and its known biases (narrow vocabulary, artificial prevalence). Developed and tested on one Apple M1 Pro (16 GB) machine. Tier-specific limitations are listed in each tier's section above.
+- **Synthetic data throughout.** One author wrote the generators, rules, prompts and labels, so every evaluation is partly circular and absolute numbers are optimistic. The data cards describe each dataset's biases ([notes](data/care_notes/DATA_CARD.md), [scheduling](data/scheduling/DATA_CARD.md), [workforce](data/workforce/DATA_CARD.md)).
+- **Small evaluation sets.** 40 test notes, 5 scheduling days and 200 test carers give wide confidence intervals; the intervals are reported with every result.
+- **Single machine and single synthetic day.** Developed and tested on one Apple M1 Pro (16 GB). "Today" is the latest saved rota, and the hosted demo has no LLM.
+- **Prototype security.** Tokens live in memory, rate limits are in-process, the audit log is append-only against the application but not tamper-evident, and raw note text is not encrypted at rest.
+
+Each tier section above lists its own limitations in detail.
