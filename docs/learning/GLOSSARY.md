@@ -289,3 +289,8 @@
 - **Production domain vs deployment URL (Vercel)**: The project's stable public address versus the per-deploy generated URL; with Standard Protection only the production domain is public.
 - **Scale to zero / cold start**: Running no instances while idle (Cloud Run, Neon), so the first request pays for starting a container or waking the database.
 - **Mermaid**: A text syntax for diagrams that GitHub renders from fenced code blocks, so diagrams live in version control next to the code.
+- **DPIA (Data Protection Impact Assessment)**: The controller's assessment of a high-risk processing activity's risks to people and the measures that reduce them, required before such processing starts.
+- **Article 9(2)(h) / Schedule 1 condition 2**: The UK GDPR condition and DPA 2018 basis for processing health data to provide health or social care, by or under someone owing a duty of confidentiality.
+- **Legitimate interests three-part test**: Purpose (a specific legitimate interest), necessity (no less intrusive way) and balancing (people's interests don't override it).
+- **Residual risk**: The risk that remains after mitigations: what the organisation is accepting.
+- **Caldicott Guardian**: The senior person in a health or social care organisation responsible for protecting the confidentiality of people's information.

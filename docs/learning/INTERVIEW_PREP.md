@@ -765,3 +765,17 @@ Live LLM extraction, which runs locally by design (data stays on our hardware). 
 
 **How do you avoid overclaiming?**
 Sample size and seed on every number, confidence intervals, and limitations per tier and overall, all on the front page.
+
+### 6.2 Data protection
+
+**Lawful basis for care notes with AI?**
+Article 6 (contract or public task, as for delivering care) plus Article 9(2)(h) with DPA 2018 Schedule 1 condition 2 and a duty of confidentiality. Training on the notes is a further purpose to assess separately. Confirm with the DPO.
+
+**Attrition basis?**
+Legitimate interests. Purpose: retention and continuity. Necessity: team-level reporting isn't enough. Balancing: support only, with adverse use prohibited. Consult staff; no solely automated decisions.
+
+**Biggest residual risk?**
+Punitive use of attrition scores. It's a policy and culture risk, so it stays Medium despite the controls.
+
+**Erasure vs append-only audit?**
+Care records carry retention duties. The audit holds hashes and ids, not content, so it can be retained without re-exposing data.
