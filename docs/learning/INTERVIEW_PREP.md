@@ -717,3 +717,23 @@ Only a handover: clients on today's rota, the last 3 notes, redacted, with rejec
 
 **Urgent switch?**
 A human-review trigger independent of the model: it goes to the top of the queue as high priority, and a flag-less note is acknowledged through the audited note decision.
+
+### 5.6b Flutter carer app
+
+**Why Flutter here and React for the dashboard?**
+Different users: dense desktop tables for coordinators, and a phone-first app that can become a store app for carers. Both use the same typed API.
+
+**What does `--wasm` give you?**
+dart2wasm plus the skwasm renderer, faster and able to use threads with COOP/COEP headers. `flutter_bootstrap.js` falls back to dart2js plus CanvasKit when WasmGC is missing (Safari and Firefox by default).
+
+**Load size?**
+Measured at about 2.4 MB gzipped on the Wasm path, against 0.15 MB for the React dashboard. That's acceptable for a daily work tool, since the service worker caches it. It would be wrong for a public one-off page.
+
+**Token refresh with parallel calls?**
+A single shared refresh future and one retry. A failed refresh ends the session. `QueuedInterceptor` was avoided because of a deadlock. A test asserts exactly one refresh.
+
+**What if a carer loses signal while sending?**
+The note stays in the box. The id is created once per note, so a retry that gets 409 means it was saved and no duplicate is created.
+
+**How did you verify the UI?**
+Widget tests at 390×844 with the real Inter font loaded, plus the release build driven in headless Chrome and compared with the designs. That caught two layout bugs.

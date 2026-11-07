@@ -122,3 +122,7 @@
 - **Handover window:** limit carer-visible notes by age (e.g. 7 days) as well as count, once agreed in the DPIA.
 - **Coordinator view of a carer's day:** a staff route for a named carer's rota (the `/me` routes are self-service only).
 - **Urgent concern in the review screen:** show the carer's concern and ticked tasks beside the note text, not only in the queue row.
+- **Carer app offline mode:** cache the day's rota and drafts locally, then sync with the existing idempotent note ids. Add push notifications for rota changes.
+- **Carer session on the web:** a short-lived session with an `HttpOnly` refresh cookie (or native keystore on store builds), so a PWA reload doesn't sign the carer out.
+- **Carer app load time:** deferred imports for non-first screens, a preload of the renderer, and a check that the host sends Brotli for `.wasm`.
+- **Carer app accessibility:** test with carers (larger text option, plain-English review, screen readers on iOS and Android), and a Welsh or other language option if PBL needs it.

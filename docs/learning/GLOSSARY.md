@@ -277,3 +277,12 @@
 - **Existence oracle**: A response difference (403 vs 404) that reveals whether an object exists; avoided by answering 404 for objects the caller may not see.
 - **Need-to-know access**: Limiting what a role can read to what its task requires, e.g. a carer's handover limited to today's clients and three redacted notes.
 - **Human-review trigger**: A signal that forces human review regardless of model output, such as the carer's urgent-concern switch.
+- **PWA (Progressive Web App)**: A website with a manifest and a service worker, so browsers can install it to the home screen and open it like an app.
+- **Web app manifest**: The JSON file giving an installable site's name, start URL, colours, display mode and icons (192 and 512 px, optionally maskable).
+- **Service worker**: A script the browser runs between a page and the network; Flutter's caches the app files so repeat visits load fast.
+- **WasmGC**: WebAssembly with garbage collection, which lets Dart compile to Wasm (`dart2wasm`); needed for Flutter's `--wasm` build.
+- **skwasm / CanvasKit**: Flutter web's renderers; skwasm pairs with the Wasm build and can draw off the main thread, CanvasKit pairs with the JS fallback.
+- **COOP/COEP**: `Cross-Origin-Opener-Policy` and `Cross-Origin-Embedder-Policy` headers that make a page cross-origin isolated, which multi-threaded Wasm requires.
+- **Hash URL strategy**: Flutter web's default routing (`/#/visit/V-0047`), where the route lives after `#` so the server only ever serves `index.html`.
+- **Single-flight refresh**: Sharing one in-flight token refresh among all requests that got 401 at the same time, so single-use refresh tokens aren't presented twice.
+- **Idempotent submit**: A request that can be safely repeated: the client keeps one id per note, so a retry after a lost response is recognised (409) rather than duplicated.

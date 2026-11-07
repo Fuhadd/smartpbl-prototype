@@ -450,3 +450,19 @@
   - "Today" is the latest run, since the prototype has one synthetic day.
   - Visit details and locations exist only for the sample day.
   - Neon was migrated to 0010 from a laptop whose `.env` pointed at it. 0011 must still be applied there (`alembic upgrade head` against Neon) before deploying this API image.
+
+## ADR-036: Flutter carer app: web PWA with --wasm, repository-faked tests, memory tokens, idempotent submit (2026-11-07)
+- **Context:** Step 5.6b builds the carer screens (CarerLogin, Visits, VisitDetail, Note, Submitted) in Flutter, to be tried in a phone browser and installable, on the same API as the dashboard.
+- **Decision:**
+  - **Stack:** Flutter 3.35 with Riverpod 3 (global `retry: null`: failures show "Try again" rather than silent retries), GoRouter (session-driven redirect, hash URLs), Dio with a plain `Interceptor` (single-flight refresh, one retry; not `QueuedInterceptor`, which can deadlock on a failed retry).
+  - **Session:** tokens in memory only (ADR-027); non-carer accounts are refused at sign-in.
+  - **Testing:** screens read a `Repository` through `repositoryProvider`, which widget tests override with a fake; the interceptor is tested with a fake HTTP adapter; tests load the bundled Inter font.
+  - **Build:** `flutter build web --wasm` (skwasm, with automatic dart2js + CanvasKit fallback). The PWA manifest and icons are generated from the design's "S" tile. `web/vercel.json` sets COOP/COEP for multi-threaded rendering. Inter is bundled.
+  - **Behaviour:** the next visit is the first without a note (not by clock). The note id is created once per note, and a 409 on retry counts as sent.
+  - **Design trims:** no Rota or My notes tabs, notifications bell, "Good to know" or visit counts (no backend yet). The demo badge replaces the bell. "Call office" uses Ofcom drama number 0121 496 0000.
+  - **CI:** a `mobile` job runs format, analyze (infos fatal), test and the wasm build. flutter-action is pinned to a commit SHA.
+- **Alternatives:** a React mobile view; native-only store apps; a JS-only Flutter build; mocking Dio in widget tests; persisting tokens in web storage.
+- **Consequences:**
+  - First load is about 2.4 MB gzipped on the Wasm path (about 3.6 MB on the JS fallback), against 0.15 MB for the dashboard. The service worker caches the app after the first load.
+  - A reload signs the carer out.
+  - There is no offline mode yet.

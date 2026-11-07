@@ -99,6 +99,27 @@ jobs:
       - run: npm test
       - run: npm run build
 
+  mobile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          flutter-version: 3.35.5  # the version the app was built and tested with
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: dart format --line-length 120 --output none --set-exit-if-changed lib test
+      - run: flutter analyze --fatal-infos
+      - run: flutter test
+      - run: flutter build web --wasm --release
+
   docker:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
