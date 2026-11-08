@@ -40,7 +40,7 @@ Metaheuristic = routing_enums_pb2.LocalSearchMetaheuristic
 @dataclass(frozen=True)
 class SolverParams:
     time_limit_s: float = 10.0
-    first_solution: str = "PARALLEL_CHEAPEST_INSERTION"  # see note 12: PCA drops 47
+    first_solution: str = "PARALLEL_CHEAPEST_INSERTION"  # see ADR-016: PCA drops 47
     metaheuristic: str = "TABU_SEARCH"  # best on the seed-42 instance at 10 s and 60 s
     first_solution_only: bool = False  # stop at the construction heuristic (no local search)
     drop_penalty: int = DROP_PENALTY

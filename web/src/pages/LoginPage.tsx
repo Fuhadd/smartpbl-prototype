@@ -25,7 +25,7 @@ const SEGMENT = 'h-10 w-full'
 const INPUT = 'h-[50px] rounded-lg bg-surface px-3.5 text-[15px] shadow-none md:text-[15px]'
 const LABEL = 'text-[13px] font-semibold'
 
-/** Messages for the failure states the design doesn't draw (see learning note 24). */
+/** Messages for the failure states the design doesn't draw. */
 function signInError(error: unknown): string {
   if (error instanceof ApiError && error.status === 401) return 'Email or password is incorrect.'
   if (error instanceof ApiError && error.status === 429)

@@ -1,7 +1,7 @@
 /**
  * Risk categories as the designs present them. Falls, nutrition and mood colours are
  * from DESIGN.md / Review.dc.html; the other four are not in the designs and were
- * chosen to sit in the same pastel family (design gap, see learning note 25).
+ * chosen to sit in the same pastel family (design gap).
  */
 import type { components } from '@/api/schema'
 

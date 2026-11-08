@@ -16,7 +16,7 @@ How a carer is made:
      data doesn't contain (caring duties, a better offer, health). Age has no direct effect.
 
 Everything a model "discovers" in Tier 3 was put here first. That is the point: with a
-known mechanism we can check whether the pipeline recovers it (note 16, circularity).
+known mechanism we can check whether the pipeline recovers it (ADR-020, circularity).
 """
 
 import argparse

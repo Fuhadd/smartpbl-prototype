@@ -63,7 +63,7 @@ def run_schedule(
     matrix = resolve_matrix(scenario)
     base = solve(scenario, matrix, SolverParams(time_limit_s=time_limit_s))
     solution = base
-    if continuity_weight_min > 0:  # two-phase: continuity can never cost a visit (note 13)
+    if continuity_weight_min > 0:  # two-phase: continuity can never cost a visit (ADR-017)
         params = SolverParams(
             time_limit_s=time_limit_s, continuity_weight_s=continuity_weight_min * 60
         )

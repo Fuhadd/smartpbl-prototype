@@ -75,11 +75,11 @@
   - Reviewer corrections become queryable labels.
   - Gaps: notes whose LLM extraction failed and the baseline found nothing stay in the queue with no flag to act on, because there is no note-level sign-off yet. Reviewers can't add a flag the system missed. Decisions can't be corrected. The queue is sorted in Python.
 
-## ADR-012: Build cadence: steps run back-to-back, with a review at each tier milestone (2026-11-07)
-- **Context:** Before this, every step stopped for explicit approval. With the 15 Nov deadline for Tiers 1–2, waiting between steps cost more time than it saved.
-- **Decision:** Steps run consecutively. Each step still meets the full definition of done (code, tests, lint, learning note, ADR/glossary/interview updates, commit). Work pauses only at tier milestones, when a decision is genuinely the learner's, or when blocked. Default choices are recorded here.
-- **Alternatives:** keep stopping after every step; batch several steps into one commit.
-- **Consequences:** Faster progress. Review moves to tier boundaries, so each tier summary must list every learning note to read. Per-step commits keep the history reviewable.
+## ADR-012: Small, fully finished increments (2026-11-07)
+- **Context:** A fixed deadline, with work spanning NLP, optimisation, ML, an API and two apps.
+- **Decision:** Work in small steps. Each step lands with its code, tests, lint, documentation and an ADR where a decision was made, in its own commit. Default choices are recorded here rather than left implicit.
+- **Alternatives:** larger batches per commit; documenting at the end.
+- **Consequences:** Every commit is a working state, and the history reads as the build narrative.
 
 ## ADR-013: Evaluation protocol, and keeping llama3.1:8b as the extraction model (2026-11-07)
 - **Context:** Tier 1 needs an honest comparison of the LLM and the rules on data neither was tuned on, small enough to run on a laptop.
@@ -214,7 +214,7 @@
 ## ADR-021: Nested CV protocol and model set for attrition (2026-11-07)
 - **Context:** 800 training carers (238 leavers), a 200-row test split known to be easy (ADR-020), and an exploratory look at HGB settings on the evaluation folds before the protocol existed.
 - **Decision:**
-  - **Candidates:** standardised logistic regression; the same with `class_weight="balanced"` (kept as a teaching contrast, not for use); `HistGradientBoostingClassifier` (150 iterations).
+  - **Candidates:** standardised logistic regression; the same with `class_weight="balanced"` (kept as a contrast, not for use); `HistGradientBoostingClassifier` (150 iterations).
   - **Tuning:** each candidate is a `GridSearchCV` (3-fold inner, scored on log loss), so hyperparameters are chosen inside each outer training fold: LR `C ∈ {0.01, 0.1, 1}`; HGB depth {2, 3} × learning rate {0.03, 0.1} × min leaf {20, 50}.
   - **Main estimate:** 5×5 repeated stratified CV, with the oracle and a constant base-rate predictor scored on the same folds, plus paired per-fold comparisons.
   - **Test:** the test split is used once, with 2,000-resample bootstrap CIs, quoted next to the oracle.
@@ -318,7 +318,7 @@
   - **Resource bounds:** a 1 MB body limit (declared and chunked); note ids `^[A-Za-z0-9_.-]{1,50}$`; scenario caps (60 carers, 200 clients, 400 visits, 10 carer refs per client, at least one carer); the solver itself refuses zero carers.
   - **Headers:** the OWASP REST set (`nosniff`, `no-store`, CSP `default-src 'none'; frame-ancestors 'none'`, `X-Frame-Options`, `Referrer-Policy`), plus HSTS outside local.
   - **CORS:** an explicit origin list, `GET`/`POST`, `Authorization`/`Content-Type`, no credentials, exposing `X-Request-ID` and `Retry-After`.
-  - **Token storage (supersedes the cookie plan in note 20):** bearer tokens in the `Authorization` header only. The dashboard keeps them in memory; mobile uses secure storage. No cookies, so no CSRF surface.
+  - **Token storage (supersedes the earlier cookie plan):** bearer tokens in the `Authorization` header only. The dashboard keeps them in memory; mobile uses secure storage. No cookies, so no CSRF surface.
   - **Validation errors:** returned without `input` or `ctx`.
   - **Tooling:** ruff flake8-bandit (`S`) with reasoned suppressions; `pip-audit` (clean on 2026-11-07).
 - **Alternatives:** `slowapi`; Redis token buckets; gateway-only limits; an `httpOnly` refresh cookie plus CSRF tokens; a backend-for-frontend.
@@ -431,7 +431,7 @@
   - **Routing and bundles:** `/workforce` redirects to rank 1. The screen is lazy-loaded (`LazyPages.tsx`), keeping the initial bundle at 492 kB.
 - **Alternatives:** raw log-odds; per-factor σ(base + φ) − σ(base) (doesn't add up); sequential attribution (order-dependent); SHAP on probability (interventional mode broken for HGB, ADR-022); invented trends; a Recharts bar chart.
 - **Consequences:**
-  - The percentage split is a convention, which the footnote and note 28 state; exact log-odds stay in the API.
+  - The percentage split is a convention, which the footnote states; exact log-odds stay in the API.
   - Trend, planning and per-carer access features are deferred (backlog).
   - The list loads all 200 carers, so one view's audit event lists 200 refs.
 
@@ -444,7 +444,7 @@
   - **Writes:** for carers, `POST /notes` requires their own `carer_ref`, a `visit_id` on their current rota, and that visit's `client_ref` (403 otherwise). Coordinators are unchanged.
   - **Note fields:** `visit_id`, `urgent` and `tasks_done` (optional). `urgent` forces `review_required`, sorts first and counts as high priority. A flag-less urgent note is acknowledged through the existing note decision.
   - **"Done":** a note by this carer for the visit, created on the run's local calendar day (avoids comparing API and database clocks).
-  - **Hosting the carer app:** Vercel (the user's choice for frontends), not the Firebase Hosting named in CLAUDE.md; the user deploys.
+  - **Hosting the carer app:** Vercel, alongside the dashboard, rather than Firebase Hosting; deployed manually.
 - **Alternatives:** `/carers/{ref}/visits` with per-handler checks; Postgres row-level security; a policy engine; a separate visit-notes table; no handover notes.
 - **Consequences:**
   - "Today" is the latest run, since the prototype has one synthetic day.

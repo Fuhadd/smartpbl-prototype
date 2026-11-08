@@ -92,7 +92,7 @@ The carer app installs to the home screen: use Add to Home Screen in Safari or C
 - [x] Tier 3: attrition prediction (synthetic workforce from Tier 2 schedules, LR vs gradient boosting with nested CV, SHAP explanations checked against ground truth, age audit, model card, workforce API)
 - [x] Tier 4: production layer: 4.1 JWT auth with refresh rotation and role-based permissions; 4.2 unified audit (middleware access log, request-id correlation, fail-closed reads); 4.3 OWASP API Top 10 review ([`docs/SECURITY.md`](docs/SECURITY.md)): rate limits, size limits, secure defaults, CORS; 4.4 Docker image, Compose stack and GitHub Actions CI
 - [x] Tier 5: coordinator dashboard (React) and carer app (Flutter): review queue, overview and audit log, schedule map and trade-off, workforce risk with SHAP, carer visits and notes, live demo (see below)
-- [x] Tier 6: packaging: final README, data-protection note, model cards, demo script, interview pack
+- [x] Tier 6: packaging: final README, data-protection note, model cards
 
 ## Quick start
 
@@ -160,7 +160,7 @@ flowchart LR
 - **Nothing is silently dropped:** every flag is auto-accepted or queued, with reasons.
 - **Graceful degradation:** if the LLM is down, the note is kept with the rules' flags and queued.
 
-Each module is explained in [`docs/learning/`](docs/learning/) (notes 01–09), and the decisions are in [`DECISIONS.md`](docs/learning/DECISIONS.md).
+The design decisions behind each module are in [`DECISIONS.md`](docs/DECISIONS.md).
 
 ### Results: held-out test split
 
@@ -213,7 +213,7 @@ uv run python -m scripts.run_extraction --split test --model llama3.1:8b --promp
 - **Grounding checks that a quote exists, not that it supports the flag.** A negation misread ("no signs of falls" flagged as a fall) passes grounding.
 - **The audit log is append-only against the application only.** A database owner or superuser can disable the trigger. Production needs separate DB roles and tamper evidence such as a hash chain or write-once storage.
 - **Authentication arrived in Step 4.1** (JWT + roles; the reviewer is the authenticated user). The API returns redacted text only.
-- **Ingestion is synchronous** (6–18 s per note), and raw text is not encrypted at rest. Both are in [`BACKLOG.md`](docs/learning/BACKLOG.md).
+- **Ingestion is synchronous** (6–18 s per note), and raw text is not encrypted at rest. Both are in [`BACKLOG.md`](docs/BACKLOG.md).
 
 ## Tier 2: carer matching
 
@@ -240,8 +240,6 @@ flowchart LR
 - **Continuity never costs a visit.** A penalty guard plus the two-phase warm start ensure this.
 - **Every solution is re-verified,** and every number is framed against a proven CP-SAT bound.
 - **Client locations stay in-house:** self-hosted routing, and runs store only a keyed hash of the input.
-
-Notes 10–15 in [`docs/learning/`](docs/learning/) explain each part.
 
 ### Results
 
@@ -332,7 +330,7 @@ flowchart LR
 - **Probabilities are the product.** Models are tuned on log loss, checked for calibration, and class reweighting is rejected.
 - **Supportive by contract.** Factors are framed as provider levers with support actions; the label and age are never served; every view is audited.
 
-Notes 16–19 in [`docs/learning/`](docs/learning/) explain each part. The model card is [`docs/model-cards/attrition-model.md`](docs/model-cards/attrition-model.md).
+The model card is [`docs/model-cards/attrition-model.md`](docs/model-cards/attrition-model.md).
 
 ### Results
 
@@ -391,13 +389,13 @@ uv run python -m scripts.explain_attrition    # SHAP, truth check, age audit (~3
 
 The three AI modules sit behind one API that a care provider could put in front of real data, with work still to do (see limitations).
 
-| Area | What is in place | Learning note |
-|---|---|---|
-| Authentication | OAuth2 password login, short-lived JWT access tokens (15 min), refresh tokens rotated on every use with reuse detection (a replayed token revokes the whole session family), Argon2id password hashes | 20 |
-| Authorisation | Routes depend on permissions, not roles; coordinator, manager and carer roles; least privilege (managers oversee but don't decide flags or run the solver); carers reach only their own data through `/me` | 20, 29 |
-| Audit | Middleware records every routed request (actor, route, outcome, subject) with a request id, correlated with the AI events; reads fail closed if the audit write fails; the audit table is append-only at the database level | 21 |
-| OWASP API Top 10 | Rate limits (login, notes, solves), body and field size limits, secure start-up defaults (refuses dev secrets outside `local`), strict CORS, security headers, generic 500s, dependency vulnerability scan | 22, [`SECURITY.md`](docs/SECURITY.md) |
-| Delivery | Two-stage, non-root Docker image; Compose stack (db → migrate → api, optional OSRM); GitHub Actions running lint, tests, a dependency audit, web and mobile builds and the Docker build, with actions pinned to commit SHAs | 23 |
+| Area | What is in place |
+|---|---|
+| Authentication | OAuth2 password login, short-lived JWT access tokens (15 min), refresh tokens rotated on every use with reuse detection (a replayed token revokes the whole session family), Argon2id password hashes |
+| Authorisation | Routes depend on permissions, not roles; coordinator, manager and carer roles; least privilege (managers oversee but don't decide flags or run the solver); carers reach only their own data through `/me` |
+| Audit | Middleware records every routed request (actor, route, outcome, subject) with a request id, correlated with the AI events; reads fail closed if the audit write fails; the audit table is append-only at the database level |
+| OWASP API Top 10 | Rate limits (login, notes, solves), body and field size limits, secure start-up defaults (refuses dev secrets outside `local`), strict CORS, security headers, generic 500s, dependency vulnerability scan ([`SECURITY.md`](docs/SECURITY.md)) |
+| Delivery | Two-stage, non-root Docker image; Compose stack (db → migrate → api, optional OSRM); GitHub Actions running lint, tests, a dependency audit, web and mobile builds and the Docker build, with actions pinned to commit SHAs |
 
 ## Tier 5: coordinator dashboard and carer app
 
@@ -433,12 +431,12 @@ flowchart LR
 - **No AI in the cloud:** the hosted demo has no LLM.
 - **Sessions:** tokens live in memory, so a reload signs you out.
 - **No offline mode:** the carer app needs a connection.
-- **Not built:** parts of the designs with no backend yet (the carer Rota and My notes tabs, notifications, planning actions) are left out. They are listed in [`docs/learning/BACKLOG.md`](docs/learning/BACKLOG.md).
+- **Not built:** parts of the designs with no backend yet (the carer Rota and My notes tabs, notifications, planning actions) are left out. They are listed in [`docs/BACKLOG.md`](docs/BACKLOG.md).
 - **Visual review:** screens were compared against the designs by screenshot, not by a designer.
 
 ## Future work
 
-The full list is in [`docs/learning/BACKLOG.md`](docs/learning/BACKLOG.md). With real PBL data, the priorities would be:
+The full list is in [`docs/BACKLOG.md`](docs/BACKLOG.md). With real PBL data, the priorities would be:
 
 1. **Data protection first.** A DPIA, data-sharing agreement and Caldicott sign-off, then a fresh held-out evaluation on real, consented notes, with clinicians labelling severity.
 2. **Notes pipeline.** Asynchronous ingestion (a job queue), encryption at rest for raw text, and a GPU inference server inside PBL's network (still no third-party LLM).
@@ -450,12 +448,10 @@ The full list is in [`docs/learning/BACKLOG.md`](docs/learning/BACKLOG.md). With
 
 | Read this | For |
 |---|---|
-| [`docs/learning/`](docs/learning/) | One learning note per step (00–36): what, why, alternatives, how it works, interview Q&A |
-| [`docs/learning/DECISIONS.md`](docs/learning/DECISIONS.md) | Architecture Decision Records (ADR-001 onwards) |
+| [`docs/DECISIONS.md`](docs/DECISIONS.md) | Architecture Decision Records (ADR-001 onwards) |
+| [`docs/BACKLOG.md`](docs/BACKLOG.md) | Known gaps and future work |
 | [`docs/SECURITY.md`](docs/SECURITY.md) | OWASP API Top 10 review and what was addressed |
 | [`docs/DATA_PROTECTION.md`](docs/DATA_PROTECTION.md) | DPIA-style note: lawful basis, minimisation, retention, risks and mitigations |
-| [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) | The 3-minute walkthrough, beat by beat, with preparation and recovery lines |
-| [`docs/learning/INTERVIEW_PREP.md`](docs/learning/INTERVIEW_PREP.md) | Interview pack: must-know questions, system-level and KTP answers, mock-interview mode, and the full per-step bank |
 | [`docs/model-cards/`](docs/model-cards/) | Model cards: [extraction pipeline](docs/model-cards/extraction-pipeline.md), [attrition model](docs/model-cards/attrition-model.md) |
 | [`docs/results/`](docs/results/), [`docs/figures/`](docs/figures/) | Every reported metric, with test-set size and seed |
 | [`data/*/DATA_CARD.md`](data/) | How each synthetic dataset was generated, and its biases |
@@ -468,7 +464,7 @@ app/        core (config, db) · nlp (schemas, redact, baseline, extract, ground
             workforce (data, features, models, explain, service) · audit · api
 prompts/    versioned prompt templates          data/      synthetic notes, data card, cached predictions
 scripts/    data generation, extraction, eval   migrations/ Alembic
-tests/      unit + Postgres integration tests   docs/      learning notes, results, figures, model cards
+tests/      unit + Postgres integration tests   docs/      decisions, results, figures, model cards
 web/        React coordinator dashboard         mobile/    Flutter carer app (web PWA + Android/iOS)
 ```
 

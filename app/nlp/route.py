@@ -7,7 +7,7 @@ queue with explicit reasons. Rules (any one sends a flag to review):
   - grounding not exact/normalised     : fuzzy evidence is less trustworthy
   - ungrounded evidence                : possibly hallucinated; rejected from auto-accept
   - confidence < CONFIDENCE_THRESHOLD  : required by spec, though LLM confidence is
-                                         poorly spread (see note 05)
+                                         poorly spread (see ADR-013)
   - baseline-only category             : rules found a risk the LLM did not (safety net)
 Extraction failure sends the whole note to review.
 """

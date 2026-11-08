@@ -15,7 +15,7 @@ from enum import StrEnum
 
 from rapidfuzz import fuzz
 
-FUZZY_THRESHOLD = 90.0  # calibrated on dev, see docs/learning/06-grounding-routing.md
+FUZZY_THRESHOLD = 90.0  # calibrated on dev, see ADR-009 in docs/DECISIONS.md
 MIN_FUZZY_WORDS = 3
 
 

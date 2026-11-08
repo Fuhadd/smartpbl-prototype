@@ -42,12 +42,12 @@ Each basis below is **to be confirmed with PBL's DPO**. These are the expected p
 | Principle | How SMARTPBL implements it | Evidence |
 |---|---|---|
 | **Data minimisation** | Presidio and UK recognisers mask names, addresses, postcodes and phone numbers **before** the LLM. The API and UI show only redacted text. The audit log stores HMAC hashes, not inputs. Runs don't store locations. The label and age are never served. Carer handovers are limited to the last 3 notes for today's clients. | Notes 03, 07, 15, 19, 29 |
-| **Local inference** | The LLM runs on PBL-controlled hardware (Ollama). No care data goes to a third-party AI API. | Note 05, ADR log |
-| **Accuracy and hallucination control** | Every flag must quote the note (grounding). High-severity, safeguarding, low-confidence and fuzzy flags go to a human. A rules baseline catches what the LLM misses. Measured on held-out data. | Notes 06, 09 |
-| **Human oversight** | Coordinators approve, edit or reject each flag (diff stored). High-severity flags can be escalated to a manager. Carers can force review with an urgent concern. Attrition outputs are supportive prompts only. | Notes 08, 25, 29, attrition model card |
-| **Access control** | JWT roles with least privilege. Carers see only their own rota (object-level checks). Managers oversee but don't decide flags. Hidden pages are still refused server-side. | Notes 20, 29, `SECURITY.md` |
-| **Accountability** | An append-only audit of every AI output, human decision, data read (including who saw which carer's risk and which client notes) and denied access, with request correlation and CSV export. | Notes 07, 21, 26 |
-| **Security** | OWASP API Top 10 review, rate limits, secure defaults, TLS. Hosting is UK-region (London) for both the database and the API. | Note 22, `SECURITY.md` |
+| **Local inference** | The LLM runs on PBL-controlled hardware (Ollama). No care data goes to a third-party AI API. | ADR-001, ADR-008 |
+| **Accuracy and hallucination control** | Every flag must quote the note (grounding). High-severity, safeguarding, low-confidence and fuzzy flags go to a human. A rules baseline catches what the LLM misses. Measured on held-out data. | ADR-009, ADR-013 |
+| **Human oversight** | Coordinators approve, edit or reject each flag (diff stored). High-severity flags can be escalated to a manager. Carers can force review with an urgent concern. Attrition outputs are supportive prompts only. | ADR-011, ADR-031, ADR-035, attrition model card |
+| **Access control** | JWT roles with least privilege. Carers see only their own rota (object-level checks). Managers oversee but don't decide flags. Hidden pages are still refused server-side. | ADR-025, ADR-035, `SECURITY.md` |
+| **Accountability** | An append-only audit of every AI output, human decision, data read (including who saw which carer's risk and which client notes) and denied access, with request correlation and CSV export. | ADR-010, ADR-026, ADR-032 |
+| **Security** | OWASP API Top 10 review, rate limits, secure defaults, TLS. Hosting is UK-region (London) for both the database and the API. | ADR-027, `SECURITY.md` |
 
 ## 5. Retention (proposed; to be agreed with PBL)
 

@@ -41,7 +41,7 @@
 
 ## How it was generated
 
-1. **Working conditions come from the solver.** Each carer is given a "home round": one of the 84 working carer-days from the Tier 2 solves. For each of their shifts over 13 weeks (shifts per week × 13), the shift is that home round with probability 0.6, or else a random solved day on the same rota (covering other rounds). Driving, gaps, visits, split-shift share and familiarity are averages over those shifts. The solves are run once and committed, because time-limited search varies between runs (note 13). Re-solving would make the dataset non-reproducible.
+1. **Working conditions come from the solver.** Each carer is given a "home round": one of the 84 working carer-days from the Tier 2 solves. For each of their shifts over 13 weeks (shifts per week × 13), the shift is that home round with probability 0.6, or else a random solved day on the same rota (covering other rounds). Driving, gaps, visits, split-shift share and familiarity are averages over those shifts. The solves are run once and committed, because time-limited search varies between runs (ADR-017). Re-solving would make the dataset non-reproducible.
 2. **Employment features are stated assumptions,** not estimates from any real provider:
    - **Age band:** 18–24 12%, 25–39 33%, 40–54 33%, 55+ 22%.
    - **Tenure:** lognormal, σ = 0.9. Median 9 / 18 / 30 / 42 months by age band, capped by age.
@@ -78,7 +78,7 @@ The direction of each effect follows the qualitative picture in UK care workforc
 
 ## Known biases and limitations
 
-- **Circularity.** Any model trained on this data learns the generator. Good metrics show that the pipeline recovers a known mechanism. They say nothing about why real carers leave or how well a model would predict that. See note 16.
+- **Circularity.** Any model trained on this data learns the generator. Good metrics show that the pipeline recovers a known mechanism. They say nothing about why real carers leave or how well a model would predict that. See ADR-020.
 - **Assumed, independent employment features.** In reality, tenure, contract, hours and rota changes are entangled (zero-hours carers are offered fewer shifts and get more changes). Only the contract → shifts and contract → changes links are modelled.
 - **Working conditions come from 5 synthetic days and 17 rota slots.** Variety between carers is limited to 84 home rounds plus mixing. Weekends, seasons and bank holidays are not modelled.
 - **No censoring.** Every carer is observed for the full 12 months after the snapshot. Real data has carers hired recently or observed for less than a year, which calls for survival analysis or careful label windows.

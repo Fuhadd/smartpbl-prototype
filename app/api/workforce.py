@@ -40,7 +40,7 @@ USE_NOTICE = (
     "model, not proven causes. Synthetic prototype: not for use on real carers."
 )
 # Only suggest support for factors that add at least this much (about +2 percentage points
-# at a 30% base rate): small contributions are the likeliest to be noise (note 18).
+# at a 30% base rate): small contributions are the likeliest to be noise (ADR-022).
 MIN_SUPPORT_LOG_ODDS = 0.1
 CAVEATS = (
     "Scores are probabilities from a model trained on synthetic data.",

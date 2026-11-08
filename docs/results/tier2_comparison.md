@@ -1,9 +1,9 @@
 # Tier 2 comparison: greedy vs OR-Tools
 
 - Days (seeds): 42, 43, 44, 48, 49; skipped (invalid scenario): 45 (2 problems), 46 (1 problems), 47 (2 problems).
-- OR-Tools: PARALLEL_CHEAPEST_INSERTION + TABU_SEARCH, 10 s; continuity weight 15 min (the knee from note 13), solved two-phase (warm-started from the w=0 solution; runtime is the sum of both phases).
+- OR-Tools: PARALLEL_CHEAPEST_INSERTION + TABU_SEARCH, 10 s; continuity weight 15 min (the knee from ADR-017), solved two-phase (warm-started from the w=0 solution; runtime is the sum of both phases).
 - Every solution passed the independent checker. Utilisation = (visit + driving) time / total shift time of all carers.
-- Time-limited search: single numbers vary by a few % between reruns (see note 13).
+- Time-limited search: single numbers vary by a few % between reruns (see ADR-017).
 
 ## Mean over days
 

@@ -37,7 +37,7 @@ from scripts.generate_schedule import generate
 
 RESULTS = Path("docs/results/tier2_comparison.md")
 FIGURE = Path("docs/figures/tier2_comparison.png")
-CONTINUITY_W_MIN = 15  # the knee of the seed-42 trade-off curve (note 13)
+CONTINUITY_W_MIN = 15  # the knee of the seed-42 trade-off curve (ADR-017)
 SYSTEMS = [
     "Greedy (nearest available)",
     "OR-Tools, w=0",
@@ -145,7 +145,7 @@ def main() -> None:
         used.append(seed)
         m = matrix_for(s)
         base = solve(s, m, SolverParams(time_limit_s=args.time_limit))
-        # Two-phase (lexicographic, note 13): warm-start the continuity solve from the
+        # Two-phase (lexicographic, ADR-017): warm-start the continuity solve from the
         # coverage-first solution, so adding continuity can never cost a visit.
         cont_params = SolverParams(
             time_limit_s=args.time_limit, continuity_weight_s=CONTINUITY_W_MIN * 60
@@ -169,11 +169,11 @@ def main() -> None:
         )
         + ".",
         f"- OR-Tools: PARALLEL_CHEAPEST_INSERTION + TABU_SEARCH, {args.time_limit:.0f} s; "
-        f"continuity weight {CONTINUITY_W_MIN} min (the knee from note 13), solved two-phase "
+        f"continuity weight {CONTINUITY_W_MIN} min (the knee from ADR-017), solved two-phase "
         "(warm-started from the w=0 solution; runtime is the sum of both phases).",
         "- Every solution passed the independent checker. Utilisation = (visit + driving) time "
         "/ total shift time of all carers.",
-        "- Time-limited search: single numbers vary by a few % between reruns (see note 13).",
+        "- Time-limited search: single numbers vary by a few % between reruns (see ADR-017).",
         "",
         "## Mean over days",
         "",

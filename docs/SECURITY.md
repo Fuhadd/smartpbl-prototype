@@ -23,7 +23,7 @@ Status key: **Addressed** = implemented and tested. **Partial** = mitigated, wit
 
 ### API1: Broken Object Level Authorization
 - **Done:**
-  - Every route needs a permission (note 20).
+  - Every route needs a permission (ADR-025).
   - Carers can only *create* notes; they can't read any note, schedule or risk score back.
   - Object ids are random UUIDs (notes, flags, runs), so guessing them gives an attacker nothing.
 - **Gap:** coordinators and managers can read *every* note and schedule, with no scoping by branch or patch. Real PBL data needs object-level checks: each user linked to a patch, and every query filtered by it. The same mechanism lets carers read their own notes and attrition explanation (right of access).
@@ -56,7 +56,7 @@ Status key: **Addressed** = implemented and tested. **Partial** = mitigated, wit
 - **Gap:** limits are in-memory and per process. With N workers the effective limit is N×, and a restart resets it. Production: a shared store (Redis) or the API gateway. Long solves should move to a job queue (backlog).
 
 ### API5: Broken Function Level Authorization
-Deny by default, as described in note 20. One table maps roles to permissions:
+Deny by default, as described in ADR-025. One table maps roles to permissions:
 - **Carer:** create notes.
 - **Coordinator:** notes, review decisions, solver.
 - **Manager:** audit trail, workforce risk, read-only operations.

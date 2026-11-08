@@ -5,7 +5,7 @@ Uses the same days (first 5 valid seeds from 42), travel matrices and production
 configuration (OR-Tools, continuity weight 15 min, two-phase) as scripts/compare_solvers.
 
 The output, data/workforce/tier2_carer_days.json, is committed. The workforce generator
-reads it instead of re-solving, because time-limited search varies run to run (note 13):
+reads it instead of re-solving, because time-limited search varies run to run (ADR-017):
 re-solving would make the synthetic workforce non-reproducible.
 """
 

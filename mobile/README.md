@@ -2,7 +2,7 @@
 
 Today's visits and care notes for carers, on the same API as the coordinator dashboard.
 Designs: `docs/design/screens/{CarerLogin,Visits,VisitDetail,Note,Submitted}.dc.html`.
-Notes: `docs/learning/29-carer-api.md` (API) and `30-carer-app.md` (this app). Synthetic demo data only.
+Design decisions: ADR-035 (API) and ADR-036 (this app) in `docs/DECISIONS.md`. Synthetic demo data only.
 
 ```bash
 flutter pub get

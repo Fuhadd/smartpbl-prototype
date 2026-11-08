@@ -2,7 +2,7 @@
 
 One row per carer at a snapshot date. Features summarise the 13 weeks before the snapshot;
 the label says whether the carer left in the 12 months after it. Nothing measured after
-the snapshot may become a feature (leakage: see note 16).
+the snapshot may become a feature (leakage: see ADR-020).
 
 `age_band` is a protected characteristic (Equality Act 2010). It is kept only to audit
 the model for indirect discrimination in Step 3.3 and is never a model input.
